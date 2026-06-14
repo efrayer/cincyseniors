@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Chat • Web Search + Memory + Metrics</title>
+  <style>
+    :root{
+      /* Light, clean look to match your existing chat pages */
+      --bg:#f5f7fb; --panel:#fff; --muted:#6b7280; --text:#1f2937; --border:#e5e7eb; --primary:#2563eb; --shadow:0 8px 20px rgba(0,0,0,.06);
+      --chip:#f8fafc; --chip-border:#e5e7eb;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
+    .container{max-width:1100px;margin:24px auto;padding:0 16px}
+    h1{font-size:24px;margin:6px 0 14px;text-align:center}
+
+    .card{background:var(--panel);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow)}
+    .toolbar{display:flex;flex-wrap:wrap;gap:8px;padding:10px;border-bottom:1px solid var(--border);align-items:center}
+    .toolbar textarea{flex:1;min-height:44px;border:1px solid var(--border);border-radius:12px;padding:10px;resize:vertical}
+    .toolbar .toggles{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-left:auto}
+    .toolbar .toggles label{font-size:12px;color:var(--muted)}
+    .toolbar .sid{margin-left:auto;font-size:12px;color:var(--muted)}
+
+    details.opts{margin-left:auto}
+    details.opts summary{cursor:pointer;color:var(--muted);font-size:12px}
+    details.opts .grid{display:grid;grid-template-columns:repeat(4, minmax(120px,1fr));gap:8px;margin-top:8px}
+    details.opts input, details.opts textarea{width:100%;border:1px solid var(--border);border-radius:10px;padding:8px}
+
+    .split{display:grid;grid-template-columns:1fr 360px;gap:14px}
+    @media (max-width: 980px){.split{grid-template-columns:1fr}}
+
+    .chat{height:460px;overflow:auto;padding:16px;border-bottom:1px solid var(--border)}
+    .msg{margin:12px 0}
+    .bub{display:inline-block;max-width:100%;padding:12px;border-radius:12px;border:1px solid var(--border);white-space:pre-wrap}
+    .user .bub{background:#e6f7e7}
+    .bot  .bub{background:#f2f4f7}
+
+    .row{display:flex;align-items:flex-end;gap:10px;padding:12px}
+    textarea#q{flex:1;min-height:56px;border:1px solid var(--border);border-radius:12px;padding:10px;resize:vertical}
+    .btn{border:1px solid var(--border);background:#fff;border-radius:10px;padding:8px 12px;font-weight:600;cursor:pointer}
+    .btn.primary{background:var(--primary);border-color:#1e40af;color:#fff}
+    .btn.ghost{background:transparent}
+    .muted{color:var(--muted);font-size:12px}
+
+    .section{padding:10px 14px;border-top:1px solid var(--border)}
+    .section b{display:block;margin-bottom:6px}
+    .kvs{display:flex;flex-wrap:wrap;gap:10px;font-size:12px;color:var(--muted)}
+    .kvs .kv{background:var(--chip);border:1px solid var(--chip-border);border-radius:10px;padding:6px 8px}
+
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    @media (max-width: 700px){.grid2{grid-template-columns:1fr}}
+
+    ol{margin:8px 0 0 18px;padding:0}
+    .mono{font-family:ui-monospace,SFMono-Regular,Consolas,Monaco,monospace}
+    pre.code{background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:10px;white-space:pre-wrap;overflow:auto}
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Chat • Web Search + Memory <span class="muted">with Metrics</span></h1>
+
+  <div class="card">
+    <div class="toolbar">
+      <label class="muted" style="font-size:12px">System Prompt</label>
+      <textarea id="sys" placeholder="Optional: steer the assistant">You are a helpful assistant. Use the data below faithfully.</textarea>
+
+      <div class="toggles">
+        <label><input type="checkbox" id="useMemory" checked /> Use Memory</label>
+        <label><input type="checkbox" id="useRag" /> Use RAG</label>
+        <label><input type="checkbox" id="forceSearch" /> Force Web Search</label>
+        <span class="sid" id="sidBadge"></span>
+      </div>
+
+      <details class="opts">
+        <summary>Options</summary>
+        <div class="grid">
+          <div>
+            <label class="muted">topK</label>
+            <input id="topK" type="number" min="1" step="1" value="5" />
+          </div>
+          <div>
+            <label class="muted">minScore</label>
+            <input id="minScore" type="number" min="0" max="1" step="0.01" value="0.25" />
+          </div>
+          <div>
+            <label class="muted">Max Completion Tokens</label>
+            <input id="maxTokens" type="number" min="1" step="1" placeholder="(server default)" />
+          </div>
+          <div>
+            <label class="muted">Tag filter (comma-separated)</label>
+            <input id="tags" type="text" placeholder="e.g., policy, v2, 2025" />
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <div class="split">
+      <!-- Left column: chat -->
+      <div>
+        <div id="chat" class="chat">
+          <div class="muted">Ask a question. Toggle RAG / Web Search as needed. Session memory will carry forward context.</div>
+        </div>
+        <div class="row">
+          <textarea id="q" placeholder="Type your question… (Enter to send, Shift+Enter for newline)"></textarea>
+          <button class="btn" id="clear">Clear</button>
+          <button class="btn primary" id="send">Send</button>
+        </div>
+
+        <div id="src" class="section" style="display:none">
+          <b>References</b>
+          <ol id="srcList" class="muted"></ol>
+        </div>
+
+        <div id="mem" class="section" style="display:none">
+          <b>Conversation Memory</b>
+          <div class="kvs" id="memMeta"></div>
+          <ol id="memList" class="muted"></ol>
+          <div style="display:flex;justify-content:flex-end;margin-top:8px;gap:8px">
+            <button class="btn ghost" id="resetMem">Reset Session</button>
+          </div>
+        </div>
+
+        <div id="sum" class="section" style="display:none">
+          <b>Running Summary</b>
+          <pre id="summary" class="code mono"></pre>
+        </div>
+
+        <details class="section" style="margin-top:8px">
+          <summary>Raw JSON</summary>
+          <pre class="code mono" id="raw">—</pre>
+        </details>
+      </div>
+
+      <!-- Right column: live metrics -->
+      <div class="section" style="border-top:none">
+        <b>Metrics</b>
+        <div class="kvs" id="mx">
+          <div class="kv"><b>Model</b> <span id="mModel" class="mono">—</span></div>
+          <div class="kv"><b>Server total (ms)</b> <span id="mTotal" class="mono">—</span></div>
+          <div class="kv"><b>LLM latency (ms)</b> <span id="mApi" class="mono">—</span></div>
+          <div class="kv"><b>Summary latency (ms)</b> <span id="mSum" class="mono">—</span></div>
+          <div class="kv"><b>Tokens/sec</b> <span id="mTps" class="mono">—</span></div>
+          <div class="kv"><b>Chars/sec</b> <span id="mCps" class="mono">—</span></div>
+          <div class="kv"><b>Prompt tokens</b> <span id="mPTok" class="mono">—</span></div>
+          <div class="kv"><b>Completion tokens</b> <span id="mCTok" class="mono">—</span></div>
+          <div class="kv"><b>Total tokens</b> <span id="mTTok" class="mono">—</span></div>
+        </div>
+        <div class="muted" style="margin-top:8px"> <a href="https://thinkdataanalysis.blob.core.windows.net/files/AI_Books/Chat%20Metrics%20Manual%20%E2%80%94%20Interpreting%20Performance%20&%20Quality%20Signals.pdf" target="_blank" rel="noopener noreferrer">Use this Performance Manual to intrepret statistics.</a></div>
+
+
+        <div class="section" style="margin-top:14px">
+          <b>Perf Runner</b>
+          <div class="grid2">
+            <div>
+              <label class="muted">Count</label>
+              <input id="pCount" type="number" value="10" style="width:100%"/>
+            </div>
+            <div>
+              <label class="muted">Concurrency</label>
+              <input id="pConc" type="number" value="3" style="width:100%"/>
+            </div>
+          </div>
+          <div class="grid2" style="margin-top:8px">
+            <div>
+              <label class="muted">Delay (ms)</label>
+              <input id="pDelay" type="number" value="0" style="width:100%"/>
+            </div>
+            <div>
+              <label class="muted">Max Completion Tokens (optional)</label>
+              <input id="pCap" type="number" placeholder="(inherit)" style="width:100%"/>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <button class="btn" id="btnPerf">Run</button>
+            <button class="btn ghost" id="btnPerfClear">Clear</button>
+          </div>
+          <div id="perfOut" class="muted" style="margin-top:10px">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <center>
+    <p class="muted" style="margin-top:10px">Memory is session-scoped (<code>sessionId</code> stored in this browser). API Base resolves to <code>/api</code> when hosted, or <code>http://127.0.0.1:3001</code> when opened locally.</p>
+    <p class="muted" style="margin-top:4px"><a href="/chat/">Back to Chat</a></p>
+  </center>
+</div>
+
+<script>
+// --- API base detection (same pattern as your existing pages) ---
+const storedApi = localStorage.getItem('apiBase');
+const isLocal = ['localhost','127.0.0.1'].includes(location.hostname) || location.protocol==='file:';
+const API = storedApi || (isLocal ? 'http://127.0.0.1:3001' : '/api');
+const $ = id => document.getElementById(id);
+const chat = $('chat');
+
+function esc(s=''){ return (s+'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }
+function add(sender, text){ const div=document.createElement('div'); div.className='msg '+sender; div.innerHTML = `<div class="bub">${esc(text||'')}</div>`; chat.appendChild(div); chat.scrollTop = chat.scrollHeight; }
+function parseTags(v){ return (v||'').split(',').map(s=>s.trim()).filter(Boolean); }
+function tsToLocal(ts){ try{ return new Date(ts).toLocaleString(); }catch{ return String(ts) } }
+
+function renderSources(arr){
+  if(!arr || !arr.length){ $('src').style.display='none'; return }
+  $('srcList').innerHTML = arr.map((s,i)=>{
+    const title = esc(s.title || s.url || s.source || 'Result');
+    const url = s.url ? s.url : (s.href ? s.href : null);
+    let host = ''; try { host = url ? ` (${new URL(url).hostname})` : ''; } catch {}
+    const left = url ? `<a href="${url}" target="_blank" rel="noopener"><b>${i+1}. ${title}</b></a>` : `<b>${i+1}. ${title}</b>`;
+    return `<li>${left}<span class="muted">${host}</span></li>`;
+  }).join('');
+  $('src').style.display='block';
+}
+
+function renderMemory(meta){
+  if(!meta || typeof meta.memoryUsed==='undefined'){ $('mem').style.display='none'; return; }
+  const used = meta.memoryUsed||0; const tops = Array.isArray(meta.memoryTop)? meta.memoryTop : [];
+  const kvs = [];
+  kvs.push(`<div class="kv"><b>Used:</b> ${used}</div>`);
+  if(meta.sessionId) kvs.push(`<div class="kv"><b>sessionId:</b> ${esc(meta.sessionId)}</div>`);
+  $('memMeta').innerHTML = kvs.join('');
+  if(!tops.length){ $('memList').innerHTML = ''; $('mem').style.display='block'; return; }
+  $('memList').innerHTML = tops.map((m,i)=>`<li>Hit ${i+1}: score=${m.score}, ts=${esc(tsToLocal(m.ts))}</li>`).join('');
+  $('mem').style.display='block';
+}
+
+function showMetrics(m){
+  $('mModel').textContent = m?.model || '—';
+  $('mTotal').textContent = m?.totalDurationMs ?? '—';
+  $('mApi').textContent   = m?.apiDurationMs ?? '—';
+  $('mSum').textContent   = m?.summaryApiMs ?? '—';
+  $('mTps').textContent   = m?.tokensPerSec ?? '—';
+  $('mCps').textContent   = m?.charsPerSec ?? '—';
+  $('mPTok').textContent  = m?.usage?.prompt_tokens ?? '—';
+  $('mCTok').textContent  = m?.usage?.completion_tokens ?? '—';
+  $('mTTok').textContent  = m?.usage?.total_tokens ?? '—';
+}
+
+async function getSessionId(){
+  let sid = localStorage.getItem('sid');
+  if(sid){ $('sidBadge').textContent = `sessionId: ${sid.slice(0,8)}…`; return sid; }
+  try{ const r = await fetch(`${API}/session/new`, { method:'POST' }); const j = await r.json(); if(j.sessionId){ sid=j.sessionId; localStorage.setItem('sid', sid); $('sidBadge').textContent = `sessionId: ${sid.slice(0,8)}…`; return sid; } }catch{}
+  sid = Math.random().toString(36).slice(2); localStorage.setItem('sid', sid); $('sidBadge').textContent = `sessionId: ${sid.slice(0,8)}…`; return sid;
+}
+
+async function send(){
+  const q = $('q').value.trim(); if(!q) return;
+  const sessionId = await getSessionId();
+  add('user', q); $('q').value=''; add('bot', 'Thinking…');
+  try{
+    const body = {
+      message: q,
+      system: $('sys').value,
+      useMemory: $('useMemory').checked,
+      useRag: $('useRag').checked,
+      forceSearch: $('forceSearch').checked,
+      topK: Number($('topK').value||5),
+      minScore: Number($('minScore').value||0.25),
+      tags: parseTags($('tags').value),
+      sessionId
+    };
+    const cap = Number($('maxTokens').value); if (cap>0) body.maxCompletionTokens = cap;
+
+    const r = await fetch(`${API}/chat`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+    const j = await r.json();
+
+    // reply
+    const last = chat.lastChild; last.querySelector('.bub').textContent = j.reply || '(no reply)';
+    renderSources(j.sources || j.results || []);
+    renderMemory({ memoryUsed:j.memoryUsed, memoryTop:j.memoryTop, sessionId:j.sessionId||sessionId });
+    if (j.runningSummary){ $('summary').textContent = j.runningSummary; $('sum').style.display='block'; }
+
+    // metrics
+    if (j.metrics) showMetrics(j.metrics); else showMetrics(null);
+
+    // raw
+    $('raw').textContent = JSON.stringify(j, null, 2);
+
+    // session update
+    if(j.sessionId && j.sessionId !== sessionId){ localStorage.setItem('sid', j.sessionId); $('sidBadge').textContent = `sessionId: ${j.sessionId.slice(0,8)}…`; }
+  }catch(e){
+    const last = chat.lastChild; last.querySelector('.bub').textContent = 'Error: '+e.message;
+    renderSources([]); renderMemory(null); showMetrics(null);
+  }
+}
+
+function clearChat(){ chat.innerHTML = '<div class="muted">Ask a question. Toggle RAG / Web Search as needed. Session memory will carry forward context.</div>'; $('src').style.display='none'; $('mem').style.display='none'; $('sum').style.display='none'; $('q').value=''; }
+
+async function resetSession(){ const sid = await getSessionId(); try{ await fetch(`${API}/session/reset`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ sessionId: sid }) }); }catch(e){} $('mem').style.display='none'; }
+
+// Perf runner
+async function runPerf(){
+  const body = {
+    count: Number($('pCount').value||10),
+    concurrency: Number($('pConc').value||3),
+    delayMs: Number($('pDelay').value||0),
+    payload: {
+      message: $('q').value || 'perf {i}',
+      useRag: $('useRag').checked,
+      forceSearch: $('forceSearch').checked,
+      sessionId: localStorage.getItem('sid') || undefined,
+      maxCompletionTokens: Number($('pCap').value)||undefined
+    }
+  };
+  const r = await fetch(`${API}/perf`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+  const j = await r.json().catch(()=>({}));
+  $('perfOut').textContent = j && j.summary ? JSON.stringify(j.summary, null, 2) : '—';
+}
+
+// Wire up
+$('send').addEventListener('click', send);
+$('q').addEventListener('keydown', e=>{ if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); send(); } });
+$('clear').addEventListener('click', clearChat);
+$('resetMem').addEventListener('click', resetSession);
+$('btnPerf').addEventListener('click', runPerf);
+$('btnPerfClear').addEventListener('click', ()=>{ $('perfOut').textContent='—'; });
+
+// init
+getSessionId();
+</script>
+</body>
+</html>

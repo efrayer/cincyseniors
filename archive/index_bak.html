@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ThinkDashboards</title>
+
+<style>
+  /* Base resets */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; width: 100%; }
+
+  /* Typography & theme colors */
+  body {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    background: white;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 24px;
+  }
+
+  .container {
+    max-width: 720px;
+    margin: auto;
+  }
+
+  h1 {
+    font-size: 2rem;
+    color: #222;
+    margin-bottom: 16px;
+    line-height: 1.2;
+    letter-spacing: 0.5px;
+  }
+
+  p.description {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 28px;
+    line-height: 1.5;
+  }
+
+  .buttons {
+    display: flex;
+    gap: 18px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 24px;
+  }
+
+  a.btn {
+    text-decoration: none;
+    padding: 14px 22px;
+    font-size: 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    border: 2px solid #2778c4;
+    color: white;
+    background: #2778c4;
+    transition: background 0.2s, transform 0.12s;
+    min-width: 240px;
+  }
+
+  a.btn.outline {
+    background: white;
+    color: #2778c4;
+    border: 2px solid #2778c4;
+  }
+
+  a.btn:hover {
+    background: #1f5d99;
+    transform: translateY(-2px);
+  }
+
+  a.btn.outline:hover {
+    background: #f2faff;
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 480px) {
+    .buttons {
+      flex-direction: column;
+    }
+    a.btn {
+      min-width: auto;
+      width: 100%;
+    }
+  }
+</style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h1>Welcome to ThinkDashboards</h1>
+    <p class="description">
+      ThinkDashboards is your personal AI experience — a secure, modern, and responsive web chat powered by LM Studio and customizable dashboards.
+    </p>
+
+    <div class="buttons">
+      <a class="btn" href="https://www.thinkdashboards.com/chat" target="_blank">
+        🚀 Go to ThinkDashboards Chat
+      </a>
+      <a class="btn outline" href="https://www.thinkdataanalysis.com/chat/" target="_blank">
+        🔗 Visit ThinkDataAnalysis Chat
+      </a>
+    </div>
+
+    <p style="margin-top: 28px; font-size:0.9rem;">
+      <a href="https://www.thinkdashboards.com/lm_studio_chat_advanced.html" target="_blank" style="color:#2778c4; text-decoration:none; font-weight:500;">
+        Advanced Chat (Memory, Metrics &amp; Streaming)
+      </a>
+    </p>
+
+    <p style="margin-top: 40px; font-size:0.85rem; color:#777;">
+      Powered by ThinkDashboards • Designed for clarity, performance, and speed.
+    </p>
+  </div>
+
+</body>
+</html>
+

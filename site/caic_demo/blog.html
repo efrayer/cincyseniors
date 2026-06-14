@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blog — Cincinnati AI Catalyst (CAIC)</title>
+  <meta name="description" content="Insights, perspectives, and news on responsible AI from the CAIC community — including the Friday Features newsletter archive." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="container">
+      <div class="nav-inner">
+        <a href="index.html" class="nav-logo">
+          <div class="nav-logo-mark">AI</div>
+          <div class="nav-logo-text">
+            <span class="nav-logo-name">Cincinnati AI Catalyst</span>
+            <span class="nav-logo-sub">CAIC &bull; Nonprofit</span>
+          </div>
+        </a>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="teams.html">Teams</a></li>
+          <li><a href="calendar.html">Calendar</a></li>
+          <li><a href="roster.html">Roster</a></li>
+          <li><a href="blog.html">Blog</a></li>
+          <li><a href="links.html">Links</a></li>
+        </ul>
+        <div class="nav-cta">
+          <a href="about.html#get-involved" class="btn btn-primary">Get Involved</a>
+        </div>
+        <button class="nav-hamburger" aria-label="Toggle menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Nav -->
+  <div class="nav-mobile">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="teams.html">Teams</a></li>
+      <li><a href="calendar.html">Calendar</a></li>
+      <li><a href="roster.html">Roster</a></li>
+      <li><a href="blog.html">Blog</a></li>
+      <li><a href="links.html">Links</a></li>
+    </ul>
+    <div class="nav-mobile-cta">
+      <a href="about.html#get-involved" class="btn btn-primary">Get Involved</a>
+    </div>
+  </div>
+
+  <!-- Page Hero -->
+  <div class="page-hero">
+    <div class="page-hero-bg"></div>
+    <div class="container">
+      <div class="page-hero-content">
+        <div class="section-label">Blog &amp; Newsletter</div>
+        <h1>Insights on <span class="gradient-text">responsible AI</span></h1>
+        <p>Perspectives, news, and analysis from the CAIC community — including the archive of our Friday Features newsletter.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Featured Post -->
+  <section class="section">
+    <div class="container">
+
+      <!-- Featured -->
+      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; margin-bottom: 48px; display: grid; grid-template-columns: 1fr 1fr;">
+        <div style="padding: 48px; display: flex; flex-direction: column; justify-content: center;">
+          <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+            <span class="badge badge-blue">Friday Features</span>
+            <span class="badge badge-teal">Featured</span>
+          </div>
+          <h2 style="font-size: 1.6rem; margin-bottom: 16px;">What Does "Responsible AI" Actually Mean? A Practical Framework</h2>
+          <p>The term "responsible AI" gets thrown around a lot — but what does it actually mean in practice? In this edition, we break down the core principles that guide CAIC's work and offer a framework any organization can apply.</p>
+          <div style="margin-top: 24px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--gradient); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; color: white;">CF</div>
+              <span style="font-size: 0.85rem; color: var(--text-secondary);">Carl Fraik</span>
+            </div>
+            <span style="font-size: 0.82rem; color: var(--text-muted);">April 11, 2025</span>
+            <span style="font-size: 0.82rem; color: var(--text-muted);">5 min read</span>
+          </div>
+          <a href="#" class="btn btn-primary" style="margin-top: 28px; display: inline-flex; width: fit-content;">Read Article &rarr;</a>
+        </div>
+        <div style="background: linear-gradient(135deg, rgba(79,156,249,0.1) 0%, rgba(0,212,170,0.08) 100%); display: flex; align-items: center; justify-content: center; min-height: 280px; font-size: 7rem; border-left: 1px solid var(--border);">🤖</div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="all-posts">All Posts</button>
+        <button class="tab-btn" data-tab="friday-features">Friday Features</button>
+        <button class="tab-btn" data-tab="team-updates">Team Updates</button>
+        <button class="tab-btn" data-tab="resources">Resources</button>
+      </div>
+
+      <!-- All Posts -->
+      <div id="all-posts" class="tab-panel active">
+        <div class="grid-3">
+
+          <div class="blog-card">
+            <div class="blog-card-thumb" style="background: linear-gradient(135deg, rgba(79,156,249,0.15), rgba(0,212,170,0.1));">🎓</div>
+            <div class="blog-card-body">
+              <div class="blog-card-meta">
+                <span class="badge badge-blue">Education</span>
+                <span class="date">Apr 4, 2025</span>
+              </div>
+              <h3>AI in the Classroom: Opportunities and Pitfalls for Cincinnati Schools</h3>
+              <p>As AI tools become ubiquitous, local educators share what's working, what's concerning, and what they need from policy-makers.</p>
+              <a href="#" class="btn btn-ghost" style="margin-top: 16px; display: inline-flex; font-size: 0.82rem;">Read More &rarr;</a>
+            </div>
+          </div>
+
+          <div class="blog-card">
+            <div class="blog-card-thumb" style="background: linear-gradient(135deg, rgba(167,139,250,0.15), rgba(79,156,249,0.1));">🏥</div>
+            <div class="blog-card-body">
+              <div class="blog-card-meta">
+                <span class="badge badge-purple">Healthcare</span>
+                <span class="date">Mar 28, 2025</span>
+              </div>
+              <h3>Diagnosing AI: How Cincinnati's Health System is Approaching Clinical Algorithms</h3>
+              <p>A look at how local health systems are evaluating AI diagnostic tools, with a focus on equity and patient safety.</p>
+              <a href="#" class="btn btn-ghost" style="margin-top: 16px; display: inline-flex; font-size: 0.82rem;">Read More &rarr;</a>
+            </div>
+          </div>
+
+          <div class="blog-card">
+            <div class="blog-card-thumb" style="background: linear-gradient(135deg, rgba(0,212,170,0.15), rgba(74,222,128,0.1));">💼</div>
+            <div class="blog-card-body">
+              <div class="blog-card-meta">
+                <span class="badge badge-green">Workforce</span>
+                <span class="date">Mar 21, 2025</span>
+              </div>
+              <h3>The Jobs AI Can't Replace (And the Ones It Will)</h3>
+              <p>Friday Features deep-dive: which Cincinnati industries face the most disruption, and how workers can prepare.</p>
+              <a href="#" class="btn btn-ghost" style="margin-top: 16px; display: inline-flex; font-size: 0.82rem;">Read More &rarr;</a>
+            </div>
+          </div>
+
+          <div class="blog-card">
+            <div class="blog-card-thumb" style="background: linear-gradient(135deg, rgba(251,146,60,0.15), rgba(250,204,21,0.1));">🏛️</div>
+            <div class="blog-card-body">
+              <div class="blog-card-meta">
+                <span class="badge badge-orange">Government</span>
+                <span class="date">Mar 14, 2025</span>
+              </div>
+              <h3>Should Cincinnati Pass an AI Ordinance? The Case For and Against</h3>
+              <p>A balanced look at proposed AI governance legislation and what it would mean for city services and civil liberties.</p>
+              <a href="#" class="btn btn-ghost" style="margin-top: 16px; display: inline-flex; font-size: 0.82rem;">Read More &rarr;</a>
+            </div>
+          </div>
+
+          <div class="blog-card">
+            <div class="blog-card-thumb" style="background: linear-gradient(135deg, rgba(236,72,153,0.15), rgba(167,139,250,0.1));">👴</div>
+            <div class="blog-card-body">
+              <div class="blog-card-meta">
+                <span class="badge" style="background: rgba(236,72,153,0.12); color: #ec4899;">Older Adults</span>
+                <span class="date">Mar 7, 2025</span>
+              </div>
+              <h3>The Elder AI Gap: Why Seniors Are Being Left Behind in the AI Revolution</h3>
+              <p>New research on AI adoption by older adults reveals deep divides — and what the CAIC Older Adults team is doing about it.</p>
+              <a href="#" class="btn btn-ghost" style="margin-top: 16px; display: inline-flex; font-size: 0.82rem;">Read More &rarr;</a>
+            </div>
+          </div>
+
+          <div class="blog-card">
+            <div class="blog-card-thumb" style="background: linear-gradient(135deg, rgba(79,156,249,0.15), rgba(167,139,250,0.1));">⚖️</div>
+            <div class="blog-card-body">
+              <div class="blog-card-meta">
+                <span class="badge badge-blue">Responsible AI</span>
+                <span class="date">Feb 28, 2025</span>
+              </div>
+              <h3>Five Questions Every Organization Should Ask Before Deploying AI</h3>
+              <p>A practical checklist from CAIC's Research, Risk &amp; Responsible AI team for any organization considering AI adoption.</p>
+              <a href="#" class="btn btn-ghost" style="margin-top: 16px; display: inline-flex; font-size: 0.82rem;">Read More &rarr;</a>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="text-center" style="margin-top: 40px;">
+          <a href="#" class="btn btn-outline btn-lg">Load More Posts</a>
+        </div>
+      </div>
+
+      <!-- Friday Features -->
+      <div id="friday-features" class="tab-panel">
+        <div style="background: linear-gradient(135deg, rgba(79,156,249,0.06), rgba(0,212,170,0.04)); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; margin-bottom: 32px;">
+          <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+            <div style="font-size: 2.5rem;">📬</div>
+            <div>
+              <h3>Friday Features</h3>
+              <p style="font-size: 0.9rem; margin-top: 4px;">A weekly newsletter by Carl Fraik (CAIC Co-Founder &amp; Executive Director) covering responsible AI news, research, and perspectives. Published every Friday morning.</p>
+              <a href="index.html#newsletter" class="btn btn-primary" style="margin-top: 14px; display: inline-flex;">Subscribe Free &rarr;</a>
+            </div>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <div class="card" style="padding: 20px 24px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap;">
+              <div>
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 6px;">Issue #42 &bull; April 11, 2025</div>
+                <h4 style="margin-bottom: 6px;">What Does "Responsible AI" Actually Mean? A Practical Framework</h4>
+                <p style="font-size: 0.875rem;">Breaking down the five core pillars of responsible AI with practical guidance for organizations of all sizes.</p>
+              </div>
+              <a href="#" class="btn btn-ghost" style="flex-shrink: 0; font-size: 0.82rem;">Read &rarr;</a>
+            </div>
+          </div>
+          <div class="card" style="padding: 20px 24px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap;">
+              <div>
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 6px;">Issue #41 &bull; April 4, 2025</div>
+                <h4 style="margin-bottom: 6px;">The Week in AI: Regulation, Reasoning Models, and Regional Impact</h4>
+                <p style="font-size: 0.875rem;">This week's top AI stories and what they mean for communities like Cincinnati.</p>
+              </div>
+              <a href="#" class="btn btn-ghost" style="flex-shrink: 0; font-size: 0.82rem;">Read &rarr;</a>
+            </div>
+          </div>
+          <div class="card" style="padding: 20px 24px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap;">
+              <div>
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 6px;">Issue #40 &bull; March 28, 2025</div>
+                <h4 style="margin-bottom: 6px;">AI and the Nonprofit Sector: Tools That Actually Help</h4>
+                <p style="font-size: 0.875rem;">A practical rundown of AI tools making a real difference for mission-driven organizations.</p>
+              </div>
+              <a href="#" class="btn btn-ghost" style="flex-shrink: 0; font-size: 0.82rem;">Read &rarr;</a>
+            </div>
+          </div>
+          <div class="card" style="padding: 20px 24px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap;">
+              <div>
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 6px;">Issue #39 &bull; March 21, 2025</div>
+                <h4 style="margin-bottom: 6px;">The Jobs AI Can't Replace (And the Ones It Will)</h4>
+                <p style="font-size: 0.875rem;">Workforce data and expert analysis on AI's impact on Cincinnati's job market.</p>
+              </div>
+              <a href="#" class="btn btn-ghost" style="flex-shrink: 0; font-size: 0.82rem;">Read &rarr;</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Team Updates -->
+      <div id="team-updates" class="tab-panel">
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <div class="card">
+            <div style="display: flex; gap: 16px; align-items: flex-start; flex-wrap: wrap;">
+              <span class="badge badge-blue" style="flex-shrink: 0;">Education</span>
+              <div>
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 6px;">April 2025</div>
+                <h4 style="margin-bottom: 6px;">AI in Education team launches curriculum review project</h4>
+                <p style="font-size: 0.875rem;">The team is partnering with three Cincinnati-area school districts to review AI tools currently in use and develop a responsible AI framework for K-12 adoption.</p>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div style="display: flex; gap: 16px; align-items: flex-start; flex-wrap: wrap;">
+              <span class="badge badge-purple" style="flex-shrink: 0;">Healthcare</span>
+              <div>
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 6px;">March 2025</div>
+                <h4 style="margin-bottom: 6px;">Healthcare team publishes AI equity assessment guidelines</h4>
+                <p style="font-size: 0.875rem;">New guidelines from the Healthcare team help local providers evaluate AI diagnostic tools for potential bias and health equity implications.</p>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div style="display: flex; gap: 16px; align-items: flex-start; flex-wrap: wrap;">
+              <span class="badge badge-teal" style="flex-shrink: 0;">All Teams</span>
+              <div>
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 6px;">February 2025</div>
+                <h4 style="margin-bottom: 6px;">CAIC reaches 100+ community members milestone</h4>
+                <p style="font-size: 0.875rem;">The Cincinnati AI Catalyst community has grown to over 100 active members across seven project teams — a major milestone for our young organization.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Resources -->
+      <div id="resources" class="tab-panel">
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-icon blue">📋</div>
+            <h3>AI Blueprint for Cincinnati</h3>
+            <p>CAIC's strategic framework for how the Cincinnati region should approach AI development, deployment, and governance.</p>
+            <a href="https://www.cincycatalyst.ai" target="_blank" rel="noopener" class="btn btn-primary" style="margin-top: 20px; display: inline-flex;">Download &rarr;</a>
+          </div>
+          <div class="card">
+            <div class="card-icon teal">⚖️</div>
+            <h3>Responsible AI Checklist</h3>
+            <p>A practical checklist for organizations to evaluate AI projects against core responsible AI principles before deployment.</p>
+            <a href="#" class="btn btn-ghost" style="margin-top: 20px; display: inline-flex;">Coming Soon</a>
+          </div>
+          <div class="card">
+            <div class="card-icon purple">🔬</div>
+            <h3>AI Risk Assessment Framework</h3>
+            <p>Guidance from the Research, Risk &amp; Responsible AI team for assessing potential harms before adopting AI systems.</p>
+            <a href="#" class="btn btn-ghost" style="margin-top: 20px; display: inline-flex;">Coming Soon</a>
+          </div>
+          <div class="card">
+            <div class="card-icon orange">📚</div>
+            <h3>Reading List: Responsible AI</h3>
+            <p>Curated books, papers, and reports recommended by CAIC team members for deepening your responsible AI knowledge.</p>
+            <a href="links.html" class="btn btn-primary" style="margin-top: 20px; display: inline-flex;">View Links &rarr;</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Newsletter CTA -->
+  <section class="section" style="background: var(--bg-secondary);">
+    <div class="container">
+      <div class="cta-section">
+        <div class="section-label">Friday Features</div>
+        <h2>Get responsible AI insights <span class="gradient-text">every Friday</span></h2>
+        <p>Our free weekly newsletter covers the AI news, research, and perspectives that matter most for communities like Cincinnati.</p>
+        <form class="input-group newsletter-form">
+          <input type="email" placeholder="your@email.com" required />
+          <button type="submit" class="btn btn-primary">Subscribe Free</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo">
+            <div class="nav-logo-mark">AI</div>
+            <div class="nav-logo-text">
+              <span class="nav-logo-name">Cincinnati AI Catalyst</span>
+              <span class="nav-logo-sub">CAIC &bull; Nonprofit</span>
+            </div>
+          </a>
+          <p>Catalyzing inclusive, human-centered, responsible AI to improve the lives of people in the Cincinnati region and beyond.</p>
+          <div class="footer-social">
+            <a href="https://www.linkedin.com/company/cincycatalyst-ai" target="_blank" rel="noopener" title="LinkedIn">in</a>
+            <a href="https://www.cincycatalyst.ai" target="_blank" rel="noopener" title="Website">🌐</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Navigation</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="teams.html">Teams</a></li>
+            <li><a href="calendar.html">Calendar</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Community</h4>
+          <ul>
+            <li><a href="roster.html">Roster</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="links.html">Links</a></li>
+            <li><a href="index.html#newsletter">Newsletter</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Focus Areas</h4>
+          <ul>
+            <li><a href="teams.html">Education</a></li>
+            <li><a href="teams.html">Healthcare</a></li>
+            <li><a href="teams.html">Government</a></li>
+            <li><a href="teams.html">Workforce</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 Cincinnati AI Catalyst (CAIC). All rights reserved.</p>
+        <div class="footer-bottom-links">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms</a>
+          <a href="https://www.cincycatalyst.ai" target="_blank" rel="noopener">cincycatalyst.ai</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,779 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ThinkDashboards Chat</title>
+
+<style>
+/* Theme tokens (default: dark). We switch by setting html[data-theme="light"] */
+:root{
+  --bg:#0b0c10;
+  --bg2:#0b0c10;
+  --card:rgba(255,255,255,.06);
+  --border:rgba(255,255,255,.12);
+  --text:rgba(255,255,255,.92);
+  --muted:rgba(255,255,255,.65);
+  --shadow:0 10px 30px rgba(0,0,0,.35);
+  --mono:ui-monospace,Menlo,Monaco,Consolas,monospace;
+
+  --accent: rgba(32,201,151,.28);
+  --accentBorder: rgba(32,201,151,.35);
+  --danger: rgba(255,99,132,.22);
+  --dangerBorder: rgba(255,99,132,.35);
+
+  --userBg: rgba(76,110,245,.25);
+  --userBorder: rgba(76,110,245,.38);
+  --assistBg: rgba(255,255,255,.07);
+  --codeBg: rgba(0,0,0,.30);
+  --inlineCodeBg: rgba(0,0,0,.22);
+  --link: #9ecbff;
+
+  --pageGlow1: rgba(76,110,245,.25);
+  --pageGlow2: rgba(32,201,151,.15);
+}
+
+html[data-theme="light"]{
+  --bg:#f6f7fb;
+  --bg2:#ffffff;
+  --card: rgba(0,0,0,.03);
+  --border: rgba(0,0,0,.10);
+  --text: rgba(0,0,0,.88);
+  --muted: rgba(0,0,0,.55);
+  --shadow: 0 10px 30px rgba(0,0,0,.10);
+
+  --accent: rgba(32,201,151,.22);
+  --accentBorder: rgba(32,201,151,.35);
+  --danger: rgba(255,99,132,.16);
+  --dangerBorder: rgba(255,99,132,.28);
+
+  --userBg: rgba(76,110,245,.14);
+  --userBorder: rgba(76,110,245,.30);
+  --assistBg: rgba(0,0,0,.03);
+  --codeBg: rgba(0,0,0,.06);
+  --inlineCodeBg: rgba(0,0,0,.06);
+  --link: #0b62ff;
+
+  --pageGlow1: rgba(76,110,245,.14);
+  --pageGlow2: rgba(32,201,151,.10);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  background:
+    radial-gradient(900px 500px at 10% 10%, var(--pageGlow1), transparent 60%),
+    radial-gradient(900px 500px at 90% 10%, var(--pageGlow2), transparent 60%),
+    var(--bg);
+  color:var(--text);
+}
+.wrap{max-width:980px;margin:24px auto;padding:0 16px}
+h1{margin:0;font-size:1.2rem;letter-spacing:.2px}
+.sub{color:var(--muted);margin:.25rem 0 0}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+
+.chat{height:60vh;padding:16px;overflow:auto;scroll-behavior:smooth}
+.row{display:flex;margin:10px 0}
+.row.user{justify-content:flex-end}
+.row.assistant{justify-content:flex-start}
+
+.bubble{
+  max-width:82%;
+  padding:12px 12px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:var(--assistBg);
+  line-height:1.35;
+}
+.user .bubble{
+  background:var(--userBg);
+  border-color:var(--userBorder);
+}
+
+/* Markdown content styling */
+.bubble .md{ color:var(--text); }
+.bubble .md p{margin:.4rem 0}
+.bubble .md h1,.bubble .md h2,.bubble .md h3{
+  margin:.6rem 0 .35rem;
+  line-height:1.2;
+}
+.bubble .md h1{font-size:1.15rem}
+.bubble .md h2{font-size:1.05rem}
+.bubble .md h3{font-size:1.0rem}
+.bubble .md ul,.bubble .md ol{margin:.35rem 0 .35rem 1.25rem}
+.bubble .md li{margin:.15rem 0}
+.bubble .md a{color:var(--link)}
+.bubble .md a:hover{text-decoration:underline}
+.bubble .md code{
+  font-family:var(--mono);
+  font-size:.92em;
+  padding:.12rem .35rem;
+  border:1px solid var(--border);
+  background:var(--inlineCodeBg);
+  border-radius:8px;
+}
+.bubble .md pre{
+  margin:.55rem 0;
+  padding:12px;
+  overflow:auto;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background:var(--codeBg);
+}
+.bubble .md pre code{
+  border:none;
+  background:transparent;
+  padding:0;
+  font-size:.9rem;
+  display:block;
+  white-space:pre;
+}
+.bubble .md blockquote{
+  margin:.5rem 0;
+  padding:.2rem .75rem;
+  border-left:3px solid var(--border);
+  color:var(--muted);
+}
+.bubble .md hr{
+  border:none;
+  border-top:1px solid var(--border);
+  margin:.6rem 0;
+}
+.bubble .md table{
+  border-collapse:collapse;
+  margin:.5rem 0;
+  width:100%;
+}
+.bubble .md th,.bubble .md td{
+  border:1px solid var(--border);
+  padding:6px 8px;
+  font-size:.9rem;
+}
+.bubble .md th{
+  background:rgba(0,0,0,.03);
+}
+
+.controls{
+  padding:12px;
+  border-top:1px solid var(--border);
+  background:rgba(0,0,0,.05)
+}
+
+textarea{
+  width:100%;
+  min-height:92px;
+  max-height:240px;
+  resize:vertical;
+  padding:10px 12px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.06);
+  color:var(--text);
+  outline:none;
+  line-height:1.35;
+  font-size:1rem;
+}
+html[data-theme="light"] textarea{
+  background:rgba(255,255,255,.75);
+}
+
+button{
+  padding:9px 12px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.10);
+  color:var(--text);
+  cursor:pointer;
+}
+button.primary{background:var(--accent);border-color:var(--accentBorder)}
+button.danger{background:var(--danger);border-color:var(--dangerBorder)}
+button:disabled{opacity:.55;cursor:not-allowed}
+
+.toolbar{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  align-items:center;
+  margin-top:10px; /* (since toolbar is now below textarea) */
+}
+
+.range{
+  display:flex;
+  gap:6px;
+  align-items:center;
+  padding:6px 8px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  background:rgba(255,255,255,.04)
+}
+select,input[type=range]{
+  background:rgba(255,255,255,.06);
+  color:var(--text);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:6px 8px;
+}
+.small{font-size:.82rem;color:var(--muted)}
+.status{margin-left:auto;font-size:.85rem;color:var(--muted)}
+
+kbd{font-family:var(--mono);font-size:.78rem;padding:2px 6px;border-radius:8px;border:1px solid var(--border);background:rgba(0,0,0,.06)}
+html[data-theme="dark"] kbd{ background:rgba(0,0,0,.25); }
+
+.toast{
+  display:none;
+  position:fixed;
+  left:50%;
+  bottom:18px;
+  transform:translateX(-50%);
+  padding:10px 12px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background:rgba(0,0,0,.65);
+  color:rgba(255,255,255,.92);
+  box-shadow:var(--shadow);
+  max-width:calc(100vw - 40px);
+  font-size:.9rem;
+}
+html[data-theme="light"] .toast{ background:rgba(0,0,0,.70); }
+
+.toggle{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  padding:6px 8px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  background:rgba(255,255,255,.04);
+}
+.toggle input{ transform: scale(1.05); }
+
+/* Per-message performance line */
+.perf{
+  margin-top:5px;
+  font-size:.72rem;
+  font-family:var(--mono);
+  color:var(--muted);
+  opacity:0.65;
+  letter-spacing:.2px;
+}
+
+/* References section */
+.references{
+  display:none;
+  padding:12px 16px;
+  border-top:1px solid var(--border);
+}
+.references b{display:block;margin-bottom:8px;font-size:.9rem}
+.references ol{margin:0 0 0 18px;padding:0}
+.references li{margin:6px 0;font-size:.85rem;color:var(--muted);line-height:1.4}
+.references a{color:var(--link);text-decoration:none}
+.references a:hover{text-decoration:underline}
+.references .host{color:var(--muted);font-size:.78rem;margin-left:4px}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+  <h1>ThinkDashboards Chat</h1>
+  <div class="sub">Public UI → Node API → LM Studio (local) · Web Search via Google (SerpAPI)</div>
+
+  <div class="card" style="margin-top:14px">
+
+    <!-- System Prompt -->
+    <div style="padding:10px 12px;border-bottom:1px solid var(--border)">
+      <label class="small" style="display:block;margin-bottom:4px">System Prompt</label>
+      <textarea id="sys" placeholder="You are a helpful assistant." style="min-height:44px;font-size:.875rem">You are a helpful assistant.</textarea>
+    </div>
+
+    <div id="chat" class="chat"></div>
+
+    <div id="references" class="references">
+      <b>References</b>
+      <ol id="refList"></ol>
+    </div>
+
+    <div class="controls">
+
+      <!-- User Prompt -->
+      <textarea id="prompt" placeholder="Enter to send • Shift+Enter newline"></textarea>
+
+      <div class="small" style="margin-top:8px">
+        History is stored locally • <kbd>Enter</kbd> send • <kbd>Shift</kbd>+<kbd>Enter</kbd> newline
+      </div>
+
+      <!-- (2) TOOLBAR MOVED BELOW PROMPT -->
+      <div class="toolbar">
+        <label class="small">
+          Model
+          <select id="model">
+            <option value="openai/gpt-oss-20b" selected>openai/gpt-oss-20b</option>
+          </select>
+        </label>
+
+        <div class="range">
+          <span class="small">Temp</span>
+          <input id="temp" type="range" min="0" max="1.2" step="0.1" value="0.7">
+          <span id="tempOut" class="small">0.7</span>
+        </div>
+
+        <div class="toggle" title="Send conversation history to the model on each turn">
+          <label class="small" style="display:flex;gap:6px;align-items:center;margin:0;cursor:pointer">
+            <input id="useMemory" type="checkbox" checked />
+            <span>Memory</span>
+          </label>
+        </div>
+
+        <div class="toggle" title="Web Search via Google (SerpAPI)">
+          <label class="small" style="display:flex;gap:6px;align-items:center;margin:0;cursor:pointer">
+            <input id="forceSearch" type="checkbox" />
+            <span>Web Search</span>
+          </label>
+        </div>
+
+        <div class="toggle" title="Theme">
+          <span class="small">Theme</span>
+          <label class="small" style="display:flex;gap:6px;align-items:center;margin:0;">
+            <input id="themeToggle" type="checkbox" />
+            <span id="themeLabel">Dark</span>
+          </label>
+        </div>
+
+        <button id="copy">Copy last</button>
+        <button id="export">Export</button>
+        <button id="exportMd">Export MD</button>
+
+        <!-- Send moved next to Clear (as requested) -->
+        <button id="clear" class="danger">Clear</button>
+        <button id="send" class="primary">Send</button>
+
+        <div id="status" class="status">Ready</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div style="text-align:center;padding:16px 0 8px;font-size:.82rem;color:var(--muted)">
+  <a href="https://www.thinkdashboards.com" style="color:var(--link);text-decoration:none">thinkdashboards.com</a>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Markdown + Sanitizer (safe) -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.8/dist/purify.min.js"></script>
+
+<script>
+const STORAGE_KEY = "thinkdashboards_chat_v3";
+const THEME_KEY = "thinkdashboards_theme";
+const MAX_CHARS = 4000;
+
+const chatEl = document.getElementById("chat");
+const promptEl = document.getElementById("prompt");
+const sendBtn = document.getElementById("send");
+const clearBtn = document.getElementById("clear");
+const exportBtn = document.getElementById("export");
+const copyBtn = document.getElementById("copy");
+const tempEl = document.getElementById("temp");
+const tempOut = document.getElementById("tempOut");
+const modelEl = document.getElementById("model");
+const statusEl = document.getElementById("status");
+const toastEl = document.getElementById("toast");
+
+const sysEl = document.getElementById("sys");
+const useMemoryEl = document.getElementById("useMemory");
+const forceSearchEl = document.getElementById("forceSearch");
+const referencesEl = document.getElementById("references");
+const refListEl = document.getElementById("refList");
+
+// conversationHistory is initialized after loadMessages() below
+let conversationHistory = [];
+
+const themeToggle = document.getElementById("themeToggle");
+const themeLabel = document.getElementById("themeLabel");
+
+tempOut.textContent = tempEl.value;
+
+function esc(s){ return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+function renderSources(arr){
+  if(!arr || !arr.length){ referencesEl.style.display = "none"; return; }
+  refListEl.innerHTML = arr.map((s, i) => {
+    const title = esc(s.title || s.url || "Result");
+    const url = s.url || null;
+    let host = "";
+    try { host = url ? new URL(url).hostname : ""; } catch {}
+    const link = url
+      ? `<a href="${url}" target="_blank" rel="noopener">${title}</a>`
+      : title;
+    return `<li>${link}${host ? `<span class="host">(${esc(host)})</span>` : ""}</li>`;
+  }).join("");
+  referencesEl.style.display = "block";
+}
+
+function toast(msg){
+  toastEl.textContent = msg;
+  toastEl.style.display = "block";
+  clearTimeout(toastEl._t);
+  toastEl._t = setTimeout(() => (toastEl.style.display="none"), 1800);
+}
+function scrollBottom(){ chatEl.scrollTop = chatEl.scrollHeight; }
+function nowTime(){ return new Date().toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"}); }
+
+function loadMessages(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return null;
+    const parsed = JSON.parse(raw);
+    if(!Array.isArray(parsed)) return null;
+    return parsed;
+  } catch { return null; }
+}
+function saveMessages(){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(messages)); } catch {}
+}
+
+let messages = loadMessages() || [
+  { role:"assistant", content:"Hi! Ask me anything. I'm connected to a local model running in LM Studio.", time: nowTime() }
+];
+
+// Build LLM-ready history from the stored display messages (strip timestamps/placeholders)
+const PLACEHOLDERS = new Set(["Thinking…", "Searching the web…"]);
+conversationHistory = messages
+  .filter(m => (m.role === "user" || m.role === "assistant") && !PLACEHOLDERS.has(m.content))
+  .map(m => ({ role: m.role, content: m.content }));
+
+function mdToSafeHtml(markdown){
+  const raw = marked.parse(String(markdown || ""), { gfm:true, breaks:true });
+  return DOMPurify.sanitize(raw, { USE_PROFILES: { html:true } });
+}
+
+function render(){
+  chatEl.innerHTML = "";
+  for(const m of messages){
+    const row = document.createElement("div");
+    row.className = "row " + (m.role || "assistant");
+
+    const bubble = document.createElement("div");
+    bubble.className = "bubble";
+
+    const md = document.createElement("div");
+    md.className = "md";
+    md.innerHTML = mdToSafeHtml(m.content);
+
+    const meta = document.createElement("div");
+    meta.className = "small";
+    meta.style.marginTop = "6px";
+    meta.style.opacity = "0.85";
+    meta.textContent = `${m.role === "user" ? "You" : "Assistant"} • ${m.time || nowTime()}`;
+
+    bubble.appendChild(md);
+    bubble.appendChild(meta);
+
+    // Performance line — only on assistant messages that have perf data
+    if (m.role === "assistant" && m.perf) {
+      const p = m.perf;
+      const parts = [];
+      if (p.prompt_tokens   != null) parts.push(`${p.prompt_tokens} prompt`);
+      if (p.completion_tokens != null) parts.push(`${p.completion_tokens} compl`);
+      if (p.total_tokens    != null) parts.push(`${p.total_tokens} total`);
+      if (p.totalDurationMs != null) parts.push(`${(p.totalDurationMs / 1000).toFixed(2)}s`);
+      if (p.tokensPerSec    != null) parts.push(`${p.tokensPerSec} tok/s`);
+      if (p.charsPerSec     != null) parts.push(`${p.charsPerSec} chars/s`);
+      if (parts.length) {
+        const perf = document.createElement("div");
+        perf.className = "perf";
+        perf.textContent = parts.join(" · ");
+        bubble.appendChild(perf);
+      }
+    }
+
+    row.appendChild(bubble);
+    chatEl.appendChild(row);
+  }
+  saveMessages();
+  scrollBottom();
+}
+
+function setBusy(b){
+  sendBtn.disabled = b;
+  promptEl.disabled = b;
+  modelEl.disabled = b;
+  tempEl.disabled = b;
+  statusEl.textContent = b ? "Thinking…" : "Ready";
+}
+
+function applyTheme(theme){
+  const t = (theme === "light") ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", t);
+  localStorage.setItem(THEME_KEY, t);
+  themeToggle.checked = (t === "light");
+  themeLabel.textContent = (t === "light") ? "Light" : "Dark";
+}
+
+function initTheme(){
+  const saved = localStorage.getItem(THEME_KEY);
+  if(saved){
+    applyTheme(saved);
+  } else {
+    const prefersLight = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
+    applyTheme(prefersLight ? "light" : "dark");
+  }
+}
+
+themeToggle.addEventListener("change", () => {
+  applyTheme(themeToggle.checked ? "light" : "dark");
+});
+
+initTheme();
+render();
+
+promptEl.addEventListener("keydown", (e) => {
+  if(e.key === "Enter" && !e.shiftKey){
+    e.preventDefault();
+    if(!sendBtn.disabled) sendBtn.click();
+  }
+});
+
+// Build a compact perf object from the API response for display in the bubble.
+// tokensPerSec / charsPerSec are calculated client-side when not supplied by the server.
+function buildPerf(data, replyText) {
+  const u = data?.usage || {};
+  const m = data?.metrics || {};
+  const ms = m.totalDurationMs || null;
+  const compTok = u.completion_tokens ?? null;
+  const secs = ms ? ms / 1000 : null;
+  return {
+    prompt_tokens:     u.prompt_tokens     ?? null,
+    completion_tokens: compTok,
+    total_tokens:      u.total_tokens      ?? null,
+    totalDurationMs:   ms,
+    tokensPerSec:      (compTok && secs) ? parseFloat((compTok / secs).toFixed(1)) : null,
+    charsPerSec:       (replyText && secs) ? parseFloat((replyText.length / secs).toFixed(1)) : null,
+  };
+}
+
+sendBtn.onclick = async () => {
+  const text = promptEl.value.trim();
+  if(!text) return;
+
+  if(text.length > MAX_CHARS){
+    toast(`Message too long (max ${MAX_CHARS} chars).`);
+    return;
+  }
+
+  const startTime = performance.now();
+  const model = modelEl.value;
+  const temperature = parseFloat(tempEl.value);
+  const useWebSearch = forceSearchEl.checked;
+
+  messages.push({ role:"user", content:text, time: nowTime() });
+  messages.push({ role:"assistant", content: useWebSearch ? "Searching the web…" : "Thinking…", time: nowTime() });
+
+  promptEl.value = "";
+  render();
+  setBusy(true);
+  if (useWebSearch) statusEl.textContent = "Searching…";
+
+  // Clear previous references
+  renderSources([]);
+
+  const useMemory = useMemoryEl.checked;
+
+  // Build the history to send (only when memory is on)
+  // Include prior exchanges + current message so the LLM has full context
+  function buildLlmMessages(currentText) {
+    const history = useMemory ? conversationHistory : [];
+    return [...history, { role: "user", content: currentText }];
+  }
+
+  try{
+    if (useWebSearch) {
+      // ── Web Search path: search Google → LLM ──
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({
+          message: text,
+          messages: buildLlmMessages(text),
+          model,
+          system: (sysEl.value.trim() || "You are a helpful assistant."),
+          temperature,
+          forceSearch: true,
+          useMemory,
+          useRag: false
+        })
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if(!res.ok){
+        throw new Error(data?.error || `HTTP ${res.status}`);
+      }
+
+      const reply = data?.reply || "(No content returned)";
+      const msg = messages[messages.length - 1];
+      msg.content = reply;
+      msg.perf = buildPerf(data, reply);
+      renderSources(data?.sources || []);
+
+      // Sync conversationHistory
+      if (useMemory) {
+        conversationHistory.push({ role: "user", content: text });
+        conversationHistory.push({ role: "assistant", content: reply });
+      }
+    } else {
+      // ── Normal path: streaming via /api/v1/chat/completions ──
+      const llmMessages = [
+        { role: "system", content: (sysEl.value.trim() || "You are a helpful assistant.") },
+        ...buildLlmMessages(text)
+      ];
+
+      const res = await fetch("/api/v1/chat/completions", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({
+          model,
+          messages: llmMessages,
+          temperature,
+          stream: true,
+          stream_options: { include_usage: true }
+        })
+      });
+
+      if(!res.ok){
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData?.error || `HTTP ${res.status}`);
+      }
+
+      // Point directly at the last assistant bubble's content div for live updates
+      const streamBubble = chatEl.querySelector(".row.assistant:last-child .md");
+      if(streamBubble) streamBubble.textContent = "";
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let fullReply = "";
+      let tokenCount = 0;
+      let usageData = null;
+
+      // Read SSE stream and update the bubble with each token
+      outer: while(true){
+        const { done, value } = await reader.read();
+        if(done) break;
+
+        const chunk = decoder.decode(value, { stream: true });
+        for(const line of chunk.split("\n")){
+          const trimmed = line.trim();
+          if(!trimmed.startsWith("data: ")) continue;
+          const raw = trimmed.slice(6).trim();
+          if(raw === "[DONE]") break outer;
+          try{
+            const parsed = JSON.parse(raw);
+            if(parsed.usage) usageData = parsed.usage;
+            const delta = parsed.choices?.[0]?.delta?.content;
+            if(delta){
+              fullReply += delta;
+              tokenCount++;
+              if(streamBubble) streamBubble.textContent = fullReply;
+              chatEl.scrollTop = chatEl.scrollHeight;
+            }
+          } catch { /* skip malformed chunks */ }
+        }
+      }
+
+      // Final render: parse markdown on completed reply
+      if(streamBubble) streamBubble.innerHTML = mdToSafeHtml(fullReply);
+
+      // Build perf from stream data
+      const durationMs = performance.now() - startTime;
+      const perfData = {
+        usage: usageData || {
+          prompt_tokens: Math.round(llmMessages.reduce((a,m) => a + m.content.length, 0) / 4),
+          completion_tokens: tokenCount,
+          total_tokens: Math.round(llmMessages.reduce((a,m) => a + m.content.length, 0) / 4) + tokenCount
+        },
+        metrics: { totalDurationMs: Math.round(durationMs) }
+      };
+
+      const msg = messages[messages.length - 1];
+      msg.content = fullReply;
+      msg.perf = buildPerf(perfData, fullReply);
+
+      // Sync conversationHistory
+      if(useMemory){
+        conversationHistory.push({ role: "user", content: text });
+        conversationHistory.push({ role: "assistant", content: fullReply });
+      }
+    }
+  } catch (e){
+    messages[messages.length - 1].content = `**Error:** ${String(e.message || e)}`;
+    renderSources([]);
+  } finally {
+    setBusy(false);
+    render();
+  }
+};
+
+clearBtn.onclick = () => {
+  messages = [{ role:"assistant", content:"Cleared. Ask me anything.", time: nowTime() }];
+  conversationHistory = [];
+  saveMessages();
+  renderSources([]);
+  render();
+};
+
+exportBtn.onclick = () => {
+  const blob = new Blob([JSON.stringify(messages, null, 2)], {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "thinkdashboards-chat-export.json";
+  a.click();
+  toast("Exported chat JSON");
+};
+
+document.getElementById("exportMd").onclick = () => {
+  const ts = new Date().toISOString().replace(/[:.]/g, "-");
+  const lines = ["# ThinkDashboards Chat Export", `\n_Exported: ${new Date().toLocaleString()}_\n`, "---"];
+  messages.forEach(m => {
+    if (["Thinking…", "Searching the web…"].includes(m.content)) return;
+    const role = m.role === "user" ? "👤 User" : "🤖 Assistant";
+    lines.push(`\n## ${role}  \n_${m.time || ""}_\n`);
+    lines.push(m.content);
+    if (m.sources && m.sources.length) {
+      lines.push("\n**Sources:**");
+      m.sources.forEach(s => lines.push(`- [${s.title || s.url}](${s.url})`));
+    }
+    lines.push("\n---");
+  });
+  const blob = new Blob([lines.join("\n")], { type: "text/markdown" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `thinkdashboards-chat-${ts}.md`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  toast("Exported chat Markdown");
+};
+
+copyBtn.onclick = async () => {
+  const last = [...messages].reverse().find(m => m.role === "assistant");
+  if(!last) return toast("No assistant message to copy");
+  try{
+    await navigator.clipboard.writeText(last.content);
+    toast("Copied last assistant message");
+  } catch {
+    toast("Copy failed (permission)");
+  }
+};
+
+tempEl.oninput = () => tempOut.textContent = tempEl.value;
+</script>
+</body>
+</html>
+

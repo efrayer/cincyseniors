@@ -1,0 +1,1193 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Chat • Web Search + Memory + Metrics</title>
+  <!-- Markdown parser -->
+  <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
+  <!-- Code syntax highlighting -->
+  <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+  <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" disabled>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <!-- PDF generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    /* Dark theme (default) */
+    :root{
+      --bg:#0b0c10; --panel:rgba(255,255,255,.06); --muted:rgba(255,255,255,.65); --text:rgba(255,255,255,.92);
+      --border:rgba(255,255,255,.12); --primary:#4c6ef5; --shadow:0 10px 30px rgba(0,0,0,.35);
+      --chip:rgba(255,255,255,.06); --chip-border:rgba(255,255,255,.12);
+      --user-bub:rgba(76,110,245,.25); --user-bub-border:rgba(76,110,245,.38);
+      --bot-bub:rgba(255,255,255,.07); --bot-bub-border:rgba(255,255,255,.12);
+      --code-bg:rgba(0,0,0,.30); --inline-code-bg:rgba(0,0,0,.22);
+      --input-bg:rgba(255,255,255,.06);
+      --btn-bg:rgba(255,255,255,.10);
+      --link:#9ecbff;
+      --pageGlow1:rgba(76,110,245,.25); --pageGlow2:rgba(32,201,151,.15);
+      --mono:ui-monospace,Menlo,Monaco,Consolas,monospace;
+    }
+    /* Light theme */
+    html[data-theme="light"]{
+      --bg:#f6f7fb; --panel:#ffffff; --muted:rgba(0,0,0,.55); --text:rgba(0,0,0,.88);
+      --border:rgba(0,0,0,.10); --primary:#2563eb; --shadow:0 8px 20px rgba(0,0,0,.06);
+      --chip:#f8fafc; --chip-border:#e5e7eb;
+      --user-bub:#e6f7e7; --user-bub-border:#c3e6cb;
+      --bot-bub:#f2f4f7; --bot-bub-border:rgba(0,0,0,.10);
+      --code-bg:rgba(0,0,0,.04); --inline-code-bg:rgba(0,0,0,.06);
+      --input-bg:rgba(255,255,255,.75);
+      --btn-bg:#ffffff;
+      --link:#0b62ff;
+      --pageGlow1:rgba(76,110,245,.14); --pageGlow2:rgba(32,201,151,.10);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+      background:
+        radial-gradient(900px 500px at 10% 10%, var(--pageGlow1), transparent 60%),
+        radial-gradient(900px 500px at 90% 10%, var(--pageGlow2), transparent 60%),
+        var(--bg);
+      color:var(--text);
+    }
+    .container{max-width:1100px;margin:24px auto;padding:0 16px}
+    h1{font-size:24px;margin:6px 0 14px;text-align:center}
+
+    .card{background:var(--panel);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}
+    .toolbar{display:flex;flex-wrap:wrap;gap:8px;padding:10px;border-bottom:1px solid var(--border);align-items:center}
+    .toolbar textarea{flex:1;min-height:44px;border:1px solid var(--border);border-radius:12px;padding:10px;resize:vertical;background:var(--input-bg);color:var(--text);outline:none}
+    .toolbar .toggles{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-left:auto}
+    .toolbar .toggles label{font-size:12px;color:var(--muted)}
+    .toolbar .sid{margin-left:auto;font-size:12px;color:var(--muted)}
+
+    details.opts summary{cursor:pointer;user-select:none;transition:all 0.2s}
+    details.opts summary:hover{color:var(--primary)}
+    .opts-panel{position:absolute;right:0;top:100%;margin-top:8px;background:var(--panel);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow);padding:16px;min-width:400px;max-width:500px;z-index:1000}
+    .opts-section{margin-bottom:16px}
+    .opts-section:last-child{margin-bottom:0}
+    .opts-section-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:8px}
+    .opts-panel input[type="text"],.opts-panel input[type="number"]{width:100%;border:1px solid var(--border);border-radius:8px;padding:8px;font-size:13px;background:var(--input-bg);color:var(--text)}
+    .opts-panel input[type="text"]:focus,.opts-panel input[type="number"]:focus{outline:none;border-color:var(--primary)}
+    .opts-panel select{background:var(--input-bg);color:var(--text);border:1px solid var(--border)}
+    details.opts{position:relative}
+
+    .split{display:grid;grid-template-columns:1fr 360px;gap:14px}
+    @media (max-width: 980px){.split{grid-template-columns:1fr}}
+
+    .chat{height:460px;overflow:auto;padding:16px;border-bottom:1px solid var(--border)}
+    .msg{margin:12px 0}
+    .bub{display:inline-block;max-width:100%;padding:12px;border-radius:12px;border:1px solid var(--bot-bub-border);white-space:pre-wrap;background:var(--bot-bub)}
+    .user .bub{background:var(--user-bub);border-color:var(--user-bub-border)}
+
+    .row{display:flex;align-items:flex-end;gap:10px;padding:12px}
+    textarea#q{flex:1;min-height:56px;border:1px solid var(--border);border-radius:12px;padding:10px;resize:vertical;background:var(--input-bg);color:var(--text);outline:none}
+    .btn{border:1px solid var(--border);background:var(--btn-bg);border-radius:10px;padding:8px 12px;font-weight:600;cursor:pointer;color:var(--text)}
+    .btn.primary{background:var(--primary);border-color:var(--primary);color:#fff}
+    .btn.ghost{background:transparent;color:var(--text)}
+    .muted{color:var(--muted);font-size:12px}
+
+    .section{padding:10px 14px;border-top:1px solid var(--border)}
+    .section b{display:block;margin-bottom:6px}
+    .section summary{cursor:pointer;user-select:none;padding:8px 0;font-weight:600;transition:color 0.2s}
+    .section summary:hover{color:var(--primary)}
+    .section summary b{display:inline;margin:0}
+    .kvs{display:flex;flex-wrap:wrap;gap:10px;font-size:12px;color:var(--muted)}
+    .kvs .kv{background:var(--chip);border:1px solid var(--chip-border);border-radius:10px;padding:6px 8px}
+
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    @media (max-width: 700px){.grid2{grid-template-columns:1fr}}
+
+    ol{margin:8px 0 0 18px;padding:0}
+    .mono{font-family:ui-monospace,SFMono-Regular,Consolas,Monaco,monospace}
+    pre.code{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;padding:10px;white-space:pre-wrap;overflow:auto;color:var(--text)}
+
+    /* Markdown styling inside message bubbles */
+    .bub p{margin:0.5em 0}
+    .bub p:first-child{margin-top:0}
+    .bub p:last-child{margin-bottom:0}
+    .bub h1,.bub h2,.bub h3,.bub h4,.bub h5,.bub h6{margin:0.8em 0 0.4em;font-weight:600;line-height:1.3}
+    .bub h1{font-size:1.6em;border-bottom:2px solid var(--border);padding-bottom:0.3em}
+    .bub h2{font-size:1.4em;border-bottom:1px solid var(--border);padding-bottom:0.2em}
+    .bub h3{font-size:1.2em}
+    .bub h4{font-size:1.1em}
+    .bub ul,.bub ol{margin:0.5em 0;padding-left:1.5em}
+    .bub li{margin:0.25em 0}
+    .bub code{background:var(--inline-code-bg);padding:2px 6px;border-radius:4px;font-size:0.9em;font-family:var(--mono)}
+    .bub pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:12px;overflow-x:auto;margin:0.8em 0}
+    .bub pre code{background:transparent;padding:0;border-radius:0;display:block}
+    .bub blockquote{border-left:4px solid var(--border);padding-left:1em;margin:0.8em 0;color:var(--muted);font-style:italic}
+    .bub a{color:var(--link);text-decoration:none}
+    .bub a:hover{text-decoration:underline}
+    .bub table{border-collapse:collapse;width:100%;margin:0.8em 0}
+    .bub table th,.bub table td{border:1px solid var(--border);padding:8px;text-align:left}
+    .bub table th{background:var(--chip);font-weight:600}
+    .bub hr{border:none;border-top:1px solid var(--border);margin:1em 0}
+    .bub strong{font-weight:600}
+    .bub em{font-style:italic}
+
+    /* Thinking indicator */
+    .thinking-indicator{display:inline-block;margin-left:8px;opacity:0.6}
+    .thinking-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--primary);margin:0 2px;animation:thinking 1.4s infinite}
+    .thinking-dot:nth-child(2){animation-delay:0.2s}
+    .thinking-dot:nth-child(3){animation-delay:0.4s}
+    @keyframes thinking{0%,60%,100%{transform:scale(0.8);opacity:0.5}30%{transform:scale(1.2);opacity:1}}
+
+    /* Debug panel */
+    .debug-panel{background:#1e1e1e;color:#d4d4d4;padding:12px;border-radius:8px;margin-top:10px;font-family:ui-monospace,monospace;font-size:12px;max-height:200px;overflow-y:auto}
+    .debug-panel .token{display:inline;background:#2d2d30;padding:2px 4px;margin:1px;border-radius:3px;border:1px solid #3e3e42}
+    .debug-panel .token.new{animation:tokenPulse 0.3s ease-out}
+    @keyframes tokenPulse{0%{background:#4e94ce}100%{background:#2d2d30}}
+    .debug-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-weight:600;color:#4fc3f7}
+    .debug-stats{color:#888;font-size:11px;margin-top:8px;padding-top:8px;border-top:1px solid #3e3e42}
+
+    /* Theme toggle (matches chat.html pattern) */
+    .toggle{display:flex;gap:8px;align-items:center;padding:4px 8px;border:1px solid var(--border);border-radius:10px;background:rgba(255,255,255,.04)}
+    .toggle input{transform:scale(1.05);cursor:pointer}
+    .toggle .small{font-size:12px;color:var(--muted)}
+
+    /* Connection status badge */
+    .connection-status{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:12px;font-size:11px;background:var(--chip);border:1px solid var(--chip-border);cursor:pointer}
+    .connection-status:hover{border-color:var(--primary)}
+    .status-dot-small{width:8px;height:8px;border-radius:50%;background:#888;transition:background 0.3s}
+    .status-dot-small.connected{background:#51cf66;box-shadow:0 0 8px rgba(81,207,102,0.5)}
+    .status-dot-small.error{background:#f44336}
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Chat • Web Search + Memory <span class="muted">with Metrics</span></h1>
+
+  <div class="card">
+    <div class="toolbar">
+      <!-- Top row: System Prompt -->
+      <div style="width:100%;margin-bottom:8px">
+        <label class="muted" style="font-size:11px;display:block;margin-bottom:4px">System Prompt</label>
+        <textarea id="sys" placeholder="You are a helpful assistant..." style="width:100%;min-height:50px;padding:8px;border:1px solid var(--border);border-radius:8px;resize:vertical">You are a helpful assistant.</textarea>
+      </div>
+
+      <!-- Second row: Status and toggles -->
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer">
+            <input type="checkbox" id="useMemory" checked style="cursor:pointer" /> Memory
+          </label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer">
+            <input type="checkbox" id="showDebug" style="cursor:pointer" /> Debug
+          </label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer">
+            <input type="checkbox" id="useRag" style="cursor:pointer" /> RAG
+          </label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer">
+            <input type="checkbox" id="forceSearch" style="cursor:pointer" /> Web Search
+          </label>
+          <div class="toggle" title="Theme">
+            <label class="small" style="display:flex;gap:6px;align-items:center;margin:0;cursor:pointer">
+              <input id="themeToggle" type="checkbox" />
+              <span id="themeLabel">Dark</span>
+            </label>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <span class="connection-status" onclick="checkConnection()" title="Click to test connection">
+            <span class="status-dot-small" id="connectionDot"></span>
+            <span id="connectionStatus">Checking...</span>
+          </span>
+          <details class="opts" style="margin:0">
+            <summary style="cursor:pointer;padding:4px 10px;background:var(--chip);border:1px solid var(--chip-border);border-radius:8px;font-size:11px">⚙️ Options</summary>
+            <div class="opts-panel">
+              <div class="opts-section">
+                <div class="opts-section-title">Session</div>
+                <div style="font-family:monospace;font-size:12px;color:var(--muted);padding:8px;background:var(--chip);border:1px solid var(--chip-border);border-radius:6px" id="sidBadge">—</div>
+              </div>
+
+              <div class="opts-section">
+                <div class="opts-section-title">Connection</div>
+                <div>
+                  <label class="muted">Model</label>
+                  <div style="display:flex;gap:6px">
+                    <select id="modelSelect" style="flex:1;border:1px solid var(--border);border-radius:8px;padding:8px;font-size:13px;font-family:monospace">
+                      <option value="">Auto (first loaded model)</option>
+                    </select>
+                    <button class="btn" onclick="fetchModels()" title="Refresh model list" style="padding:6px 10px">🔄</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="opts-section">
+                <div class="opts-section-title">Model Parameters</div>
+                <div class="grid" style="grid-template-columns:repeat(3,1fr)">
+                  <div>
+                    <label class="muted">Temperature</label>
+                    <input id="temperature" type="number" min="0" max="2" step="0.1" value="0.7" />
+                  </div>
+                  <div>
+                    <label class="muted">Top P</label>
+                    <input id="topP" type="number" min="0" max="1" step="0.1" value="0.9" />
+                  </div>
+                  <div>
+                    <label class="muted">Max Tokens</label>
+                    <input id="maxTokens" type="number" min="1" step="1" placeholder="auto" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="opts-section">
+                <div class="opts-section-title">Display</div>
+                <div style="display:flex;gap:16px;flex-wrap:wrap">
+                  <label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer">
+                    <input id="renderMarkdown" type="checkbox" checked style="cursor:pointer" /> Render Markdown
+                  </label>
+                  <label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer">
+                    <input id="streamTokens" type="checkbox" checked style="cursor:pointer" /> Stream Tokens
+                  </label>
+                </div>
+              </div>
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+
+    <div class="split">
+      <!-- Left column: chat -->
+      <div>
+        <!-- Prompt input row -->
+        <div style="display:flex;align-items:flex-end;gap:10px;padding:12px;border-bottom:1px solid var(--border)">
+          <textarea id="q" placeholder="Type your question… (Enter to send, Shift+Enter for newline)" rows="10" style="flex:1;border:1px solid var(--border);border-radius:12px;padding:10px;resize:vertical"></textarea>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <button class="btn" id="clear">Clear</button>
+            <button class="btn" id="exportMenu" title="Export conversation">💾</button>
+            <button class="btn primary" id="send">Send</button>
+          </div>
+        </div>
+        <div id="chat" class="chat">
+          <div class="muted">Ask a question. Toggle RAG / Web Search as needed. Session memory will carry forward context.</div>
+        </div>
+
+        <div id="debugPanel" class="debug-panel" style="display:none">
+          <div class="debug-header">
+            <span>🧠 Inference Debug</span>
+            <span id="debugStatus">Idle</span>
+          </div>
+          <div id="debugContent">Ready to process...</div>
+          <div class="debug-stats" id="debugStats"></div>
+        </div>
+
+        <div id="src" class="section" style="display:none">
+          <b>References</b>
+          <ol id="srcList" class="muted"></ol>
+        </div>
+
+        <details class="section" id="memSection" style="display:none;margin-top:8px">
+          <summary><b>Conversation Memory</b></summary>
+          <div style="margin-top:12px">
+            <div class="kvs" id="memMeta"></div>
+            <ol id="memList" class="muted"></ol>
+            <div style="display:flex;justify-content:space-between;margin-top:12px;gap:8px;flex-wrap:wrap">
+              <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <button class="btn ghost" id="exportTxt">📄 TXT</button>
+                <button class="btn ghost" id="exportPdf">📑 PDF</button>
+                <button class="btn ghost" id="exportMd">📝 MD</button>
+              </div>
+              <button class="btn ghost" id="resetMem">Reset Session</button>
+            </div>
+          </div>
+        </details>
+
+        <details class="section" id="sumSection" style="display:none;margin-top:8px">
+          <summary><b>Running Summary</b></summary>
+          <pre id="summary" class="code mono" style="margin-top:12px"></pre>
+        </details>
+
+        <details class="section" style="margin-top:8px">
+          <summary><b>Raw JSON</b></summary>
+          <pre class="code mono" id="raw" style="margin-top:12px">—</pre>
+        </details>
+      </div>
+
+      <!-- Right column: live metrics -->
+      <div class="section" style="border-top:none">
+        <b>Metrics</b>
+        <div class="kvs" id="mx">
+          <div class="kv"><b>Model</b> <span id="mModel" class="mono">—</span></div>
+          <div class="kv"><b>Server total (ms)</b> <span id="mTotal" class="mono">—</span></div>
+          <div class="kv"><b>LLM latency (ms)</b> <span id="mApi" class="mono">—</span></div>
+          <div class="kv"><b>Summary latency (ms)</b> <span id="mSum" class="mono">—</span></div>
+          <div class="kv"><b>Tokens/sec</b> <span id="mTps" class="mono">—</span></div>
+          <div class="kv"><b>Chars/sec</b> <span id="mCps" class="mono">—</span></div>
+          <div class="kv"><b>Prompt tokens</b> <span id="mPTok" class="mono">—</span></div>
+          <div class="kv"><b>Completion tokens</b> <span id="mCTok" class="mono">—</span></div>
+          <div class="kv"><b>Total tokens</b> <span id="mTTok" class="mono">—</span></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <center>
+    <p class="muted" style="margin-top:10px">Memory is session-scoped (<code>sessionId</code> stored in this browser). Requests are proxied through the server to LM Studio.</p>
+    <p class="muted" style="margin-top:4px">Make sure LM Studio is running on the host machine with a model loaded and local server enabled.</p>
+    <p style="margin-top:12px"><a href="https://www.thinkdashboards.com/" style="color:var(--primary);text-decoration:none;font-size:13px">← Back to ThinkDashboards</a></p>
+  </center>
+</div>
+
+<script>
+// --- API Configuration ---
+// Routes through the Node server which proxies to LM Studio
+let availableModels = [];
+let selectedModel = localStorage.getItem('lmStudioModel') || '';
+
+const $ = id => document.getElementById(id);
+const chat = $('chat');
+
+// API URLs are relative — proxied through the Node server
+function getApiUrl() {
+  return '/api/v1';
+}
+
+function getModelsUrl() {
+  return '/api/models';
+}
+
+// Session and conversation history
+let conversationHistory = [];
+let sessionId = generateSessionId();
+
+function generateSessionId() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
+function esc(s=''){
+  return (s+'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function add(sender, text){
+  const div = document.createElement('div');
+  div.className = 'msg ' + sender;
+
+  // Parse markdown for bot messages if enabled, otherwise escape HTML
+  let content;
+  const shouldRenderMarkdown = $('renderMarkdown')?.checked ?? true;
+
+  if (sender === 'bot' && shouldRenderMarkdown) {
+    // Parse markdown using marked.js
+    content = marked.parse(text || '');
+  } else {
+    // Escape HTML and preserve line breaks
+    content = esc(text || '').replace(/\n/g, '<br>');
+  }
+
+  div.innerHTML = `<div class="bub">${content}</div>`;
+
+  // Highlight code blocks in bot messages if markdown is rendered
+  if (sender === 'bot' && shouldRenderMarkdown) {
+    div.querySelectorAll('pre code').forEach((block) => {
+      hljs.highlightElement(block);
+    });
+  }
+
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+  return div;
+}
+
+function parseTags(v){
+  return (v||'').split(',').map(s=>s.trim()).filter(Boolean);
+}
+
+function tsToLocal(ts){
+  try{ return new Date(ts).toLocaleString(); }
+  catch{ return String(ts) }
+}
+
+function renderSources(arr){
+  if(!arr || !arr.length){ $('src').style.display='none'; return }
+  $('srcList').innerHTML = arr.map((s,i)=>{
+    const title = esc(s.title || s.url || s.source || 'Result');
+    const url = s.url ? s.url : (s.href ? s.href : null);
+    let host = '';
+    try { host = url ? ` (${new URL(url).hostname})` : ''; } catch {}
+    const left = url ? `<a href="${url}" target="_blank" rel="noopener"><b>${i+1}. ${title}</b></a>` : `<b>${i+1}. ${title}</b>`;
+    return `<li>${left}<span class="muted">${host}</span></li>`;
+  }).join('');
+  $('src').style.display='block';
+}
+
+function renderMemory(meta){
+  if(!meta || typeof meta.memoryUsed==='undefined'){ $('memSection').style.display='none'; return; }
+  const used = meta.memoryUsed||0;
+  const tops = Array.isArray(meta.memoryTop)? meta.memoryTop : [];
+  const kvs = [];
+  kvs.push(`<div class="kv"><b>Used:</b> ${used}</div>`);
+  if(meta.sessionId) kvs.push(`<div class="kv"><b>sessionId:</b> ${esc(meta.sessionId)}</div>`);
+  $('memMeta').innerHTML = kvs.join('');
+  if(!tops.length){ $('memList').innerHTML = ''; $('memSection').style.display='block'; return; }
+  $('memList').innerHTML = tops.map((m,i)=>`<li>Hit ${i+1}: score=${m.score}, ts=${esc(tsToLocal(m.ts))}</li>`).join('');
+  $('memSection').style.display='block';
+}
+
+function showMetrics(m){
+  $('mModel').textContent = m?.model || '—';
+  $('mTotal').textContent = m?.totalDurationMs ?? '—';
+  $('mApi').textContent   = m?.apiDurationMs ?? '—';
+  $('mSum').textContent   = m?.summaryApiMs ?? '—';
+  $('mTps').textContent   = m?.tokensPerSec ?? '—';
+  $('mCps').textContent   = m?.charsPerSec ?? '—';
+  $('mPTok').textContent  = m?.usage?.prompt_tokens ?? '—';
+  $('mCTok').textContent  = m?.usage?.completion_tokens ?? '—';
+  $('mTTok').textContent  = m?.usage?.total_tokens ?? '—';
+}
+
+function getSessionId(){
+  $('sidBadge').textContent = `sessionId: ${sessionId.slice(0,8)}…`;
+  return sessionId;
+}
+
+function loadSession() {
+  const useMemory = $('useMemory').checked;
+  if (useMemory) {
+    const saved = localStorage.getItem('lmStudioSession_' + sessionId);
+    if (saved) {
+      conversationHistory = JSON.parse(saved);
+      conversationHistory.forEach(msg => {
+        add(msg.role === 'user' ? 'user' : 'bot', msg.content);
+      });
+    }
+  }
+}
+
+function saveSession() {
+  const useMemory = $('useMemory').checked;
+  if (useMemory) {
+    localStorage.setItem('lmStudioSession_' + sessionId, JSON.stringify(conversationHistory));
+    renderMemory({
+      memoryUsed: conversationHistory.length,
+      sessionId: sessionId,
+      memoryTop: []
+    });
+  }
+}
+
+async function send(){
+  const q = $('q').value.trim();
+  if(!q) return;
+
+  const sid = getSessionId();
+  add('user', q);
+  $('q').value='';
+  const thinkingMsg = add('bot', '');
+  const bubDiv = thinkingMsg.querySelector('.bub');
+
+  const startTime = performance.now();
+  const useStreaming = $('streamTokens')?.checked ?? true;
+  const showDebug = $('showDebug')?.checked ?? false;
+
+  // Show debug panel if enabled
+  if (showDebug) {
+    $('debugPanel').style.display = 'block';
+    $('debugStatus').textContent = 'Processing...';
+    $('debugContent').innerHTML = '<div style="color:#888">Building request...</div>';
+  }
+
+  try{
+    // Build messages for LM Studio
+    const systemPrompt = $('sys').value;
+    const messages = [];
+
+    if (systemPrompt) {
+      messages.push({ role: 'system', content: systemPrompt });
+    }
+
+    // Add conversation history if memory is enabled
+    if ($('useMemory').checked) {
+      messages.push(...conversationHistory);
+    }
+
+    // Add current message
+    messages.push({ role: 'user', content: q });
+
+    // Build request body
+    const body = {
+      model: getSelectedModel(),
+      messages: messages,
+      temperature: Number($('temperature').value || 0.7),
+      top_p: Number($('topP').value || 0.9),
+      stream: useStreaming
+    };
+
+    const maxTokens = Number($('maxTokens').value);
+    if (maxTokens > 0) body.max_tokens = maxTokens;
+
+    // Show request in debug panel
+    if (showDebug) {
+      const promptTokensEst = JSON.stringify(messages).length / 4; // rough estimate
+      $('debugContent').innerHTML = `
+        <div style="color:#4fc3f7;margin-bottom:8px">📤 Request sent to LM Studio</div>
+        <div style="color:#888">Messages in context: ${messages.length}</div>
+        <div style="color:#888">Est. prompt tokens: ~${Math.round(promptTokensEst)}</div>
+        <div style="color:#888;margin-top:8px">⏳ Waiting for first token...</div>
+      `;
+    }
+
+    if (useStreaming) {
+      await handleStreamingResponse(body, bubDiv, thinkingMsg, startTime, q, showDebug);
+    } else {
+      await handleNonStreamingResponse(body, bubDiv, thinkingMsg, startTime, q, showDebug);
+    }
+
+  } catch(e) {
+    console.error('Error:', e);
+    const errorMsg = `**Error:** ${e.message}\n\nMake sure:\n- LM Studio is running on the host machine with a model loaded and local server enabled (port 1234)\n- The Node server is running and can reach LM Studio`;
+    bubDiv.innerHTML = marked.parse(errorMsg);
+    showMetrics(null);
+
+    if (showDebug) {
+      $('debugStatus').textContent = 'Error';
+      $('debugContent').innerHTML = `<div style="color:#f44336">❌ ${e.message}</div>`;
+    }
+  }
+}
+
+async function handleStreamingResponse(body, bubDiv, thinkingMsg, startTime, userQuestion, showDebug) {
+  const response = await fetch(`${getApiUrl()}/chat/completions`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+
+  if (!response.ok) {
+    throw new Error(`API Error: ${response.status} ${response.statusText}`);
+  }
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let fullReply = '';
+  let tokenCount = 0;
+  let firstTokenTime = null;
+  let usageData = null;
+
+  // Add thinking indicator
+  bubDiv.innerHTML = '<span class="thinking-indicator"><span class="thinking-dot"></span><span class="thinking-dot"></span><span class="thinking-dot"></span></span>';
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+
+    const chunk = decoder.decode(value, { stream: true });
+    const lines = chunk.split('\n').filter(line => line.trim() !== '');
+
+    for (const line of lines) {
+      if (line.startsWith('data: ')) {
+        const data = line.substring(6);
+        if (data === '[DONE]') continue;
+
+        try {
+          const parsed = JSON.parse(data);
+          const delta = parsed.choices[0]?.delta?.content;
+
+          // Capture usage information if present
+          if (parsed.usage) {
+            usageData = parsed.usage;
+          }
+
+          if (delta) {
+            if (!firstTokenTime) {
+              firstTokenTime = performance.now();
+              if (showDebug) {
+                const ttft = Math.round(firstTokenTime - startTime);
+                $('debugStatus').textContent = `Streaming (TTFT: ${ttft}ms)`;
+              }
+            }
+
+            fullReply += delta;
+            tokenCount++;
+
+            // Update the bubble with current content
+            const shouldRenderMarkdown = $('renderMarkdown')?.checked ?? true;
+            if (shouldRenderMarkdown) {
+              // For streaming, show raw text until done, then parse markdown
+              bubDiv.textContent = fullReply;
+            } else {
+              bubDiv.textContent = fullReply;
+            }
+
+            // Update debug panel
+            if (showDebug) {
+              updateDebugPanel(delta, tokenCount, fullReply.length, startTime);
+            }
+
+            // Auto-scroll
+            chat.scrollTop = chat.scrollHeight;
+          }
+        } catch (e) {
+          console.warn('Failed to parse SSE chunk:', e);
+        }
+      }
+    }
+  }
+
+  const endTime = performance.now();
+  const duration = endTime - startTime;
+
+  // Final markdown parsing
+  const shouldRenderMarkdown = $('renderMarkdown')?.checked ?? true;
+  if (shouldRenderMarkdown) {
+    bubDiv.innerHTML = marked.parse(fullReply);
+    bubDiv.querySelectorAll('pre code').forEach((block) => {
+      hljs.highlightElement(block);
+    });
+  }
+
+  // Update conversation history
+  conversationHistory.push({ role: 'user', content: userQuestion });
+  conversationHistory.push({ role: 'assistant', content: fullReply });
+  saveSession();
+
+  // Calculate metrics
+  const tokensPerSec = tokenCount / (duration / 1000);
+
+  // Use captured usage data or fallback to estimates
+  const usage = usageData || {
+    prompt_tokens: Math.round(JSON.stringify(body.messages).length / 4), // rough estimate
+    completion_tokens: tokenCount,
+    total_tokens: Math.round(JSON.stringify(body.messages).length / 4) + tokenCount
+  };
+
+  const metrics = {
+    model: getSelectedModel(),
+    totalDurationMs: Math.round(duration),
+    apiDurationMs: Math.round(duration),
+    summaryApiMs: 0, // Not applicable - no summary feature
+    tokensPerSec: tokensPerSec.toFixed(2),
+    charsPerSec: (fullReply.length / (duration / 1000)).toFixed(2),
+    usage: usage
+  };
+
+  showMetrics(metrics);
+  updateRunningSummary();
+
+  // Show raw JSON (reconstructed from streaming data)
+  const rawData = {
+    id: `chatcmpl-${Date.now()}`,
+    object: 'chat.completion',
+    created: Math.floor(startTime / 1000),
+    model: getSelectedModel(),
+    choices: [{
+      index: 0,
+      message: {
+        role: 'assistant',
+        content: fullReply
+      },
+      finish_reason: 'stop'
+    }],
+    usage: metrics.usage,
+    metrics: {
+      totalDurationMs: metrics.totalDurationMs,
+      tokensPerSec: parseFloat(metrics.tokensPerSec),
+      charsPerSec: parseFloat(metrics.charsPerSec)
+    }
+  };
+  $('raw').textContent = JSON.stringify(rawData, null, 2);
+
+  if (showDebug) {
+    $('debugStatus').textContent = 'Complete';
+    const ttft = firstTokenTime ? Math.round(firstTokenTime - startTime) : 0;
+    $('debugStats').innerHTML = `
+      ✅ Generation complete | Total: ${Math.round(duration)}ms | TTFT: ${ttft}ms |
+      Tokens: ${tokenCount} | Speed: ${tokensPerSec.toFixed(1)} tok/s
+    `;
+  }
+}
+
+async function handleNonStreamingResponse(body, bubDiv, thinkingMsg, startTime, userQuestion, showDebug) {
+  bubDiv.innerHTML = '<span class="thinking-indicator"><span class="thinking-dot"></span><span class="thinking-dot"></span><span class="thinking-dot"></span></span>';
+
+  const response = await fetch(`${getApiUrl()}/chat/completions`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+
+  if (!response.ok) {
+    throw new Error(`API Error: ${response.status} ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  const endTime = performance.now();
+  const duration = endTime - startTime;
+
+  // Extract reply and parse markdown if enabled
+  const reply = data.choices[0].message.content;
+  const shouldRenderMarkdown = $('renderMarkdown')?.checked ?? true;
+
+  if (shouldRenderMarkdown) {
+    bubDiv.innerHTML = marked.parse(reply);
+    bubDiv.querySelectorAll('pre code').forEach((block) => {
+      hljs.highlightElement(block);
+    });
+  } else {
+    bubDiv.textContent = reply;
+  }
+
+  // Update conversation history
+  conversationHistory.push({ role: 'user', content: userQuestion });
+  conversationHistory.push({ role: 'assistant', content: reply });
+  saveSession();
+
+  // Calculate metrics
+  const metrics = {
+    model: data.model || 'local-model',
+    totalDurationMs: Math.round(duration),
+    apiDurationMs: Math.round(duration),
+    summaryApiMs: 0, // Not applicable - no summary feature
+    tokensPerSec: data.usage?.completion_tokens ? (data.usage.completion_tokens / (duration / 1000)).toFixed(2) : 0,
+    charsPerSec: (reply.length / (duration / 1000)).toFixed(2),
+    usage: data.usage || {
+      prompt_tokens: 0,
+      completion_tokens: 0,
+      total_tokens: 0
+    }
+  };
+
+  showMetrics(metrics);
+  updateRunningSummary();
+  $('raw').textContent = JSON.stringify(data, null, 2);
+
+  if (showDebug) {
+    $('debugStatus').textContent = 'Complete';
+    $('debugStats').innerHTML = `
+      ✅ Response received | Total: ${Math.round(duration)}ms |
+      Tokens: ${data.usage?.completion_tokens || '?'} |
+      Speed: ${metrics.tokensPerSec} tok/s
+    `;
+  }
+}
+
+function updateDebugPanel(token, count, totalChars, startTime) {
+  const elapsed = performance.now() - startTime;
+  const tokensPerSec = count / (elapsed / 1000);
+
+  // Show last 50 tokens
+  const debugContent = $('debugContent');
+  const existingTokens = debugContent.querySelectorAll('.token');
+
+  if (existingTokens.length > 50) {
+    existingTokens[0].remove();
+  }
+
+  const tokenSpan = document.createElement('span');
+  tokenSpan.className = 'token new';
+  tokenSpan.textContent = token;
+  debugContent.appendChild(tokenSpan);
+
+  $('debugStats').innerHTML = `
+    ⚡ Tokens: ${count} | Chars: ${totalChars} | Speed: ${tokensPerSec.toFixed(1)} tok/s | Elapsed: ${Math.round(elapsed)}ms
+  `;
+}
+
+// Export functions
+function exportToTxt() {
+  if (conversationHistory.length === 0) {
+    alert('No conversation to export!');
+    return;
+  }
+
+  const timestamp = new Date().toLocaleString();
+  let content = `LM Studio Chat Export\n`;
+  content += `Session ID: ${sessionId}\n`;
+  content += `Exported: ${timestamp}\n`;
+  content += `Total messages: ${conversationHistory.length}\n`;
+  content += `${'='.repeat(60)}\n\n`;
+
+  const systemPrompt = $('sys').value;
+  if (systemPrompt) {
+    content += `SYSTEM PROMPT:\n${systemPrompt}\n\n${'='.repeat(60)}\n\n`;
+  }
+
+  conversationHistory.forEach((msg, idx) => {
+    const role = msg.role === 'user' ? 'USER' : 'ASSISTANT';
+    content += `[${role}]:\n${msg.content}\n\n${'-'.repeat(60)}\n\n`;
+  });
+
+  const blob = new Blob([content], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `lm-studio-chat-${sessionId.substring(0, 8)}-${Date.now()}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function exportToMarkdown() {
+  if (conversationHistory.length === 0) {
+    alert('No conversation to export!');
+    return;
+  }
+
+  const timestamp = new Date().toLocaleString();
+  let content = `# LM Studio Chat Export\n\n`;
+  content += `**Session ID:** ${sessionId}\n\n`;
+  content += `**Exported:** ${timestamp}\n\n`;
+  content += `**Total messages:** ${conversationHistory.length}\n\n`;
+  content += `---\n\n`;
+
+  const systemPrompt = $('sys').value;
+  if (systemPrompt) {
+    content += `## System Prompt\n\n`;
+    content += `> ${systemPrompt}\n\n`;
+    content += `---\n\n`;
+  }
+
+  content += `## Conversation\n\n`;
+
+  conversationHistory.forEach((msg, idx) => {
+    const role = msg.role === 'user' ? '👤 User' : '🤖 Assistant';
+    content += `### ${role}\n\n`;
+    content += `${msg.content}\n\n`;
+  });
+
+  const blob = new Blob([content], { type: 'text/markdown' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `lm-studio-chat-${sessionId.substring(0, 8)}-${Date.now()}.md`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function exportToPdf() {
+  if (conversationHistory.length === 0) {
+    alert('No conversation to export!');
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+  const margin = 15;
+  const maxLineWidth = pageWidth - margin * 2;
+  let yPosition = margin;
+
+  // Helper function to add text with word wrapping and page breaks
+  function addText(text, fontSize = 10, isBold = false, isItalic = false) {
+    doc.setFontSize(fontSize);
+    if (isBold) doc.setFont(undefined, 'bold');
+    else if (isItalic) doc.setFont(undefined, 'italic');
+    else doc.setFont(undefined, 'normal');
+
+    const lines = doc.splitTextToSize(text, maxLineWidth);
+
+    lines.forEach(line => {
+      if (yPosition + fontSize / 2 > pageHeight - margin) {
+        doc.addPage();
+        yPosition = margin;
+      }
+      doc.text(line, margin, yPosition);
+      yPosition += fontSize / 2 + 2;
+    });
+  }
+
+  function addSpace(space = 5) {
+    yPosition += space;
+  }
+
+  // Title
+  addText('LM Studio Chat Export', 16, true);
+  addSpace(3);
+
+  // Metadata
+  const timestamp = new Date().toLocaleString();
+  addText(`Session ID: ${sessionId}`, 9, false, true);
+  addText(`Exported: ${timestamp}`, 9, false, true);
+  addText(`Total messages: ${conversationHistory.length}`, 9, false, true);
+  addSpace(8);
+
+  // System prompt
+  const systemPrompt = $('sys').value;
+  if (systemPrompt) {
+    doc.setDrawColor(200, 200, 200);
+    doc.line(margin, yPosition, pageWidth - margin, yPosition);
+    addSpace(5);
+    addText('System Prompt:', 11, true);
+    addSpace(2);
+    addText(systemPrompt, 9);
+    addSpace(5);
+    doc.line(margin, yPosition, pageWidth - margin, yPosition);
+    addSpace(8);
+  }
+
+  // Conversation
+  conversationHistory.forEach((msg, idx) => {
+    const role = msg.role === 'user' ? 'USER' : 'ASSISTANT';
+
+    // Role header with background
+    if (msg.role === 'user') {
+      doc.setFillColor(230, 247, 231); // Light green
+    } else {
+      doc.setFillColor(242, 244, 247); // Light gray
+    }
+
+    if (yPosition + 15 > pageHeight - margin) {
+      doc.addPage();
+      yPosition = margin;
+    }
+
+    doc.rect(margin, yPosition - 3, maxLineWidth, 8, 'F');
+    addText(`${role}:`, 10, true);
+    addSpace(2);
+
+    // Message content
+    addText(msg.content, 9);
+    addSpace(8);
+
+    // Separator line
+    doc.setDrawColor(220, 220, 220);
+    doc.line(margin, yPosition, pageWidth - margin, yPosition);
+    addSpace(5);
+  });
+
+  // Save the PDF
+  doc.save(`lm-studio-chat-${sessionId.substring(0, 8)}-${Date.now()}.pdf`);
+}
+
+function updateRunningSummary() {
+  const summary = `Conversation with LM Studio
+─────────────────────────────
+Session ID: ${sessionId}
+Total messages: ${conversationHistory.length}
+Memory enabled: ${$('useMemory').checked ? 'Yes' : 'No'}
+RAG enabled: ${$('useRag').checked ? 'Yes (UI only - needs backend)' : 'No'}
+Web Search enabled: ${$('forceSearch').checked ? 'Yes (UI only - needs backend)' : 'No'}
+
+Recent exchange:
+${conversationHistory.slice(-4).map(msg => `[${msg.role}]: ${msg.content.substring(0, 80)}${msg.content.length > 80 ? '...' : ''}`).join('\n')}`;
+
+  $('summary').textContent = summary;
+  $('sumSection').style.display = 'block';
+}
+
+function clearChat(){
+  chat.innerHTML = '<div class="muted">Ask a question. Toggle RAG / Web Search as needed. Session memory will carry forward context.</div>';
+  $('src').style.display='none';
+  $('memSection').style.display='none';
+  $('sumSection').style.display='none';
+  $('q').value='';
+  conversationHistory = [];
+  saveSession();
+}
+
+async function resetSession(){
+  if (confirm('Reset session? This will clear conversation history and create a new session ID.')) {
+    sessionId = generateSessionId();
+    conversationHistory = [];
+    localStorage.removeItem('lmStudioSession_' + sessionId);
+    clearChat();
+    getSessionId();
+    $('memSection').style.display='none';
+    showMetrics(null);
+  }
+}
+
+// Configure marked.js for better rendering
+marked.setOptions({
+  breaks: true,        // Convert \n to <br>
+  gfm: true,           // GitHub Flavored Markdown
+  headerIds: false,    // Don't add IDs to headers
+  mangle: false        // Don't escape email addresses
+});
+
+// Wire up event handlers
+$('send').addEventListener('click', send);
+$('q').addEventListener('keydown', e => {
+  if(e.key === 'Enter' && !e.shiftKey){
+    e.preventDefault();
+    send();
+  }
+});
+$('clear').addEventListener('click', clearChat);
+$('resetMem').addEventListener('click', resetSession);
+// Toggle debug panel visibility
+$('showDebug').addEventListener('change', (e) => {
+  $('debugPanel').style.display = e.target.checked ? 'block' : 'none';
+});
+
+// Export handlers
+$('exportTxt').addEventListener('click', exportToTxt);
+$('exportPdf').addEventListener('click', exportToPdf);
+$('exportMd').addEventListener('click', exportToMarkdown);
+
+// Quick export menu
+$('exportMenu').addEventListener('click', () => {
+  if (conversationHistory.length === 0) {
+    alert('No conversation to export! Start chatting first.');
+    return;
+  }
+
+  const format = prompt('Export format:\n\n1 - Text (.txt)\n2 - Markdown (.md)\n3 - PDF (.pdf)\n\nEnter 1, 2, or 3:', '1');
+
+  if (format === '1') {
+    exportToTxt();
+  } else if (format === '2') {
+    exportToMarkdown();
+  } else if (format === '3') {
+    exportToPdf();
+  } else if (format !== null) {
+    alert('Invalid format. Please choose 1, 2, or 3.');
+  }
+});
+
+// Fetch available models via server proxy
+async function fetchModels() {
+  try {
+    const response = await fetch(getModelsUrl(), {
+      method: 'GET',
+      signal: AbortSignal.timeout(5000)
+    });
+    if (response.ok) {
+      const data = await response.json();
+      availableModels = (data.data || []).map(m => m.id);
+      const select = $('modelSelect');
+      const currentVal = select.value;
+      select.innerHTML = '<option value="">Auto (first loaded model)</option>';
+      availableModels.forEach(id => {
+        const opt = document.createElement('option');
+        opt.value = id;
+        opt.textContent = id;
+        if (id === selectedModel) opt.selected = true;
+        select.appendChild(opt);
+      });
+      // Restore previous selection if still available
+      if (selectedModel && availableModels.includes(selectedModel)) {
+        select.value = selectedModel;
+      }
+      return availableModels;
+    }
+  } catch (e) {
+    console.warn('Could not fetch models:', e.message);
+  }
+  return [];
+}
+
+function getSelectedModel() {
+  return $('modelSelect')?.value || selectedModel || 'local-model';
+}
+
+// Connection checker
+async function checkConnection() {
+  const statusDot = $('connectionDot');
+  const statusText = $('connectionStatus');
+
+  if (statusDot && statusText) {
+    statusDot.className = 'status-dot-small';
+    statusText.textContent = 'Checking...';
+  }
+
+  try {
+    const response = await fetch(getModelsUrl(), {
+      method: 'GET',
+      signal: AbortSignal.timeout(5000)
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      const models = (data.data || []).map(m => m.id);
+      const modelName = models[0] || 'Connected';
+      console.log('✅ Connected to LM Studio:', modelName, `(${models.length} model(s))`);
+
+      // Populate model selector
+      availableModels = models;
+      const select = $('modelSelect');
+      if (select) {
+        select.innerHTML = '<option value="">Auto (first loaded model)</option>';
+        models.forEach(id => {
+          const opt = document.createElement('option');
+          opt.value = id;
+          opt.textContent = id;
+          if (id === selectedModel) opt.selected = true;
+          select.appendChild(opt);
+        });
+      }
+
+      if (statusDot && statusText) {
+        statusDot.className = 'status-dot-small connected';
+        const label = models.length > 1 ? `${modelName} (+${models.length - 1})` : modelName;
+        statusText.textContent = label.length > 24
+          ? label.substring(0, 21) + '...'
+          : label;
+      }
+      return true;
+    }
+  } catch (e) {
+    console.warn('⚠️ Cannot connect to LM Studio via server proxy - Error:', e.message);
+  }
+
+  if (statusDot && statusText) {
+    statusDot.className = 'status-dot-small error';
+    statusText.textContent = 'Not connected';
+  }
+  return false;
+}
+
+// --- Theme toggle (matches chat.html pattern) ---
+const THEME_KEY = 'thinkdashboards_theme';
+const themeToggle = $('themeToggle');
+const themeLabel = $('themeLabel');
+
+function applyTheme(theme) {
+  const t = (theme === 'light') ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', t);
+  localStorage.setItem(THEME_KEY, t);
+  themeToggle.checked = (t === 'light');
+  themeLabel.textContent = (t === 'light') ? 'Light' : 'Dark';
+
+  // Swap highlight.js stylesheet
+  const hljsLight = document.getElementById('hljs-light');
+  const hljsDark = document.getElementById('hljs-dark');
+  if (hljsLight && hljsDark) {
+    hljsLight.disabled = (t === 'dark');
+    hljsDark.disabled = (t === 'light');
+  }
+}
+
+function initTheme() {
+  const saved = localStorage.getItem(THEME_KEY);
+  if (saved) {
+    applyTheme(saved);
+  } else {
+    const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+    applyTheme(prefersLight ? 'light' : 'dark');
+  }
+}
+
+themeToggle.addEventListener('change', () => {
+  applyTheme(themeToggle.checked ? 'light' : 'dark');
+});
+
+initTheme();
+
+// Initialize
+getSessionId();
+loadSession();
+
+// Model select change handler
+$('modelSelect').addEventListener('change', (e) => {
+  selectedModel = e.target.value;
+  localStorage.setItem('lmStudioModel', selectedModel);
+});
+
+// Check connection on load
+checkConnection();
+</script>
+</body>
+</html>

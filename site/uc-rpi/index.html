@@ -1,0 +1,921 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Interview page for Manager for Strategic Data Analytics — Research Platforms & Insights (RPI), University of Cincinnati." />
+  <title>Eric Frayer | UC (RPI) Manager for Strategic Data Analytics</title>
+
+  <style>
+    :root{
+      --bg:#ffffff;
+      --text:#0f172a;
+      --muted:#475569;
+      --muted2:#64748b;
+      --border:#e2e8f0;
+      --soft:#f8fafc;
+      --shadow: 0 10px 25px rgba(2,6,23,.08);
+
+      --accent:#2563eb;
+      --accent2:#0ea5e9;
+      --ok:#16a34a;
+
+      --radius: 16px;
+      --radius-sm: 12px;
+      --maxw: 1060px;
+      --pad: 20px;
+
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+
+    [data-theme="dark"]{
+      --bg:#0b1220;
+      --text:#e5e7eb;
+      --muted:#cbd5e1;
+      --muted2:#94a3b8;
+      --border:#1f2a44;
+      --soft:#0f172a;
+      --shadow: 0 12px 30px rgba(0,0,0,.35);
+      --accent:#60a5fa;
+      --accent2:#38bdf8;
+      --ok:#4ade80;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: var(--sans);
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.5;
+    }
+    a{ color: inherit; text-decoration:none; }
+    a:hover{ text-decoration: underline; text-underline-offset: 3px; }
+
+    .container{ width:100%; max-width:var(--maxw); margin:0 auto; padding:0 var(--pad); }
+
+    /* Header */
+    .site-header{
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(10px);
+      background: color-mix(in srgb, var(--bg) 86%, transparent);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav{
+      display:flex; align-items:center; justify-content:space-between;
+      gap: 14px; padding: 12px 0;
+    }
+    .brand{ display:flex; align-items:center; gap:10px; min-width:240px; }
+    .mark{
+      width:36px; height:36px; border-radius:12px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow: var(--shadow);
+      flex:0 0 auto;
+    }
+    .brand h1{ margin:0; font-size:14px; letter-spacing:.2px; line-height:1.2; }
+    .brand .sub{ display:block; font-size:12px; color:var(--muted2); font-weight:500; margin-top:2px; }
+
+    .nav-links{
+      display:flex; flex-wrap:wrap; gap:12px 16px;
+      align-items:center; justify-content:center;
+    }
+    .nav-links a{
+      font-size:13px; color:var(--muted);
+      padding:8px 10px; border-radius:999px;
+    }
+    .nav-links a:hover{ background:var(--soft); color:var(--text); text-decoration:none; }
+
+    .nav-actions{
+      display:flex; align-items:center; gap:10px;
+      justify-content:flex-end; min-width:240px;
+    }
+
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center; gap:8px;
+      padding:10px 12px; border-radius:999px;
+      border:1px solid var(--border);
+      background:var(--bg); color:var(--text);
+      font-size:13px; font-weight:600;
+      cursor:pointer; user-select:none;
+    }
+    .btn:hover{ box-shadow: var(--shadow); text-decoration:none; }
+    .btn.small{ padding:8px 10px; font-size:12px; }
+    .btn.primary{
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-color: transparent;
+      color:#fff;
+    }
+    .btn.ghost{ background:transparent; }
+
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:7px 10px; border-radius:999px;
+      border:1px solid var(--border);
+      background:var(--soft);
+      color:var(--muted);
+      font-size:12px; font-weight:600;
+    }
+
+    /* Hero */
+    .hero{ padding: 44px 0 18px; }
+    .hero-grid{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:22px;
+      align-items:start;
+    }
+    .hero h2{
+      margin: 14px 0 10px;
+      font-size: clamp(28px, 3.2vw, 40px);
+      letter-spacing:-0.02em;
+      line-height:1.1;
+    }
+    .hero p{
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: 15px;
+      max-width: 68ch;
+    }
+    .hero-actions{
+      display:flex; flex-wrap:wrap; gap:10px;
+      margin-top:14px;
+    }
+
+    .card{
+      border:1px solid var(--border);
+      background:var(--bg);
+      border-radius: var(--radius);
+      box-shadow:none;
+    }
+    .card.soft{ background: linear-gradient(180deg, var(--soft), var(--bg)); }
+    .card .pad{ padding:16px; }
+
+    .profile{ display:flex; gap:14px; align-items:center; }
+    .avatar{
+      width:74px; height:74px; border-radius:50%;
+      border:1px solid var(--border);
+      background:
+        radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--accent) 35%, transparent), transparent 55%),
+        radial-gradient(circle at 70% 70%, color-mix(in srgb, var(--accent2) 35%, transparent), transparent 55%),
+        var(--soft);
+      display:grid; place-items:center;
+      overflow:hidden;
+      flex:0 0 auto;
+    }
+    .avatar span{ font-family: var(--mono); font-size: 12px; color: var(--muted2); }
+    .profile h3{ margin:0; font-size:15px; line-height:1.2; }
+    .profile .meta{ margin-top:6px; display:flex; flex-wrap:wrap; gap:8px; }
+
+    section{ padding: 26px 0; }
+    .section-title{
+      display:flex; align-items:baseline; justify-content:space-between;
+      gap:16px; margin-bottom:12px;
+    }
+    .section-title h3{ margin:0; font-size:18px; letter-spacing:-0.01em; }
+    .section-title .hint{ color:var(--muted2); font-size:12px; }
+
+    .grid-3{ display:grid; grid-template-columns: repeat(3,1fr); gap:12px; }
+    .grid-2{ display:grid; grid-template-columns: repeat(2,1fr); gap:12px; }
+
+    .kv{ display:flex; flex-direction:column; gap:6px; }
+    .kv .k{
+      color:var(--muted2); font-size:12px; font-weight:800;
+      letter-spacing:.02em; text-transform:uppercase;
+    }
+    .kv .v{ font-size:14px; color:var(--text); font-weight:650; letter-spacing:-0.01em; }
+    .kv .d{ font-size:13px; color:var(--muted); }
+
+    .list{ margin:0; padding-left:18px; color:var(--muted); font-size:14px; }
+    .list li{ margin:8px 0; }
+
+    /* Fit table */
+    .fit{
+      width:100%;
+      border-collapse:collapse;
+      border-radius: var(--radius);
+      overflow:hidden;
+      border:1px solid var(--border);
+      background: var(--bg);
+    }
+    .fit th, .fit td{
+      padding:12px 12px;
+      border-bottom:1px solid var(--border);
+      vertical-align:top;
+      font-size:13px;
+    }
+    .fit th{
+      text-align:left;
+      background: var(--soft);
+      color: var(--muted);
+      font-weight:800;
+      letter-spacing:.02em;
+      text-transform:uppercase;
+      font-size:12px;
+    }
+    .fit tr:last-child td{ border-bottom:none; }
+
+    .tag{
+      display:inline-flex; align-items:center; gap:6px;
+      padding:5px 9px; border-radius:999px;
+      border:1px solid var(--border);
+      background: var(--soft);
+      font-size:12px; font-weight:700; color:var(--muted);
+      margin:3px 6px 3px 0;
+      white-space:nowrap;
+    }
+    .tag.ok{
+      background: color-mix(in srgb, var(--ok) 10%, var(--soft));
+      border-color: color-mix(in srgb, var(--ok) 25%, var(--border));
+      color: color-mix(in srgb, var(--ok) 75%, var(--text));
+    }
+
+    /* Timeline */
+    .timeline{ display:flex; flex-direction:column; gap:10px; }
+    .role{
+      display:grid; grid-template-columns:150px 1fr;
+      gap:12px; padding:14px;
+      border-radius: var(--radius-sm);
+      border:1px solid var(--border);
+      background: var(--bg);
+    }
+    .role .when{
+      font-family: var(--mono);
+      color: var(--muted2);
+      font-size: 12px;
+      line-height:1.3;
+      padding-top:2px;
+    }
+    .role .what h4{ margin:0 0 6px; font-size:14px; letter-spacing:-0.01em; }
+    .role .what p{ margin:0; color:var(--muted); font-size:13px; }
+
+    /* Accordion */
+    .acc{
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      overflow:hidden;
+      background: var(--bg);
+    }
+    .acc button{
+      width:100%;
+      text-align:left;
+      padding:14px 14px;
+      border:0;
+      background: var(--bg);
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      font-size:14px;
+      font-weight:750;
+      color: var(--text);
+      border-bottom:1px solid var(--border);
+    }
+    .acc button:last-of-type{ border-bottom:0; }
+    .acc .panel{ display:none; padding:0 14px 14px; color:var(--muted); font-size:13px; }
+    .acc .panel.open{ display:block; }
+    .chev{
+      width:22px; height:22px; border-radius:999px;
+      border:1px solid var(--border);
+      display:grid; place-items:center;
+      color: var(--muted2);
+      flex:0 0 auto;
+    }
+
+    /* Subhead */
+    .subhead{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px;
+      margin: 6px 0 10px;
+      padding: 10px 12px;
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-sm);
+      background: color-mix(in srgb, var(--soft) 70%, var(--bg));
+    }
+    .subhead .title{
+      font-weight: 850;
+      letter-spacing: -0.01em;
+      font-size: 13px;
+    }
+    .subhead .note{
+      color: var(--muted2);
+      font-size: 12px;
+    }
+
+    footer{
+      padding: 26px 0 40px;
+      border-top: 1px solid var(--border);
+      margin-top: 10px;
+    }
+    .foot{
+      display:flex; flex-wrap:wrap; gap:10px 16px;
+      align-items:center; justify-content:space-between;
+      color: var(--muted2);
+      font-size: 12px;
+    }
+
+    @media (max-width: 920px){
+      .hero-grid{ grid-template-columns:1fr; }
+      .nav-actions{ min-width: unset; }
+      .brand{ min-width: unset; }
+    }
+    @media (max-width: 760px){
+      .grid-3{ grid-template-columns:1fr; }
+      .grid-2{ grid-template-columns:1fr; }
+      .role{ grid-template-columns:1fr; }
+      .nav-links{ display:none; }
+    }
+    @media print{
+      .site-header, .hero-actions, .nav-actions, .hint, .btn { display:none !important; }
+      body{ background:#fff; }
+      .card, .fit, .role, .acc{ box-shadow:none !important; }
+      section{ padding: 10px 0; }
+    }
+  </style>
+</head>
+
+<body data-theme="light">
+  <header class="site-header">
+    <div class="container">
+      <div class="nav">
+        <a class="brand" href="#top" aria-label="Home">
+          <img src="tda_icon.png" alt="" aria-hidden="true" style="width:36px;height:36px;border-radius:12px;object-fit:cover;flex:0 0 auto;" />
+          <div>
+            <h1>Eric Frayer, MPA, MBA <span class="sub">Interview Site · UC (RPI)</span></h1>
+          </div>
+        </a>
+
+        <nav class="nav-links" aria-label="Page sections">
+          <a href="#fit">Fit</a>
+          <a href="#impact">Impact</a>
+          <a href="#experience">Experience</a>
+          <a href="#plan">90-Day Plan</a>
+          <a href="#questions">Questions</a>
+          <a href="#contact">Contact</a>
+        </nav>
+
+        <div class="nav-actions">
+          <button class="btn small ghost" id="themeBtn" type="button">Theme</button>
+          <button class="btn small" id="copyLinkBtn" type="button">Copy Link</button>
+          <a class="btn small primary" href="#contact">Reach Out</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- HERO -->
+    <div class="hero">
+      <div class="container">
+        <div class="hero-grid">
+          <div>
+            <span class="pill">Manager for Strategic Data Analytics · Research Platforms & Insights (RPI) · University of Cincinnati</span>
+            <h2>Strategic analytics leadership — with hands-on BI delivery.</h2>
+            <p>
+              I help organizations turn data into clear decisions by building scalable models, dashboards, and insight workflows —
+              while improving governance, intake processes, and team effectiveness.
+            </p>
+
+            <div class="hero-actions">
+              <a class="btn primary" href="#fit">View role alignment</a>
+              <a class="btn" href="#plan">See 90-day plan</a>
+              <a class="btn" href="#experience">Highlights & timeline</a>
+              <button class="btn" type="button" id="printBtn">Print / PDF</button>
+            </div>
+
+            <div style="margin-top:14px; display:flex; flex-wrap:wrap; gap:8px;">
+              <span class="tag ok">Power BI (PL-300)</span>
+              <span class="tag ok">Tableau</span>
+              <span class="tag ok">SQL</span>
+              <span class="tag ok">Python</span>
+              <span class="tag ok">R / SPSS</span>
+              <span class="tag ok">Azure (DP-900, AI-900, AZ-900)</span>
+              <span class="tag ok">Data governance</span>
+              <span class="tag ok">People leadership</span>
+            </div>
+          </div>
+
+          <aside class="card soft">
+            <div class="pad">
+              <div class="profile">
+                <div class="avatar" aria-label="Eric Frayer headshot">
+                  <img src="eric_2025.png" alt="Eric Frayer" style="width:100%;height:100%;object-fit:cover;" />
+                </div>
+                <div>
+                  <h3>Eric R. Frayer, MPA, MBA</h3>
+                  <div class="meta">
+                    <span class="pill">Cincinnati, OH</span>
+                    <span class="pill">Hybrid-ready</span>
+                    <span class="pill">Director-level experience</span>
+                  </div>
+                </div>
+              </div>
+
+              <div style="height:12px;"></div>
+
+              <div class="grid-2">
+                <div class="kv">
+                  <div class="k">Focus</div>
+                  <div class="v">Insight delivery + scalable platforms</div>
+                  <div class="d">Dashboards, semantic models, intake workflows, quality controls, and executive storytelling.</div>
+                </div>
+                <div class="kv">
+                  <div class="k">Strength</div>
+                  <div class="v">Player / coach leadership</div>
+                  <div class="d">I can lead the team while staying hands-on in Power BI/Tableau, SQL, and analytics.</div>
+                </div>
+              </div>
+
+              <div style="height:12px;"></div>
+
+              <div class="kv">
+                <div class="k">Quick links</div>
+                <div class="d">
+                  <a href="https://www.thinkdashboards.com/" target="_blank" rel="noopener">ThinkDashboards.com</a>
+                  &nbsp;·&nbsp;
+                  <a href="https://www.thinkdataanalysis.com/" target="_blank" rel="noopener">ThinkDataAnalysis.com</a>
+                  &nbsp;·&nbsp;
+                  <a href="https://www.ericfrayer.com/" target="_blank" rel="noopener">EricFrayer.com</a>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+
+    <!-- FIT -->
+    <section id="fit">
+      <div class="container">
+        <div class="section-title">
+          <h3>Role alignment (RPI essential functions → my experience)</h3>
+          <div class="hint">Designed for quick committee review · scroll-friendly · printable</div>
+        </div>
+
+        <table class="fit" aria-label="Role alignment table">
+          <thead>
+            <tr>
+              <th style="width:34%;">RPI / UC need</th>
+              <th style="width:33%;">How I’ve done this</th>
+              <th style="width:33%;">What you get at UC</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Dashboards in Tableau & Power BI</strong></td>
+              <td>Built executive and operational dashboards; designed semantic models; delivered BI across Power BI, Tableau, and Qlik.</td>
+              <td>Trusted dashboards + clear KPI definitions + reliable refresh + better adoption through insight storytelling.</td>
+            </tr>
+            <tr>
+              <td><strong>Cross-functional analytics projects</strong></td>
+              <td>Led enterprise initiatives across business + IT; translated ambiguous questions into analysis plans and deliverables.</td>
+              <td>Faster decisions, fewer “analysis loops,” and insights tied directly to UC research operations outcomes.</td>
+            </tr>
+            <tr>
+              <td><strong>Data models, automation, metrics</strong></td>
+              <td>Designed warehouse/lakehouse patterns; automated pipelines; built reusable datasets and KPI layers.</td>
+              <td>Scalable foundation that reduces one-off reporting and increases confidence in data used for leadership decisions.</td>
+            </tr>
+            <tr>
+              <td><strong>Data collection, validation, modeling</strong></td>
+              <td>Built quality checks and governance; applied statistical modeling using R/SPSS; heavy SQL querying.</td>
+              <td>Stronger data trust: fewer errors, faster root-cause analysis, and consistent standards across reports and dashboards.</td>
+            </tr>
+            <tr>
+              <td><strong>Reporting intake & prioritization</strong></td>
+              <td>Managed backlogs and demand; used Agile/Scrum approaches; clarified requirements and staged deliverables.</td>
+              <td>Transparent intake process: triage, prioritization, SLAs, and right-sized solutions (dashboard vs analysis vs automation).</td>
+            </tr>
+            <tr>
+              <td><strong>Quality controls + standards</strong></td>
+              <td>Implemented governance and best practices; improved reliability and maintainability across teams and platforms.</td>
+              <td>Consistent definitions and delivery: fewer surprises, better compliance, easier onboarding, and higher adoption.</td>
+            </tr>
+            <tr>
+              <td><strong>People leadership</strong></td>
+              <td>Director-level roles; grew analytics teams; led mentoring, hiring, and performance management; player/coach when needed.</td>
+              <td>A motivated insights team with clear goals, measurable outcomes, and leadership-ready communication habits.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- IMPACT -->
+    <section id="impact">
+      <div class="container">
+        <div class="section-title">
+          <h3>Leadership & impact highlights</h3>
+          <div class="hint">What I tend to deliver in roles like this</div>
+        </div>
+
+        <div class="grid-3">
+          <div class="card">
+            <div class="pad kv">
+              <div class="k">Decision support</div>
+              <div class="v">Dashboards people actually use</div>
+              <div class="d">KPI clarity, strong semantic models, consistent definitions, and a focus on “what action should this drive?”</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="pad kv">
+              <div class="k">Operational excellence</div>
+              <div class="v">Intake → prioritization → delivery</div>
+              <div class="d">Transparent request workflow, value-based prioritization, and measurable delivery practices.</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="pad kv">
+              <div class="k">Analytics maturity</div>
+              <div class="v">From reporting to insight</div>
+              <div class="d">Explanatory and predictive monitoring, hypothesis-driven analysis, and recommendations leadership can act on.</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="height:12px;"></div>
+
+        <div class="card soft">
+          <div class="pad">
+            <div class="section-title" style="margin-bottom:6px;">
+              <h3 style="font-size:16px;">How I run an insights function</h3>
+              <div class="hint">Simple, repeatable, measurable</div>
+            </div>
+            <ul class="list">
+              <li><strong>Define the decision:</strong> What decision will change based on this insight?</li>
+              <li><strong>Agree on KPIs:</strong> One definition, one source of truth, documented assumptions.</li>
+              <li><strong>Choose the deliverable:</strong> dashboard vs deep analysis vs automation.</li>
+              <li><strong>Standardize quality:</strong> validation checks, refresh monitoring, access controls.</li>
+              <li><strong>Communicate impact:</strong> short brief + story + recommendation + next step.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXPERIENCE -->
+    <section id="experience">
+      <div class="container">
+        <div class="section-title">
+          <h3>Selected experience (high-level)</h3>
+          <div class="hint">Committee-friendly summary · deeper details in interview</div>
+        </div>
+
+        <div class="timeline" aria-label="Experience timeline">
+          <div class="role">
+            <div class="when">Jun 2024 – Feb 2025</div>
+            <div class="what">
+              <h4>Principal BI Architect · Onebridge/Marlabs</h4>
+              <p>Medallion-style architecture work, Power BI semantic model design/optimization, and player-coach BI delivery.</p>
+            </div>
+          </div>
+
+          <div class="role">
+            <div class="when">Mar 2023 – Feb 2024</div>
+            <div class="what">
+              <h4>Director — Enterprise Data & Analytics · American Modern Insurance Group</h4>
+              <p>Led enterprise analytics strategy & governance; partnered cross-functionally; delivered complex Power BI solutions.</p>
+            </div>
+          </div>
+
+          <div class="role">
+            <div class="when">Mar 2022 – Jan 2023</div>
+            <div class="what">
+              <h4>Cloud & Data Services Practice Director · Vaco Cincinnati</h4>
+              <p>Built and grew practice; advised clients on cloud analytics, BI, and data platform strategy; hands-on delivery.</p>
+            </div>
+          </div>
+
+          <div class="role">
+            <div class="when">Nov 2019 – Feb 2022</div>
+            <div class="what">
+              <h4>Senior Principal Consultant · Lingaro</h4>
+              <p>Power BI implementations and workshops; Snowflake + Azure delivery; Scrum Master experience in Agile sprints.</p>
+            </div>
+          </div>
+
+          <div class="role">
+            <div class="when">Jun 2018 – Sep 2019</div>
+            <div class="what">
+              <h4>Director of Analytics · LendKey Technologies</h4>
+              <p>Expanded analytics team; predictive modeling with Azure ML; logistic regression using R/SPSS for underwriting.</p>
+            </div>
+          </div>
+
+          <!-- ✅ Added subheading: Public sector foundations -->
+          <div class="subhead">
+            <div class="title">Early Career · Public Sector Foundations</div>
+            <div class="note">Applied research, program evaluation, and decision support for public management</div>
+          </div>
+
+          <!-- ✅ Added: Miami University (10 years) -->
+          <div class="role">
+            <div class="when">Jan 1989 – Jan 1999</div>
+            <div class="what">
+              <h4>Sr. Project Manager / Project Manager / Public Management Specialist · Center for Public Management and Regional Affairs · Miami University</h4>
+              <p>
+                Led applied research and technical assistance projects; coordinated training and education programs; supported database development and local government capacity building, economic development, planning, and program evaluation/policy research.
+                Designed and supported implementation of comprehensive personnel management systems (policies, position descriptions/classification, pay schedules, performance evaluation).
+                Designed and executed attitude/opinion surveys (instrument design, methodology, data collection, analysis) to inform public policy decisions.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div style="height:12px;"></div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="pad">
+              <div class="section-title" style="margin-bottom:6px;">
+                <h3 style="font-size:16px;">Tools & platforms</h3>
+                <div class="hint">Core stack</div>
+              </div>
+              <div>
+                <span class="tag ok">Power BI</span>
+                <span class="tag ok">Tableau</span>
+                <span class="tag ok">Qlik</span>
+                <span class="tag ok">SQL</span>
+                <span class="tag ok">Azure</span>
+                <span class="tag ok">ADF</span>
+                <span class="tag ok">Databricks</span>
+                <span class="tag ok">Synapse</span>
+                <span class="tag ok">Snowflake</span>
+                <span class="tag ok">Python</span>
+                <span class="tag ok">R</span>
+                <span class="tag ok">SPSS</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="pad">
+              <div class="section-title" style="margin-bottom:6px;">
+                <h3 style="font-size:16px;">Education & fit for UC</h3>
+                <div class="hint">Relevant context</div>
+              </div>
+              <ul class="list">
+                <li>MBA (Marketing/Accounting/Finance)</li>
+                <li>MPA — University of Cincinnati (Public Sector Financial Management)</li>
+                <li>BS — Social Science Education</li>
+                <li>Comfortable in stakeholder-heavy, mission-driven environments</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 90 DAY PLAN -->
+    <section id="plan">
+      <div class="container">
+        <div class="section-title">
+          <h3>First 90 days in RPI (practical plan)</h3>
+          <div class="hint">Click to expand</div>
+        </div>
+
+        <div class="acc" role="region" aria-label="90-day plan accordion">
+          <button type="button" class="acc-btn" aria-expanded="false" aria-controls="p1">
+            Days 1–30: Understand, inventory, and stabilize
+            <span class="chev" aria-hidden="true">⌄</span>
+          </button>
+          <div id="p1" class="panel" role="region">
+            <ul class="list">
+              <li>Stakeholder listening tour (RPI leadership, research admin, key units).</li>
+              <li>Inventory dashboards, datasets, refresh schedules, and pain points.</li>
+              <li>Map request intake process (what’s working, what’s missing, where approvals stall).</li>
+              <li>Quick wins: fix broken refreshes, align definitions, document assumptions.</li>
+            </ul>
+          </div>
+
+          <button type="button" class="acc-btn" aria-expanded="false" aria-controls="p2">
+            Days 31–60: Standardize delivery and build momentum
+            <span class="chev" aria-hidden="true">⌄</span>
+          </button>
+          <div id="p2" class="panel" role="region">
+            <ul class="list">
+              <li>Define KPI dictionary and reporting standards (naming, lineage, validation checks).</li>
+              <li>Implement intake workflow: triage, priority scoring, SLAs, status transparency.</li>
+              <li>Identify top 2–3 strategic insight initiatives with measurable outcomes.</li>
+              <li>Establish recurring “Insights Review” cadence with leadership (short, actionable briefs).</li>
+            </ul>
+          </div>
+
+          <button type="button" class="acc-btn" aria-expanded="false" aria-controls="p3">
+            Days 61–90: Scale insight production
+            <span class="chev" aria-hidden="true">⌄</span>
+          </button>
+          <div id="p3" class="panel" role="region">
+            <ul class="list">
+              <li>Build a prioritized roadmap for RPI analytics (platform, dashboards, process).</li>
+              <li>Pilot explanatory/predictive monitoring where it helps (capacity, cycle times, bottlenecks).</li>
+              <li>Strengthen collaboration patterns: documentation, handoffs, “definition of done.”</li>
+              <li>Track adoption and impact (usage, time saved, decision outcomes).</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- QUESTIONS -->
+    <section id="questions">
+      <div class="container">
+        <div class="section-title">
+          <h3>Questions for the committee</h3>
+          <div class="hint">Signals strategic fit</div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="pad">
+              <ul class="list">
+                <li>What decisions does RPI leadership most want to make faster or with more confidence?</li>
+                <li>How is success measured for the insights team today (and what would you like to change)?</li>
+                <li>What are the biggest friction points: data access, definitions, refresh reliability, adoption, or staffing?</li>
+                <li>How are analytics requests prioritized today, and who owns final prioritization?</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="pad">
+              <ul class="list">
+                <li>Which systems are the primary sources for research operations data (and how mature is integration)?</li>
+                <li>What is the expected balance of Tableau vs Power BI, and what’s the longer-term direction?</li>
+                <li>Are there compliance or regulatory reporting needs driving standards and controls?</li>
+                <li>What does “great communication” look like in this role at UC?</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact">
+      <div class="container">
+        <div class="section-title">
+          <h3>Contact & links</h3>
+          <div class="hint">Thank you for your consideration</div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card soft">
+            <div class="pad">
+              <div class="kv">
+                <div class="k">Email</div>
+                <div class="v"><a href="mailto:ericfrayer@gmail.com">ericfrayer@gmail.com</a></div>
+                <div class="v"><a href="mailto:info@ericfrayer.com">info@ericfrayer.com</a></div>
+                <div class="d">Best way to reach me for follow-ups or next steps.</div>
+              </div>
+              <div style="height:10px;"></div>
+              <div class="kv">
+                <div class="k">Phone</div>
+                <div class="v"><a href="tel:+15133784653">+1 (513) 378-4653</a></div>
+                <div class="d">Available during standard business hours.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="pad">
+              <div class="kv">
+                <div class="k">Portfolio sites</div>
+                <div class="d">
+                  <div>• <a href="https://www.thinkdashboards.com/" target="_blank" rel="noopener">ThinkDashboards.com</a></div>
+                  <div>• <a href="https://www.thinkdataanalysis.com/" target="_blank" rel="noopener">ThinkDataAnalysis.com</a></div>
+                  <div>• <a href="https://www.ericfrayer.com/" target="_blank" rel="noopener">EricFrayer.com</a></div>
+                  <div style="height:20px;"></div>
+                  <div style="font-size:12px; font-weight:800; letter-spacing:.02em; text-transform:uppercase; color:var(--muted2); margin-bottom:4px;">AI and LLM Solutions</div>
+                  <div>• <a href="https://www.thinkdataanalysis.com/chat" target="_blank" rel="noopener">ThinkDataAnalysis.com/chat</a> — Azure based</div>
+                  <div>• <a href="https://www.thinkdashboards.com/chat" target="_blank" rel="noopener">ThinkDashboards.com/chat</a> — On premise based</div>
+                </div>
+              </div>
+
+              <div style="height:12px;"></div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="container">
+        <div class="foot">
+          <div>© <span id="year"></span> Eric Frayer · Prepared for UC (RPI) interview</div>
+          <div style="display:flex; gap:10px; align-items:center;">
+            <span class="pill">Minimal · Fast · Print-friendly</span>
+            <span class="pill" id="themeLabel">Theme: Light</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    // Smooth scroll for in-page anchors
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', (e) => {
+        const id = a.getAttribute('href');
+        if (!id || id === '#') return;
+        const el = document.querySelector(id);
+        if (!el) return;
+        e.preventDefault();
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        history.replaceState(null, '', id);
+      });
+    });
+
+    // Theme toggle
+    const themeBtn = document.getElementById('themeBtn');
+    const themeLabel = document.getElementById('themeLabel');
+    const savedTheme = localStorage.getItem('ef_uc_theme');
+    if (savedTheme) document.body.setAttribute('data-theme', savedTheme);
+
+    function syncThemeLabel(){
+      const t = document.body.getAttribute('data-theme') || 'light';
+      themeLabel.textContent = 'Theme: ' + (t === 'dark' ? 'Dark' : 'Light');
+      document.getElementById('themeLabel').textContent = themeLabel.textContent;
+    }
+    syncThemeLabel();
+
+    themeBtn.addEventListener('click', () => {
+      const cur = document.body.getAttribute('data-theme') || 'light';
+      const next = cur === 'dark' ? 'light' : 'dark';
+      document.body.setAttribute('data-theme', next);
+      localStorage.setItem('ef_uc_theme', next);
+      syncThemeLabel();
+    });
+
+    // Copy share link
+    const copyLinkBtn = document.getElementById('copyLinkBtn');
+    copyLinkBtn.addEventListener('click', async () => {
+      const txt = window.location.href;
+      try{
+        await navigator.clipboard.writeText(txt);
+        copyLinkBtn.textContent = 'Copied!';
+        setTimeout(() => copyLinkBtn.textContent = 'Copy Link', 900);
+      }catch{
+        const tmp = document.createElement('textarea');
+        tmp.value = txt;
+        document.body.appendChild(tmp);
+        tmp.select();
+        document.execCommand('copy');
+        document.body.removeChild(tmp);
+        copyLinkBtn.textContent = 'Copied!';
+        setTimeout(() => copyLinkBtn.textContent = 'Copy Link', 900);
+      }
+    });
+
+    // Print
+    document.getElementById('printBtn').addEventListener('click', () => window.print());
+
+    // Accordion
+    const accButtons = document.querySelectorAll('.acc-btn');
+    accButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const panelId = btn.getAttribute('aria-controls');
+        const panel = document.getElementById(panelId);
+        const isOpen = panel.classList.contains('open');
+
+        accButtons.forEach(b => {
+          const pid = b.getAttribute('aria-controls');
+          document.getElementById(pid).classList.remove('open');
+          b.setAttribute('aria-expanded','false');
+          b.querySelector('.chev').textContent = '⌄';
+        });
+
+        if (!isOpen){
+          panel.classList.add('open');
+          btn.setAttribute('aria-expanded','true');
+          btn.querySelector('.chev').textContent = '⌃';
+        }
+      });
+    });
+
+    // Download page as a single HTML file
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+      const html = '<!doctype html>\\n' + document.documentElement.outerHTML;
+      const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'eric-frayer-uc-rpi-interview.html';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    });
+
+    // Footer year
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

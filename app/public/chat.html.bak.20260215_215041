@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ThinkDashboards Chat</title>
+
+<style>
+:root{
+  --bg:#0b0c10;
+  --card:rgba(255,255,255,.06);
+  --border:rgba(255,255,255,.12);
+  --text:rgba(255,255,255,.92);
+  --muted:rgba(255,255,255,.65);
+  --shadow:0 10px 30px rgba(0,0,0,.35);
+  --mono:ui-monospace,Menlo,Monaco,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:system-ui,sans-serif;
+  background:radial-gradient(900px 500px at 10% 10%,rgba(76,110,245,.25),transparent 60%),var(--bg);
+  color:var(--text);
+}
+.wrap{max-width:980px;margin:24px auto;padding:0 16px}
+h1{margin:0;font-size:1.2rem}
+.sub{color:var(--muted);margin:.25rem 0 0}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+
+.chat{height:60vh;padding:16px;overflow:auto}
+.row{display:flex;margin:10px 0}
+.row.user{justify-content:flex-end}
+.bubble{
+  max-width:80%;
+  padding:12px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  white-space:pre-wrap;
+}
+.user .bubble{
+  background:rgba(76,110,245,.25);
+}
+.assistant .bubble{
+  background:rgba(255,255,255,.07);
+}
+
+.controls{padding:12px;border-top:1px solid var(--border)}
+textarea{
+  width:100%;
+  min-height:90px;
+  padding:10px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.05);
+  color:var(--text);
+}
+
+button{
+  padding:8px 12px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.08);
+  color:var(--text);
+  cursor:pointer;
+}
+button.primary{background:rgba(32,201,151,.3)}
+button.danger{background:rgba(255,99,132,.25)}
+
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.range{display:flex;gap:6px;align-items:center}
+select,input[type=range]{background:rgba(255,255,255,.05);color:white;border:1px solid var(--border);border-radius:8px;padding:4px}
+
+.small{font-size:.8rem;color:var(--muted)}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+  <h1>ThinkDashboards Chat</h1>
+  <div class="sub">Public UI → Node → LM Studio</div>
+
+  <div class="card">
+    <div id="chat" class="chat"></div>
+
+    <div class="controls">
+      <div class="toolbar">
+        <select id="model">
+          <option value="openai/gpt-oss-20b">openai/gpt-oss-20b</option>
+        </select>
+
+        <div class="range">
+          <span class="small">Temp</span>
+          <input id="temp" type="range" min="0" max="1.2" step="0.1" value="0.7">
+          <span id="tempOut">0.7</span>
+        </div>
+
+        <button id="copy">Copy last</button>
+        <button id="export">Export</button>
+        <button id="clear" class="danger">Clear</button>
+      </div>
+
+      <textarea id="prompt" placeholder="Enter to send • Shift+Enter newline"></textarea>
+
+      <div style="display:flex;justify-content:space-between;margin-top:8px">
+        <span class="small">History is stored locally in your browser</span>
+        <button id="send" class="primary">Send</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const STORAGE="thinkdashboards_chat";
+const chat=document.getElementById("chat");
+const prompt=document.getElementById("prompt");
+const send=document.getElementById("send");
+const clearBtn=document.getElementById("clear");
+const exportBtn=document.getElementById("export");
+const copyBtn=document.getElementById("copy");
+const temp=document.getElementById("temp");
+const tempOut=document.getElementById("tempOut");
+const model=document.getElementById("model");
+
+tempOut.textContent=temp.value;
+
+let messages=JSON.parse(localStorage.getItem(STORAGE)||"null")||[
+  {role:"assistant",content:"Hi — I’m running locally on your Mac Mini via LM Studio."}
+];
+
+function save(){localStorage.setItem(STORAGE,JSON.stringify(messages))}
+function scroll(){chat.scrollTop=chat.scrollHeight}
+
+function render(){
+  chat.innerHTML="";
+  messages.forEach(m=>{
+    const row=document.createElement("div");
+    row.className="row "+m.role;
+    const b=document.createElement("div");
+    b.className="bubble";
+    b.textContent=m.content;
+    if(m.content.includes("```")) b.style.fontFamily="var(--mono)";
+    row.appendChild(b);
+    chat.appendChild(row);
+  });
+  save();scroll();
+}
+
+render();
+
+prompt.addEventListener("keydown",e=>{
+  if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send.click();}
+});
+
+send.onclick=async()=>{
+  const text=prompt.value.trim();
+  if(!text||text.length>4000)return;
+
+  messages.push({role:"user",content:text});
+  messages.push({role:"assistant",content:"Thinking..."});
+  prompt.value="";
+  render();
+
+  const res=await fetch("/api/chat",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      model:model.value,
+      message:text,
+      temperature:parseFloat(temp.value)
+    })
+  });
+
+  const j=await res.json();
+  messages[messages.length-1].content=j.text||"(no response)";
+  render();
+};
+
+clearBtn.onclick=()=>{
+  messages=[{role:"assistant",content:"Cleared. Ask me anything."}];
+  render();
+};
+
+exportBtn.onclick=()=>{
+  const blob=new Blob([JSON.stringify(messages,null,2)],{type:"application/json"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="chat.json";
+  a.click();
+};
+
+copyBtn.onclick=()=>{
+  const last=[...messages].reverse().find(m=>m.role==="assistant");
+  if(last)navigator.clipboard.writeText(last.content);
+};
+
+temp.oninput=()=>tempOut.textContent=temp.value;
+</script>
+</body>
+</html>
+

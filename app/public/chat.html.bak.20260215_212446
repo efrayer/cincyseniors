@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ThinkDashboards Chat</title>
+  <style>
+    :root{
+      --bg: #0b0c10;
+      --card: rgba(255,255,255,.06);
+      --border: rgba(255,255,255,.12);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.68);
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 14px;
+      --radius2: 18px;
+      --pad: 14px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+    *{ box-sizing: border-box; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: radial-gradient(900px 500px at 10% 10%, rgba(76,110,245,.25), transparent 60%),
+                  radial-gradient(900px 500px at 90% 10%, rgba(32,201,151,.18), transparent 60%),
+                  radial-gradient(900px 700px at 50% 120%, rgba(255,193,7,.10), transparent 60%),
+                  var(--bg);
+      color: var(--text);
+    }
+    a{ color: inherit; }
+    .wrap{ max-width: 980px; margin: 26px auto; padding: 0 16px 26px; }
+    .header{
+      display:flex; align-items:flex-start; justify-content:space-between; gap: 14px;
+      margin-bottom: 14px;
+    }
+    .title{
+      display:flex; flex-direction:column; gap: 6px;
+    }
+    h1{ font-size: 1.15rem; margin:0; letter-spacing: .2px; }
+    .sub{ font-size: .95rem; color: var(--muted); margin:0; }
+    .pill{
+      display:inline-flex; gap: 8px; align-items:center;
+      border: 1px solid var(--border);
+      padding: 8px 10px; border-radius: 999px;
+      background: rgba(255,255,255,.04);
+      box-shadow: var(--shadow);
+      font-size: .9rem; color: var(--muted);
+      user-select:none;
+      white-space:nowrap;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .card{
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius2);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+
+    .chat{
+      height: min(66vh, 640px);
+      padding: 16px;
+      overflow:auto;
+      scroll-behavior: smooth;
+    }
+    .row{ display:flex; margin: 10px 0; }
+    .row.user{ justify-content:flex-end; }
+    .row.assistant{ justify-content:flex-start; }
+
+    .bubble{
+      max-width: 80%;
+      padding: 12px 12px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.05);
+      line-height: 1.35;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    .row.user .bubble{
+      background: rgba(76,110,245,.20);
+      border-color: rgba(76,110,245,.35);
+      border-bottom-right-radius: 6px;
+    }
+    .row.assistant .bubble{
+      background: rgba(255,255,255,.06);
+      border-bottom-left-radius: 6px;
+    }
+
+    .meta{
+      margin-top: 6px;
+      font-size: .75rem;
+      color: rgba(255,255,255,.55);
+      display:flex; gap: 10px; align-items:center;
+    }
+    .meta code{
+      font-family: var(--mono);
+      font-size: .75rem;
+      color: rgba(255,255,255,.70);
+      background: rgba(0,0,0,.25);
+      padding: 2px 6px; border-radius: 8px;
+      border: 1px solid rgba(255,255,255,.10);
+    }
+
+    .controls{
+      padding: 14px;
+      border-top: 1px solid var(--border);
+      display:flex; flex-direction:column; gap: 12px;
+      background: rgba(0,0,0,.15);
+    }
+
+    .toolbar{
+      display:flex; flex-wrap:wrap; gap: 10px; align-items:center; justify-content:space-between;
+    }
+    .tool-left, .tool-right{ display:flex; gap: 10px; flex-wrap:wrap; align-items:center; }
+
+    label{ font-size: .82rem; color: var(--muted); display:flex; gap: 8px; align-items:center; }
+    select, input[type="range"], input[type="number"]{
+      background: rgba(255,255,255,.06);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 8px 10px;
+      outline: none;
+    }
+    select{ padding-right: 28px; }
+    .range{
+      display:flex; gap: 10px; align-items:center;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      border-radius: 12px;
+    }
+    .range span{ font-size: .82rem; color: var(--muted); min-width: 86px; }
+    .range output{
+      font-family: var(--mono);
+      font-size: .8rem;
+      color: rgba(255,255,255,.75);
+      min-width: 48px;
+      text-align:right;
+    }
+
+    textarea{
+      width:100%;
+      resize: vertical;
+      min-height: 84px;
+      max-height: 240px;
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      outline: none;
+      font-size: 1rem;
+      line-height: 1.35;
+    }
+
+    .actions{
+      display:flex; gap: 10px; flex-wrap:wrap; align-items:center; justify-content:space-between;
+    }
+
+    button{
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.08);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 12px;
+      cursor:pointer;
+      transition: transform .06s ease, background .15s ease;
+    }
+    button:hover{ background: rgba(255,255,255,.12); }
+    button:active{ transform: translateY(1px); }
+    button.primary{
+      background: rgba(32,201,151,.22);
+      border-color: rgba(32,201,151,.35);
+    }
+    button.primary:hover{ background: rgba(32,201,151,.28); }
+    button.danger{
+      background: rgba(255,99,132,.18);
+      border-color: rgba(255,99,132,.35);
+    }
+    button:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+      transform:none;
+    }
+
+    .hint{
+      font-size: .82rem;
+      color: rgba(255,255,255,.58);
+    }
+    .hint kbd{
+      font-family: var(--mono);
+      font-size: .78rem;
+      padding: 2px 6px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(0,0,0,.25);
+      color: rgba(255,255,255,.85);
+    }
+
+    .toast{
+      display:none;
+      position: fixed;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%);
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.65);
+      color: rgba(255,255,255,.92);
+      box-shadow: var(--shadow);
+      max-width: calc(100vw - 40px);
+      font-size: .9rem;
+    }
+
+    @media (min-width: 980px){
+      .header{ align-items:center; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <div class="title">
+        <h1>ThinkDashboards Chat</h1>
+        <p class="sub">Public UI → Node API → LM Studio (local)</p>
+      </div>
+      <div class="pill" id="statusPill">● <span id="statusText">Ready</span></div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="chat" id="chat"></div>
+
+        <div class="controls">
+          <div class="toolbar">
+            <div class="tool-left">
+              <label>
+                Model
+                <select id="model">
+                  <option value="openai/gpt-oss-20b" selected>openai/gpt-oss-20b</option>
+                </select>
+              </label>
+
+              <div class="range">
+                <span>Temperature</span>
+                <input id="temp" type="range" min="0" max="1.2" step="0.1" value="0.7" />
+                <output id="tempOut">0.7</output>
+              </div>
+            </div>
+
+            <div class="tool-right">
+              <button id="exportBtn">Export</button>
+              <button class="danger" id="clearBtn">Clear</button>
+            </div>
+          </div>
+
+          <textarea id="prompt" placeholder="Type your message… (Enter = send, Shift+Enter = newline)"></textarea>
+
+          <div class="actions">
+            <div class="hint">
+              Tip: <kbd>Enter</kbd> send • <kbd>Shift</kbd>+<kbd>Enter</kbd> newline
+            </div>
+            <div style="display:flex; gap:10px; align-items:center;">
+              <button id="copyLastBtn">Copy last</button>
+              <button class="primary" id="sendBtn">Send</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    const chatEl = $("chat");
+    const promptEl = $("prompt");
+    const sendBtn = $("sendBtn");
+    const clearBtn = $("clearBtn");
+    const exportBtn = $("exportBtn");
+    const copyLastBtn = $("copyLastBtn");
+    const modelEl = $("model");
+    const tempEl = $("temp");
+    const tempOut = $("tempOut");
+    const statusText = $("statusText");
+    const statusPill = $("statusPill");
+    const toastEl = $("toast");
+
+    const state = {
+      messages: [
+        { role: "assistant", content: "Hi! Ask me anything. I’m connected to a local model running in LM Studio." }
+      ],
+      busy: false
+    };
+
+    const nowTime = () => new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+
+    function setStatus(text){
+      statusText.textContent = text;
+    }
+
+    function toast(msg){
+      toastEl.textContent = msg;
+      toastEl.style.display = "block";
+      clearTimeout(toastEl._t);
+      toastEl._t = setTimeout(() => (toastEl.style.display = "none"), 1800);
+    }
+
+    function scrollToBottom(){
+      chatEl.scrollTop = chatEl.scrollHeight;
+    }
+
+    function render(){
+      chatEl.innerHTML = "";
+      for(const m of state.messages){
+        const row = document.createElement("div");
+        row.className = `row ${m.role}`;
+
+        const bubble = document.createElement("div");
+        bubble.className = "bubble";
+        bubble.textContent = m.content;
+
+        const meta = document.createElement("div");
+        meta.className = "meta";
+        meta.innerHTML = `<span>${m.role === "user" ? "You" : "Assistant"}</span><span>•</span><span>${m.time || nowTime()}</span>`;
+
+        const wrap = document.createElement("div");
+        wrap.style.display = "flex";
+        wrap.style.flexDirection = "column";
+        wrap.style.gap = "6px";
+        wrap.appendChild(bubble);
+        wrap.appendChild(meta);
+
+        row.appendChild(wrap);
+        chatEl.appendChild(row);
+      }
+      scrollToBottom();
+    }
+
+    function setBusy(b){
+      state.busy = b;
+      sendBtn.disabled = b;
+      promptEl.disabled = b;
+      modelEl.disabled = b;
+      tempEl.disabled = b;
+      setStatus(b ? "Thinking…" : "Ready");
+      statusPill.style.opacity = b ? "0.85" : "1";
+    }
+
+    async function send(){
+      const text = promptEl.value.trim();
+      if(!text) return;
+
+      // simple guardrail
+      if(text.length > 4000){
+        toast("Message too long (max 4000 chars).");
+        return;
+      }
+
+      const model = modelEl.value;
+      const temperature = parseFloat(tempEl.value);
+
+      state.messages.push({ role: "user", content: text, time: nowTime() });
+      promptEl.value = "";
+      render();
+
+      // placeholder assistant message
+      const idx = state.messages.push({ role: "assistant", content: "Thinking…", time: nowTime() }) - 1;
+      render();
+
+      setBusy(true);
+
+      try{
+        const res = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ model, message: text, temperature })
+        });
+
+        const data = await res.json();
+        if(!res.ok){
+          throw new Error(data?.error || `HTTP ${res.status}`);
+        }
+
+        const reply = data?.text ?? "";
+        state.messages[idx].content = reply || "(No content returned)";
+      } catch(e){
+        state.messages[idx].content = `Error: ${e.message || e}`;
+      } finally{
+        setBusy(false);
+        render();
+      }
+    }
+
+    // Controls
+    sendBtn.addEventListener("click", send);
+
+    promptEl.addEventListener("keydown", (e) => {
+      if(e.key === "Enter" && !e.shiftKey){
+        e.preventDefault();
+        if(!state.busy) send();
+      }
+    });
+
+    clearBtn.addEventListener("click", () => {
+      state.messages = [
+        { role: "assistant", content: "Cleared. Ask me anything.", time: nowTime() }
+      ];
+      render();
+    });
+
+    exportBtn.addEventListener("click", async () => {
+      const blob = new Blob([JSON.stringify(state.messages, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "thinkdashboards-chat-export.json";
+      a.click();
+      URL.revokeObjectURL(url);
+      toast("Exported chat JSON");
+    });
+
+    copyLastBtn.addEventListener("click", async () => {
+      const last = [...state.messages].reverse().find(m => m.role === "assistant");
+      if(!last) return toast("No assistant message to copy");
+      try{
+        await navigator.clipboard.writeText(last.content);
+        toast("Copied last assistant message");
+      } catch {
+        toast("Copy failed (browser permission)");
+      }
+    });
+
+    // temp display
+    tempEl.addEventListener("input", () => tempOut.textContent = tempEl.value);
+    tempOut.textContent = tempEl.value;
+
+    // initial render
+    render();
+    promptEl.focus();
+  </script>
+</body>
+</html>
+

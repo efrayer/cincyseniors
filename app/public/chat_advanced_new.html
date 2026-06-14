@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI Chat • Think Data Analysis</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root{--bg:#f5f7fb;--panel:#fff;--muted:#6b7280;--text:#1f2937;--border:#e5e7eb;--primary:#2563eb;--shadow:0 8px 20px rgba(0,0,0,.06)}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
+    .container{max-width:980px;margin:24px auto;padding:0 16px}
+    h1{font-size:24px;margin:6px 0 14px;text-align:center}
+    .card{background:var(--panel);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow)}
+    .toolbar{display:flex;flex-wrap:wrap;gap:16px;padding:12px 14px;border-bottom:1px solid var(--border);align-items:center}
+    .toolbar .toggles{display:flex;flex-wrap:wrap;gap:16px;align-items:center}
+    .toolbar .toggles label{font-size:14px;color:var(--text);cursor:pointer;user-select:none}
+    .chat{height:500px;overflow:auto;padding:16px}
+    .msg{margin:12px 0}
+    .bub{display:inline-block;max-width:100%;padding:12px;border-radius:12px;border:1px solid var(--border);white-space:pre-wrap}
+    .user .bub{background:#e6f7e7}
+    .bot  .bub{background:#f2f4f7}
+    .row{display:flex;align-items:flex-end;gap:10px;padding:12px;border-top:1px solid var(--border)}
+    textarea#q{flex:1;min-height:56px;border:1px solid var(--border);border-radius:12px;padding:10px;resize:vertical;font-size:16px}
+    .btn{border:1px solid var(--border);background:#fff;border-radius:10px;padding:8px 12px;font-weight:600;cursor:pointer}
+    .btn.primary{background:var(--primary);border-color:#1e40af;color:#fff}
+    .muted{color:var(--muted);font-size:12px}
+    .section{padding:10px 14px;border-top:1px solid var(--border)}
+    .section b{display:block;margin-bottom:6px}
+    ol{margin:8px 0 0 18px;padding:0}
+    a{color:var(--primary);text-decoration:none}
+    a:hover{text-decoration:underline}
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>AI Chat</h1>
+  <div class="card">
+    <div class="toolbar">
+      <div class="toggles">
+        <label><input type="checkbox" id="useMemory" checked /> Use Memory</label>
+        <label><input type="checkbox" id="useRag" /> Use RAG</label>
+        <label><input type="checkbox" id="forceSearch" /> Use Web Search</label>
+      </div>
+    </div>
+
+    <div id="chat" class="chat">
+      <div class="muted" style="text-align:center; padding: 20px;">Ask me anything! Using GPT 5.2 and Google Search</div>
+    </div>
+
+    <div class="row">
+      <textarea id="q" placeholder="Type your question… (Enter to send, Shift+Enter for newline)"></textarea>
+      <button class="btn" id="clear">Clear</button>
+      <button class="btn primary" id="send">Send</button>
+    </div>
+
+    <div id="src" class="section" style="display:none">
+      <b>References</b>
+      <ol id="srcList" class="muted"></ol>
+    </div>
+  </div>
+
+  <center>
+    <p class="muted" style="margin-top:10px">Powered by <a href="https://www.thinkdataanalysis.com/chat/">Think Data Analysis</a></p>
+  </center>
+</div>
+
+<script>
+// --- API base detection ---
+const storedApi = localStorage.getItem('apiBase');
+const isLocal = ['localhost','127.0.0.1'].includes(location.hostname) || location.protocol==='file:';
+const API = storedApi || (isLocal ? 'http://127.0.0.1:3001' : '/api');
+const $ = id => document.getElementById(id);
+const chat = $('chat');
+
+function esc(s=''){ return (s+'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }
+
+function add(sender, text){
+  const div = document.createElement('div');
+  div.className = 'msg '+sender;
+  div.innerHTML = `<div class="bub">${esc(text||'')}</div>`;
+  chat.appendChild(div); chat.scrollTop = chat.scrollHeight;
+}
+
+function renderSources(arr){
+  if(!arr || !arr.length){ $('src').style.display='none'; return }
+  $('srcList').innerHTML = arr.map((s,i)=>{
+    const title = esc(s.title || s.url || s.source || 'Result');
+    const url = s.url ? s.url : (s.href ? s.href : null);
+    let host = '';
+    try { host = url ? ` (${new URL(url).hostname})` : ''; } catch {}
+    // AFTER
+const left = url ? `<a href="${url}" target="_blank" rel="noopener"><b>${title}</b></a>` : `<b>${title}</b>`;
+    return `<li>${left}<span class="muted">${host}</span></li>`;
+  }).join('');
+  $('src').style.display='block';
+}
+
+// --- Session management ---
+async function getSessionId(){
+  let sid = localStorage.getItem('sid');
+  if(sid){ return sid; }
+  try{
+    const r = await fetch(`${API}/session/new`, { method:'POST' });
+    const j = await r.json();
+    if(j.sessionId){ sid = j.sessionId; localStorage.setItem('sid', sid); return sid; }
+  }catch(e){ /* fallthrough to fallback */ }
+  sid = Math.random().toString(36).slice(2);
+  localStorage.setItem('sid', sid);
+  return sid;
+}
+
+async function send(){
+  const q = $('q').value.trim(); if(!q) return;
+  const sessionId = await getSessionId();
+  add('user', q); $('q').value='';
+  add('bot', 'Thinking…');
+  try{
+    const body = {
+      message: q,
+      system: 'You are a helpful assistant.',
+      useMemory: $('useMemory').checked,
+      useRag: $('useRag').checked,
+      forceSearch: $('forceSearch').checked,
+      sessionId
+    };
+    const r = await fetch(`${API}/chat`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(body)
+    });
+    if (!r.ok) {
+        throw new Error(`API request failed with status ${r.status}`);
+    }
+    const j = await r.json();
+
+    const last = chat.lastChild; last.querySelector('.bub').textContent = j.reply || '(no reply)';
+    renderSources(j.sources || j.results || []);
+
+    if(j.sessionId && j.sessionId !== sessionId){
+      localStorage.setItem('sid', j.sessionId);
+    }
+  }catch(e){
+    const last = chat.lastChild; last.querySelector('.bub').textContent = 'Error: '+e.message;
+    renderSources([]);
+  }
+}
+
+function clearChat(){
+  chat.innerHTML = '<div class="muted" style="text-align:center; padding: 20px;">Ask me anything! Your conversation is private.</div>';
+  $('src').style.display = 'none';
+  $('q').value = '';
+}
+
+$('send').addEventListener('click', send);
+$('q').addEventListener('keydown', e=>{ if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); send(); } });
+$('clear').addEventListener('click', clearChat);
+
+// init
+getSessionId();
+</script>
+</body>
+</html>

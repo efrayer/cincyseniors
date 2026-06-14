@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RAG Document Management</title>
+  <style>
+    /* Dark theme (default) — matches chat-advanced.html */
+    :root{
+      --bg:#0b0c10; --panel:rgba(255,255,255,.06); --muted:rgba(255,255,255,.65); --text:rgba(255,255,255,.92);
+      --border:rgba(255,255,255,.12); --primary:#4c6ef5; --shadow:0 10px 30px rgba(0,0,0,.35);
+      --chip:rgba(255,255,255,.06); --chip-border:rgba(255,255,255,.12);
+      --input-bg:rgba(255,255,255,.06);
+      --btn-bg:rgba(255,255,255,.10);
+      --link:#9ecbff;
+      --pageGlow1:rgba(76,110,245,.25); --pageGlow2:rgba(32,201,151,.15);
+      --mono:ui-monospace,Menlo,Monaco,Consolas,monospace;
+    }
+    /* Light theme */
+    html[data-theme="light"]{
+      --bg:#f6f7fb; --panel:#ffffff; --muted:rgba(0,0,0,.55); --text:rgba(0,0,0,.88);
+      --border:rgba(0,0,0,.10); --primary:#2563eb; --shadow:0 8px 20px rgba(0,0,0,.06);
+      --chip:#f8fafc; --chip-border:#e5e7eb;
+      --input-bg:rgba(255,255,255,.75);
+      --btn-bg:#ffffff;
+      --link:#0b62ff;
+      --pageGlow1:rgba(76,110,245,.14); --pageGlow2:rgba(32,201,151,.10);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+      background:
+        radial-gradient(900px 500px at 10% 10%, var(--pageGlow1), transparent 60%),
+        radial-gradient(900px 500px at 90% 10%, var(--pageGlow2), transparent 60%),
+        var(--bg);
+      color:var(--text);
+    }
+    .container{max-width:800px;margin:24px auto;padding:0 16px}
+    h1{font-size:24px;margin:6px 0 4px;text-align:center}
+    .subtitle{text-align:center;color:var(--muted);font-size:13px;margin-bottom:18px}
+
+    .card{background:var(--panel);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}
+    .section{padding:20px;border-bottom:1px solid var(--border)}
+    .section:last-child{border-bottom:none}
+    .section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+    .section-header h2{font-size:16px;margin:0}
+
+    .btn{border:1px solid var(--border);background:var(--btn-bg);border-radius:10px;padding:8px 12px;font-weight:600;cursor:pointer;color:var(--text);font-size:13px}
+    .btn:hover{border-color:var(--primary)}
+    .btn.primary{background:var(--primary);border-color:var(--primary);color:#fff}
+    .btn.ghost{background:transparent;color:var(--text)}
+    .btn.danger{color:#f44336;border-color:rgba(244,67,54,.3)}
+    .btn.danger:hover{border-color:#f44336;background:rgba(244,67,54,.08)}
+    .btn:disabled{opacity:0.5;cursor:not-allowed}
+    .muted{color:var(--muted);font-size:12px}
+
+    .toggle{display:flex;gap:8px;align-items:center;padding:4px 8px;border:1px solid var(--border);border-radius:10px;background:rgba(255,255,255,.04)}
+    .toggle input{transform:scale(1.05);cursor:pointer}
+    .toggle .small{font-size:12px;color:var(--muted)}
+
+    /* Upload zone */
+    .upload-zone{
+      border:2px dashed var(--border);
+      border-radius:12px;
+      padding:36px 20px;
+      text-align:center;
+      cursor:pointer;
+      transition:border-color 0.2s, background 0.2s;
+    }
+    .upload-zone:hover,
+    .upload-zone.drag-over{
+      border-color:var(--primary);
+      background:rgba(76,110,245,.05);
+    }
+    .upload-icon{font-size:40px;margin-bottom:8px;opacity:0.6}
+    .upload-label{font-size:15px;margin-bottom:4px}
+    .upload-hint{font-size:12px;color:var(--muted)}
+
+    /* Status */
+    .status-msg{margin-top:14px;padding:12px;border-radius:10px;font-size:13px;display:none}
+    .status-msg.success{display:block;background:rgba(32,201,151,.1);border:1px solid rgba(32,201,151,.3);color:#20c997}
+    .status-msg.error{display:block;background:rgba(244,67,54,.1);border:1px solid rgba(244,67,54,.3);color:#f44336}
+    .status-msg.processing{display:block;background:rgba(76,110,245,.1);border:1px solid rgba(76,110,245,.3);color:var(--primary)}
+
+    /* Document list */
+    .doc-list{list-style:none;padding:0;margin:0}
+    .doc-item{
+      display:flex;justify-content:space-between;align-items:center;
+      padding:14px;
+      border:1px solid var(--border);
+      border-radius:10px;
+      margin-bottom:8px;
+      background:var(--panel);
+      transition:border-color 0.2s;
+    }
+    .doc-item:hover{border-color:var(--primary)}
+    .doc-name{font-weight:600;font-size:14px}
+    .doc-meta{font-size:12px;color:var(--muted);margin-top:4px;display:flex;gap:8px;flex-wrap:wrap}
+    .badge{
+      display:inline-block;
+      background:var(--chip);border:1px solid var(--chip-border);
+      border-radius:6px;padding:2px 8px;font-size:11px;
+    }
+
+    .empty-state{text-align:center;padding:32px;color:var(--muted);font-size:14px}
+    .nav{text-align:center;margin-top:18px;font-size:13px}
+    .nav a{color:var(--primary);text-decoration:none}
+    .nav a:hover{text-decoration:underline}
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>RAG Document Management</h1>
+  <p class="subtitle">Upload documents to enable RAG-enhanced chat responses</p>
+
+  <div style="display:flex;justify-content:flex-end;margin-bottom:10px">
+    <div class="toggle" title="Theme">
+      <label class="small" style="display:flex;gap:6px;align-items:center;margin:0;cursor:pointer">
+        <input id="themeToggle" type="checkbox" />
+        <span id="themeLabel">Dark</span>
+      </label>
+    </div>
+  </div>
+
+  <div class="card">
+    <!-- Upload Section -->
+    <div class="section">
+      <div class="section-header">
+        <h2>Upload Documents</h2>
+      </div>
+
+      <div class="upload-zone" id="uploadZone">
+        <input type="file" id="fileInput" accept=".pdf,.docx,.csv,.txt" style="display:none" />
+        <div class="upload-icon">&#128196;</div>
+        <div class="upload-label">Drop files here or click to browse</div>
+        <div class="upload-hint">PDF, DOCX, CSV, TXT &mdash; Maximum file size: 10MB</div>
+      </div>
+
+      <div class="status-msg" id="statusMsg"></div>
+    </div>
+
+    <!-- Document List -->
+    <div class="section">
+      <div class="section-header">
+        <h2>Uploaded Documents</h2>
+        <button class="btn ghost" onclick="loadDocuments()" title="Refresh list">Refresh</button>
+      </div>
+      <div id="docListContainer">
+        <div class="empty-state">Loading...</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav">
+    <a href="/chat-advanced">&larr; Back to Chat</a>
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+
+function esc(s) {
+  return (s + '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Theme ──────────────────────────────────────
+
+const THEME_KEY = 'thinkdashboards_theme';
+const themeToggle = $('themeToggle');
+const themeLabel = $('themeLabel');
+
+function applyTheme(theme) {
+  const t = (theme === 'light') ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', t);
+  localStorage.setItem(THEME_KEY, t);
+  themeToggle.checked = (t === 'light');
+  themeLabel.textContent = (t === 'light') ? 'Light' : 'Dark';
+}
+
+function initTheme() {
+  const saved = localStorage.getItem(THEME_KEY);
+  if (saved) { applyTheme(saved); return; }
+  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+    applyTheme('light');
+  } else {
+    applyTheme('dark');
+  }
+}
+
+themeToggle.addEventListener('change', () => {
+  applyTheme(themeToggle.checked ? 'light' : 'dark');
+});
+
+initTheme();
+
+// ── Upload ─────────────────────────────────────
+
+const uploadZone = $('uploadZone');
+const fileInput = $('fileInput');
+const statusMsg = $('statusMsg');
+
+uploadZone.addEventListener('click', () => fileInput.click());
+
+uploadZone.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  uploadZone.classList.add('drag-over');
+});
+
+uploadZone.addEventListener('dragleave', () => {
+  uploadZone.classList.remove('drag-over');
+});
+
+uploadZone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  uploadZone.classList.remove('drag-over');
+  const allowed = ['.pdf', '.docx', '.csv', '.txt'];
+  const files = Array.from(e.dataTransfer.files).filter(f => {
+    const ext = f.name.toLowerCase().match(/\.[^.]+$/)?.[0];
+    return ext && allowed.includes(ext);
+  });
+  if (files.length > 0) {
+    uploadFile(files[0]);
+  } else {
+    showStatus('Unsupported file type. Allowed: PDF, DOCX, CSV, TXT', 'error');
+  }
+});
+
+fileInput.addEventListener('change', () => {
+  if (fileInput.files.length > 0) {
+    uploadFile(fileInput.files[0]);
+    fileInput.value = '';
+  }
+});
+
+function showStatus(msg, type) {
+  statusMsg.textContent = msg;
+  statusMsg.className = 'status-msg ' + type;
+}
+
+async function uploadFile(file) {
+  showStatus(`Uploading and processing ${file.name}...`, 'processing');
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  try {
+    const res = await fetch('/api/rag/documents', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || `Upload failed (${res.status})`);
+    }
+
+    const result = await res.json();
+    const parts = [`${result.filename} ingested: ${result.chunks} chunks created`];
+    if (result.pageCount) parts.push(`${result.pageCount} pages`);
+    if (result.rowCount) parts.push(`${result.rowCount} rows`);
+    showStatus(parts.join(', ') + '.', 'success');
+    loadDocuments();
+  } catch (err) {
+    showStatus(`Error: ${err.message}`, 'error');
+  }
+}
+
+// ── Document List ──────────────────────────────
+
+async function loadDocuments() {
+  const container = $('docListContainer');
+  container.innerHTML = '<div class="empty-state">Loading...</div>';
+
+  try {
+    const res = await fetch('/api/rag/documents');
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    const data = await res.json();
+    const docs = data.documents || [];
+
+    if (docs.length === 0) {
+      container.innerHTML = '<div class="empty-state">No documents uploaded yet.<br>Upload documents above to enable RAG features.</div>';
+      return;
+    }
+
+    // Sort by upload date (newest first)
+    docs.sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt));
+
+    container.innerHTML = '<ul class="doc-list">' + docs.map(doc => `
+      <li class="doc-item">
+        <div>
+          <div class="doc-name">${esc(doc.filename)}</div>
+          <div class="doc-meta">
+            <span>${new Date(doc.uploadedAt).toLocaleString()}</span>
+            <span class="badge">${doc.chunks} chunks</span>
+            <span class="badge">${(doc.totalChars / 1000).toFixed(1)}k chars</span>
+          </div>
+        </div>
+        <button class="btn danger" onclick="deleteDoc('${esc(doc.documentId)}', '${esc(doc.filename)}')">Delete</button>
+      </li>
+    `).join('') + '</ul>';
+  } catch (err) {
+    container.innerHTML = `<div class="empty-state" style="color:#f44336">Failed to load: ${err.message}</div>`;
+  }
+}
+
+async function deleteDoc(docId, filename) {
+  if (!confirm(`Delete "${filename}"?\n\nThis will remove all chunks from the vector store.`)) {
+    return;
+  }
+
+  try {
+    const res = await fetch(`/api/rag/documents/${docId}`, { method: 'DELETE' });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || `Delete failed (${res.status})`);
+    }
+
+    const result = await res.json();
+    showStatus(`Deleted ${filename} (${result.deletedChunks} chunks removed).`, 'success');
+    loadDocuments();
+  } catch (err) {
+    showStatus(`Delete error: ${err.message}`, 'error');
+  }
+}
+
+// Load documents on page load
+loadDocuments();
+</script>
+</body>
+</html>

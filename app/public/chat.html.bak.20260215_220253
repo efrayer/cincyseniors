@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ThinkDashboards Chat</title>
+
+<style>
+:root{
+  --bg:#0b0c10;
+  --card:rgba(255,255,255,.06);
+  --border:rgba(255,255,255,.12);
+  --text:rgba(255,255,255,.92);
+  --muted:rgba(255,255,255,.65);
+  --shadow:0 10px 30px rgba(0,0,0,.35);
+  --mono:ui-monospace,Menlo,Monaco,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  background:radial-gradient(900px 500px at 10% 10%,rgba(76,110,245,.25),transparent 60%),
+             radial-gradient(900px 500px at 90% 10%,rgba(32,201,151,.15),transparent 60%),
+             var(--bg);
+  color:var(--text);
+}
+.wrap{max-width:980px;margin:24px auto;padding:0 16px}
+h1{margin:0;font-size:1.2rem;letter-spacing:.2px}
+.sub{color:var(--muted);margin:.25rem 0 0}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+
+.chat{height:60vh;padding:16px;overflow:auto;scroll-behavior:smooth}
+.row{display:flex;margin:10px 0}
+.row.user{justify-content:flex-end}
+.row.assistant{justify-content:flex-start}
+
+.bubble{
+  max-width:82%;
+  padding:12px 12px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.06);
+  line-height:1.35;
+}
+.user .bubble{
+  background:rgba(76,110,245,.25);
+  border-color:rgba(76,110,245,.38);
+}
+
+/* Markdown content styling */
+.bubble .md{
+  color:var(--text);
+}
+.bubble .md p{margin:.4rem 0}
+.bubble .md h1,.bubble .md h2,.bubble .md h3{
+  margin:.6rem 0 .35rem;
+  line-height:1.2;
+}
+.bubble .md h1{font-size:1.15rem}
+.bubble .md h2{font-size:1.05rem}
+.bubble .md h3{font-size:1.0rem}
+.bubble .md ul,.bubble .md ol{margin:.35rem 0 .35rem 1.25rem}
+.bubble .md li{margin:.15rem 0}
+.bubble .md a{color:#9ecbff}
+.bubble .md a:hover{text-decoration:underline}
+.bubble .md code{
+  font-family:var(--mono);
+  font-size:.92em;
+  padding:.12rem .35rem;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(0,0,0,.22);
+  border-radius:8px;
+}
+.bubble .md pre{
+  margin:.55rem 0;
+  padding:12px;
+  overflow:auto;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(0,0,0,.30);
+}
+.bubble .md pre code{
+  border:none;
+  background:transparent;
+  padding:0;
+  font-size:.9rem;
+  display:block;
+  white-space:pre;
+}
+.bubble .md blockquote{
+  margin:.5rem 0;
+  padding:.2rem .75rem;
+  border-left:3px solid rgba(255,255,255,.25);
+  color:rgba(255,255,255,.75);
+}
+.bubble .md hr{
+  border:none;
+  border-top:1px solid rgba(255,255,255,.14);
+  margin:.6rem 0;
+}
+.bubble .md table{
+  border-collapse:collapse;
+  margin:.5rem 0;
+  width:100%;
+}
+.bubble .md th,.bubble .md td{
+  border:1px solid rgba(255,255,255,.14);
+  padding:6px 8px;
+  font-size:.9rem;
+}
+.bubble .md th{
+  background:rgba(255,255,255,.06);
+}
+
+.controls{padding:12px;border-top:1px solid var(--border);background:rgba(0,0,0,.15)}
+textarea{
+  width:100%;
+  min-height:92px;
+  max-height:240px;
+  resize:vertical;
+  padding:10px 12px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.05);
+  color:var(--text);
+  outline:none;
+  line-height:1.35;
+  font-size:1rem;
+}
+
+button{
+  padding:9px 12px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.08);
+  color:var(--text);
+  cursor:pointer;
+}
+button.primary{background:rgba(32,201,151,.28);border-color:rgba(32,201,151,.35)}
+button.danger{background:rgba(255,99,132,.22);border-color:rgba(255,99,132,.35)}
+button:disabled{opacity:.55;cursor:not-allowed}
+
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+.range{display:flex;gap:6px;align-items:center;padding:6px 8px;border:1px solid var(--border);border-radius:10px;background:rgba(255,255,255,.04)}
+select,input[type=range]{
+  background:rgba(255,255,255,.05);
+  color:var(--text);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:6px 8px;
+}
+.small{font-size:.82rem;color:var(--muted)}
+.status{margin-left:auto;font-size:.85rem;color:rgba(255,255,255,.75)}
+kbd{font-family:var(--mono);font-size:.78rem;padding:2px 6px;border-radius:8px;border:1px solid rgba(255,255,255,.16);background:rgba(0,0,0,.25)}
+.toast{
+  display:none;
+  position:fixed;
+  left:50%;
+  bottom:18px;
+  transform:translateX(-50%);
+  padding:10px 12px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(0,0,0,.65);
+  color:rgba(255,255,255,.92);
+  box-shadow:var(--shadow);
+  max-width:calc(100vw - 40px);
+  font-size:.9rem;
+}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+  <h1>ThinkDashboards Chat</h1>
+  <div class="sub">Public UI → Node API → LM Studio (local)</div>
+
+  <div class="card" style="margin-top:14px">
+    <div id="chat" class="chat"></div>
+
+    <div class="controls">
+      <div class="toolbar">
+        <label class="small">
+          Model
+          <select id="model">
+            <option value="openai/gpt-oss-20b" selected>openai/gpt-oss-20b</option>
+          </select>
+        </label>
+
+        <div class="range">
+          <span class="small">Temp</span>
+          <input id="temp" type="range" min="0" max="1.2" step="0.1" value="0.7">
+          <span id="tempOut" class="small">0.7</span>
+        </div>
+
+        <button id="copy">Copy last</button>
+        <button id="export">Export</button>
+        <button id="clear" class="danger">Clear</button>
+
+        <div id="status" class="status">Ready</div>
+      </div>
+
+      <textarea id="prompt" placeholder="Enter to send • Shift+Enter newline"></textarea>
+
+      <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;margin-top:8px;flex-wrap:wrap">
+        <div class="small">History is stored locally • <kbd>Enter</kbd> send • <kbd>Shift</kbd>+<kbd>Enter</kbd> newline</div>
+        <button id="send" class="primary">Send</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Markdown + Sanitizer (client-side, safe) -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.8/dist/purify.min.js"></script>
+
+<script>
+const STORAGE_KEY = "thinkdashboards_chat_v2";
+const MAX_CHARS = 4000;
+
+const chatEl = document.getElementById("chat");
+const promptEl = document.getElementById("prompt");
+const sendBtn = document.getElementById("send");
+const clearBtn = document.getElementById("clear");
+const exportBtn = document.getElementById("export");
+const copyBtn = document.getElementById("copy");
+const tempEl = document.getElementById("temp");
+const tempOut = document.getElementById("tempOut");
+const modelEl = document.getElementById("model");
+const statusEl = document.getElementById("status");
+const toastEl = document.getElementById("toast");
+
+tempOut.textContent = tempEl.value;
+
+function toast(msg){
+  toastEl.textContent = msg;
+  toastEl.style.display = "block";
+  clearTimeout(toastEl._t);
+  toastEl._t = setTimeout(() => (toastEl.style.display="none"), 1800);
+}
+function scrollBottom(){ chatEl.scrollTop = chatEl.scrollHeight; }
+function nowTime(){ return new Date().toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"}); }
+
+function loadMessages(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return null;
+    const parsed = JSON.parse(raw);
+    if(!Array.isArray(parsed)) return null;
+    return parsed;
+  } catch { return null; }
+}
+function saveMessages(){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(messages)); } catch {}
+}
+
+let messages = loadMessages() || [
+  { role:"assistant", content:"Hi! Ask me anything. I’m connected to a local model running in LM Studio.", time: nowTime() }
+];
+
+function mdToSafeHtml(markdown){
+  const raw = marked.parse(String(markdown || ""), {
+    gfm: true,
+    breaks: true
+  });
+  // Sanitize HTML to prevent XSS
+  return DOMPurify.sanitize(raw, {
+    USE_PROFILES: { html: true }
+  });
+}
+
+function render(){
+  chatEl.innerHTML = "";
+  for(const m of messages){
+    const row = document.createElement("div");
+    row.className = "row " + (m.role || "assistant");
+
+    const bubble = document.createElement("div");
+    bubble.className = "bubble";
+
+    // markdown wrapper
+    const md = document.createElement("div");
+    md.className = "md";
+    md.innerHTML = mdToSafeHtml(m.content);
+
+    // tiny meta
+    const meta = document.createElement("div");
+    meta.className = "small";
+    meta.style.marginTop = "6px";
+    meta.style.opacity = "0.85";
+    meta.textContent = `${m.role === "user" ? "You" : "Assistant"} • ${m.time || nowTime()}`;
+
+    bubble.appendChild(md);
+    bubble.appendChild(meta);
+    row.appendChild(bubble);
+
+    chatEl.appendChild(row);
+  }
+  saveMessages();
+  scrollBottom();
+}
+
+function setBusy(b){
+  sendBtn.disabled = b;
+  promptEl.disabled = b;
+  modelEl.disabled = b;
+  tempEl.disabled = b;
+  statusEl.textContent = b ? "Thinking…" : "Ready";
+}
+
+render();
+
+promptEl.addEventListener("keydown", (e) => {
+  if(e.key === "Enter" && !e.shiftKey){
+    e.preventDefault();
+    if(!sendBtn.disabled) sendBtn.click();
+  }
+});
+
+sendBtn.onclick = async () => {
+  const text = promptEl.value.trim();
+  if(!text) return;
+
+  if(text.length > MAX_CHARS){
+    toast(`Message too long (max ${MAX_CHARS} chars).`);
+    return;
+  }
+
+  const model = modelEl.value;
+  const temperature = parseFloat(tempEl.value);
+
+  messages.push({ role:"user", content:text, time: nowTime() });
+  // placeholder assistant message
+  messages.push({ role:"assistant", content:"Thinking…", time: nowTime() });
+
+  promptEl.value = "";
+  render();
+  setBusy(true);
+
+  try{
+    const res = await fetch("/api/chat", {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({ model, message: text, temperature })
+    });
+
+    const data = await res.json().catch(() => ({}));
+    if(!res.ok){
+      throw new Error(data?.error || `HTTP ${res.status}`);
+    }
+
+    messages[messages.length - 1].content = data?.text || "(No content returned)";
+  } catch (e){
+    messages[messages.length - 1].content = `**Error:** ${String(e.message || e)}`;
+  } finally {
+    setBusy(false);
+    render();
+  }
+};
+
+clearBtn.onclick = () => {
+  messages = [{ role:"assistant", content:"Cleared. Ask me anything.", time: nowTime() }];
+  saveMessages();
+  render();
+};
+
+exportBtn.onclick = () => {
+  const blob = new Blob([JSON.stringify(messages, null, 2)], {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "thinkdashboards-chat-export.json";
+  a.click();
+  toast("Exported chat JSON");
+};
+
+copyBtn.onclick = async () => {
+  const last = [...messages].reverse().find(m => m.role === "assistant");
+  if(!last) return toast("No assistant message to copy");
+  try{
+    await navigator.clipboard.writeText(last.content);
+    toast("Copied last assistant message");
+  } catch {
+    toast("Copy failed (permission)");
+  }
+};
+
+tempEl.oninput = () => tempOut.textContent = tempEl.value;
+</script>
+</body>
+</html>
+
