@@ -38,3 +38,6 @@ Thumbs.db
 
 # ── Claude Code local settings ─────────────────────────────────────────────
 .claude/
+
+# ── Archive folders ─────────────────────────────────────────────────────────
+cincyseniors/archive/
