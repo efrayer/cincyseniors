@@ -98,15 +98,13 @@
     .dropdown { position: relative; }
     .dropdown > a::after { content: " ▾"; font-size: 0.75em; }
     .dropdown-menu {
-      display: none; position: absolute; top: 100%; left: 0; z-index: 200;
+      display: none !important; position: absolute; top: 100%; left: 0; z-index: 200;
       background: var(--cream); border: 1px solid var(--line);
       border-radius: 10px; min-width: 210px;
       box-shadow: 0 8px 24px rgba(0,0,0,0.1); padding: 6px;
       flex-direction: column; gap: 2px;
     }
-    @media (min-width: 769px) {
-      .dropdown:hover .dropdown-menu { display: flex; }
-    }
+    .dropdown:hover .dropdown-menu { display: flex !important; }
     .dropdown-menu a { font-size: 16px; padding: 10px 14px; color: var(--ink-soft); }
 
     .nav-toggle {
@@ -214,7 +212,7 @@
       nav.primary ul { flex-direction: column; gap: 0; }
       nav.primary a { padding: 12px 16px; border-radius: 0; border-bottom: 1px solid var(--line); }
       .dropdown > a::after { display: none; }
-      .dropdown-menu { display: flex; flex-direction: column; gap: 3px; position: static; box-shadow: none; border: none; padding: 4px 0 4px 16px; border-radius: 0; background: transparent; min-width: 0; }
+      .dropdown-menu { display: flex !important; flex-direction: column; gap: 3px; position: static; box-shadow: none; border: none; padding: 4px 0 4px 16px; border-radius: 0; background: transparent; min-width: 0; }
       .nav-toggle { display: block; }
       .footer-inner { grid-template-columns: 1fr; gap: 28px; }
       .topbar-inner { flex-direction: column; align-items: flex-start; gap: 8px; padding: 10px 16px; }
