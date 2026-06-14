@@ -1,0 +1,62 @@
+version: "3.9"
+
+services:
+  caddy:
+    image: caddy:latest
+    container_name: caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    environment:
+      - CADDY_ADMIN_HASH=YOUR_BCRYPT_HASH_HERE
+    volumes:
+      - ./Caddyfile:/config/Caddyfile:ro
+      - ./site:/srv:ro
+      - ./cincyseniors:/srv-cincyseniors:ro
+      - ./logs:/logs
+      - caddy_data:/data
+      - caddy_config:/config/caddy
+    command: ["caddy", "run", "--config", "/config/Caddyfile", "--adapter", "caddyfile"]
+    networks:
+      - webnet
+
+  app:
+    image: node:20-slim
+    container_name: nodeapp
+    working_dir: /app
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      # LM Studio runs on the Mac host; reachable from Docker via host.docker.internal
+      - LMSTUDIO_BASE_URL=http://host.docker.internal:1234
+      - CHROMA_URL=http://chromadb:8000
+    volumes:
+      - ./app:/app
+      - hf_cache:/root/.cache
+    command: sh -lc "npm install && node server.js"
+    depends_on:
+      - chromadb
+    networks:
+      - webnet
+
+  chromadb:
+    image: chromadb/chroma:latest
+    container_name: chromadb
+    restart: unless-stopped
+    volumes:
+      - chromadb_data:/chroma/chroma
+    environment:
+      - IS_PERSISTENT=TRUE
+      - ANONYMIZED_TELEMETRY=FALSE
+    networks:
+      - webnet
+
+networks:
+  webnet:
+
+volumes:
+  caddy_data:
+  caddy_config:
+  chromadb_data:
+  hf_cache:

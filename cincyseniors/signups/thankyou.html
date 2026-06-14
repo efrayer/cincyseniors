@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thank You — CincySeniors.org</title>
+  <meta name="description" content="Thank you for signing up with CincySeniors.org." />
+  <meta name="robots" content="noindex" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --cream:      #FAF6EE;
+      --cream-2:    #F3ECDD;
+      --ink:        #1F1B16;
+      --ink-soft:   #4A4238;
+      --terracotta: #B45A3C;
+      --terracotta-dark: #8F4227;
+      --sage:       #6E8B6A;
+      --line:       #E5DCC7;
+    }
+
+    *,*::before,*::after { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Atkinson Hyperlegible", system-ui, sans-serif;
+      font-size: 20px;
+      line-height: 1.65;
+      color: var(--ink);
+      background-color: var(--cream);
+    }
+
+    a { color: var(--terracotta-dark); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+    a:hover { color: var(--terracotta); }
+
+    h1, h2 {
+      font-family: "Fraunces", Georgia, serif;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    /* ── Header ── */
+    header.main {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      padding: 18px 40px;
+      background: var(--ink);
+      color: var(--cream);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+      color: var(--cream);
+    }
+    .brand-mark {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 2rem;
+      font-weight: 700;
+      width: 48px;
+      height: 48px;
+      background: var(--terracotta);
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+    .brand-name { display: block; font-family: "Fraunces", Georgia, serif; font-size: 1.25rem; font-weight: 700; line-height: 1.2; }
+    .brand-tag  { display: block; font-size: 0.78rem; opacity: 0.7; }
+
+    nav.primary ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 6px; flex-wrap: wrap; }
+    nav.primary a {
+      color: var(--cream);
+      text-decoration: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      transition: background 0.15s;
+    }
+    nav.primary a:hover { background: rgba(255,255,255,0.12); }
+
+    /* ── Main ── */
+    main {
+      max-width: 680px;
+      margin: 80px auto;
+      padding: 0 24px;
+      text-align: center;
+    }
+
+    .check-icon {
+      width: 80px;
+      height: 80px;
+      background: var(--sage);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 32px;
+      font-size: 2.5rem;
+      line-height: 1;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin: 0 0 16px;
+    }
+
+    .lead {
+      font-size: 1.2rem;
+      color: var(--ink-soft);
+      margin: 0 0 48px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 14px 32px;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .btn:hover { opacity: 0.85; }
+    .btn-primary { background: var(--terracotta); color: #fff; }
+    .btn-secondary { background: transparent; border: 2px solid var(--terracotta); color: var(--terracotta-dark); }
+
+    /* ── Footer ── */
+    footer {
+      margin-top: 80px;
+      background: var(--ink);
+      color: var(--cream);
+      padding: 48px 40px 24px;
+    }
+    .copyright {
+      text-align: center;
+      font-size: 0.85rem;
+      opacity: 0.5;
+      margin: 32px 0 0;
+    }
+  </style>
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+</head>
+<body>
+
+  <header class="main">
+    <a class="brand" href="/">
+      <span class="brand-mark" aria-hidden="true">C</span>
+      <span>
+        <span class="brand-name">CincySeniors.org</span>
+        <span class="brand-tag">A Cincy AI Catalyst (CAIC) guide to using AI</span>
+      </span>
+    </a>
+    <nav class="primary" aria-label="Primary">
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/resources/">Resources</a></li>
+        <li class="dropdown">
+          <a href="/cindy/" aria-haspopup="true">Ask Cindy AI</a>
+          <ul class="dropdown-menu" role="menu">
+            <li role="none"><a href="/cindy/" role="menuitem">💬 Chat with Cindy</a></li>
+            <li role="none"><a href="/cindy/about/" role="menuitem">ℹ️ About Cindy</a></li>
+          </ul>
+        </li>
+        <li><a href="/signups/">Get Involved</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <div class="check-icon" aria-hidden="true">✓</div>
+    <h1>You're all set!</h1>
+    <p class="lead">Thank you for signing up. We've received your information and will be in touch soon. Welcome to the CincySeniors community!</p>
+
+    <div class="actions">
+      <a href="/" class="btn btn-primary">Return to Home</a>
+      <a href="/signups/" class="btn btn-secondary">More Ways to Get Involved</a>
+    </div>
+  </main>
+
+  <footer>
+    <p class="copyright">© 2026 CincySeniors.org — Made in Cincinnati with care.</p>
+  </footer>
+
+</body>
+</html>

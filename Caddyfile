@@ -1,0 +1,126 @@
+{
+  auto_https off
+}
+
+# ThinkDashboards main site
+www.thinkdashboards.com:80 {
+
+  # Chat UI + API go to Node
+  handle /chat* {
+    reverse_proxy app:3000
+  }
+
+  handle /api/* {
+    reverse_proxy app:3000
+  }
+
+  handle /rag-admin {
+    reverse_proxy app:3000
+  }
+
+  # RAG Chat app (runs on host, not in Docker)
+  handle_path /ragchat* {
+    reverse_proxy host.docker.internal:8000
+  }
+
+  # Everything else is static landing page
+  handle {
+    root * /srv
+    file_server
+  }
+}
+
+# Cincy Seniors main site
+www.cincyseniors.org:80, cincyseniors.org:80 {
+
+  log {
+    output file /logs/cincyseniors_access.log {
+      roll_size 50mb
+      roll_keep 10
+    }
+    format json
+  }
+
+  # ── Security headers (applied to every response) ──
+  header {
+    Strict-Transport-Security "max-age=31536000; includeSubDomains"
+    X-Content-Type-Options "nosniff"
+    X-Frame-Options "SAMEORIGIN"
+    Referrer-Policy "strict-origin-when-cross-origin"
+    Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:; media-src 'self' blob:; connect-src 'self' https://api.openai.com https://www.cincyseniors.org https://cincyseniors.org; frame-ancestors 'none'"
+  }
+
+  # Chat UI + API go to Node
+  handle /chat* {
+    reverse_proxy app:3000
+  }
+
+  handle /api/* {
+    reverse_proxy app:3000
+  }
+
+  # Ask Cindy — API paths proxied to Python FastAPI (port 8000)
+  @cindy_api {
+    path /cindy/chat /cindy/ingest /cindy/ingest-text /cindy/ingest-url
+    path /cindy/documents* /cindy/chat-log /cindy/tts /cindy/tts-config
+    path /cindy/log-read-aloud /cindy/directory* /cindy/traffic
+  }
+  handle @cindy_api {
+    reverse_proxy host.docker.internal:8000
+  }
+
+  # Optional: if you want static helper pages under /web for Cincy Seniors
+  handle /web/* {
+    root * /srv-cincyseniors
+    file_server
+  }
+
+  # Password-protect admin static pages (server-side HTTP Basic Auth)
+  handle /cindy/admin/* {
+    basicauth {
+      admin {$CADDY_ADMIN_HASH}
+    }
+    root * /srv-cincyseniors
+    file_server {
+      index index.html
+    }
+  }
+
+  handle /cindy/chat-log/* {
+    basicauth {
+      admin {$CADDY_ADMIN_HASH}
+    }
+    root * /srv-cincyseniors
+    file_server {
+      index index.html
+    }
+  }
+
+  handle /cindy/rag-admin/* {
+    basicauth {
+      admin {$CADDY_ADMIN_HASH}
+    }
+    root * /srv-cincyseniors
+    file_server {
+      index index.html
+    }
+  }
+
+  # Everything else is the Cincy Seniors static site
+  handle {
+    root * /srv-cincyseniors
+    file_server {
+      index index.html
+    }
+  }
+}
+
+# Chat subdomain (direct to app)
+chat.thinkdashboards.com:80 {
+  reverse_proxy app:3000
+}
+
+# Admin / LLM subdomain
+llm.thinkdashboards.com:80 {
+  reverse_proxy app:3000
+}

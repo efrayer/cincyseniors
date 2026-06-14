@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Traffic — CincySeniors.org</title>
+  <style>
+    :root {
+      --bg: #f4f7f6;
+      --panel: #ffffff;
+      --muted: rgba(0,0,0,.50);
+      --text: rgba(0,0,0,.85);
+      --border: rgba(0,0,0,.09);
+      --primary: #2a7d6f;
+      --primary-light: rgba(42,125,111,.08);
+      --shadow: 0 4px 16px rgba(0,0,0,.07);
+      --green: #1e7d4a;
+      --red: #c0392b;
+      --amber: #b8860b;
+      --blue: #1a5fa8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: var(--bg); color: var(--text); min-height: 100vh;
+    }
+
+    /* ── Top bar ── */
+    .top-bar {
+      padding: 14px 24px; display: flex; align-items: center;
+      justify-content: space-between; border-bottom: 1px solid var(--border);
+      background: #fff; gap: 12px; flex-wrap: wrap;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand-icon {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--primary); color: #fff;
+      font-size: 18px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .brand-text h1 { font-size: 17px; font-weight: 700; line-height: 1.2; }
+    .brand-text p  { font-size: 12px; color: var(--muted); }
+    .top-controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+    select, .btn {
+      padding: 6px 14px; border-radius: 8px;
+      border: 1px solid var(--border); background: #fff;
+      font-size: 13px; cursor: pointer;
+    }
+    .btn:hover { background: var(--primary-light); }
+    .btn-primary {
+      background: var(--primary); color: #fff; border-color: var(--primary);
+    }
+    .btn-primary:hover { background: #21635a; }
+
+    /* ── Stats grid ── */
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px; padding: 20px 24px;
+    }
+    .stat-card {
+      background: #fff; border-radius: 10px; padding: 16px 18px;
+      border: 1px solid var(--border); box-shadow: var(--shadow);
+    }
+    .stat-label { font-size: 11px; font-weight: 700; text-transform: uppercase;
+                  letter-spacing: .05em; color: var(--muted); margin-bottom: 6px; }
+    .stat-value { font-size: 28px; font-weight: 700; line-height: 1; }
+    .stat-sub   { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .stat-card.green .stat-value { color: var(--green); }
+    .stat-card.blue  .stat-value { color: var(--blue); }
+    .stat-card.amber .stat-value { color: var(--amber); }
+    .stat-card.red   .stat-value { color: var(--red); }
+
+    /* ── Content grid ── */
+    .content { padding: 0 24px 24px; display: grid;
+               grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 768px) { .content { grid-template-columns: 1fr; } }
+    .card {
+      background: #fff; border-radius: 10px;
+      border: 1px solid var(--border); box-shadow: var(--shadow); overflow: hidden;
+    }
+    .card.full { grid-column: 1 / -1; }
+    .card-head {
+      padding: 12px 16px; font-weight: 700; font-size: 14px;
+      border-bottom: 1px solid var(--border); background: var(--bg);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .card-head small { font-weight: 400; font-size: 12px; color: var(--muted); }
+
+    /* ── Sparkline chart ── */
+    .chart-wrap { padding: 16px; overflow-x: auto; }
+    .bar-chart { display: flex; align-items: flex-end; gap: 3px;
+                 height: 80px; width: 100%; }
+    .bar {
+      flex: 1; background: var(--primary-light);
+      border-radius: 3px 3px 0 0; min-width: 4px;
+      transition: background .15s; position: relative; cursor: default;
+    }
+    .bar:hover { background: var(--primary); }
+    .bar-label { font-size: 9px; color: var(--muted); text-align: center;
+                 margin-top: 4px; writing-mode: vertical-rl;
+                 transform: rotate(180deg); height: 28px; overflow: hidden; }
+    .x-axis { display: flex; gap: 3px; padding: 0 16px 10px; }
+    .x-label { flex: 1; font-size: 9px; color: var(--muted); text-align: center;
+               min-width: 4px; overflow: hidden; }
+
+    /* ── Tables ── */
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { padding: 8px 12px; text-align: left; font-size: 11px; font-weight: 700;
+         text-transform: uppercase; letter-spacing: .05em;
+         color: var(--muted); border-bottom: 1px solid var(--border);
+         background: var(--bg); }
+    td { padding: 8px 12px; border-bottom: 1px solid var(--border); }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--primary-light); }
+    .uri-cell { font-family: monospace; font-size: 12px; max-width: 280px;
+                overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .bar-row { display: flex; align-items: center; gap: 8px; }
+    .inline-bar { height: 6px; background: var(--primary); border-radius: 3px; flex-shrink: 0; }
+
+    /* ── Status badges ── */
+    .status { display: inline-block; padding: 2px 7px; border-radius: 10px;
+              font-size: 11px; font-weight: 700; }
+    .s2 { background: #d4edda; color: #155724; }
+    .s3 { background: #cce5ff; color: #004085; }
+    .s4 { background: #fff3cd; color: #856404; }
+    .s5 { background: #f8d7da; color: #721c24; }
+
+    /* ── Recent log table ── */
+    .recent-wrap { max-height: 420px; overflow-y: auto; }
+    .ua-cell { max-width: 200px; overflow: hidden; text-overflow: ellipsis;
+               white-space: nowrap; color: var(--muted); font-size: 11px; }
+
+    /* ── Loading ── */
+    .loading { text-align: center; padding: 40px; color: var(--muted); }
+    .spinner { display: inline-block; width: 24px; height: 24px; border: 3px solid var(--border);
+               border-top-color: var(--primary); border-radius: 50%; animation: spin .7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Password gate ── */
+    #pw-gate {
+      position: fixed; inset: 0; z-index: 9999;
+      background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+    }
+    #pw-gate.hidden { display: none; }
+    .pw-box {
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: 16px; box-shadow: var(--shadow);
+      padding: 40px 36px; width: 100%; max-width: 360px; text-align: center;
+    }
+    .pw-icon {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: var(--primary); color: #fff;
+      font-size: 22px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px;
+    }
+    .pw-box h2 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+    .pw-box p  { font-size: 13px; color: var(--muted); margin-bottom: 22px; }
+    .pw-field {
+      width: 100%; padding: 10px 14px;
+      border: 1px solid var(--border); border-radius: 10px;
+      background: #fff; color: var(--text);
+      font-size: 15px; outline: none; margin-bottom: 12px;
+    }
+    .pw-field:focus { border-color: var(--primary); }
+    .pw-submit {
+      width: 100%; padding: 10px;
+      background: var(--primary); color: #fff;
+      border: none; border-radius: 10px;
+      font-size: 15px; font-weight: 600; cursor: pointer;
+    }
+    .pw-submit:hover { background: #236158; }
+    .pw-error { margin-top: 10px; font-size: 13px; color: var(--red); display: none; }
+    .pw-error.visible { display: block; }
+  </style>
+  <link rel="icon" type="image/svg+xml" href="../../../favicon.svg">
+</head>
+<body>
+
+<!-- Password gate (same hash as rag-admin and chat-log) -->
+<div id="pw-gate">
+  <div class="pw-box">
+    <div class="pw-icon">C</div>
+    <h2>Admin Access</h2>
+    <p>CincySeniors.org — Site Traffic<br>Enter your password to continue.</p>
+    <input class="pw-field" type="password" id="pw-input" placeholder="Password" autocomplete="current-password">
+    <button class="pw-submit" id="pw-submit">Unlock</button>
+    <div class="pw-error" id="pw-error">Incorrect password. Please try again.</div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const HASH = "d0cafc5533f05c610909887d74d9232650aaab2f3f4bb5dfba250cc08805071d";
+    const KEY  = "rag_admin_auth";
+
+    async function sha256(str) {
+      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
+    }
+
+    const gate   = document.getElementById("pw-gate");
+    const input  = document.getElementById("pw-input");
+    const btn    = document.getElementById("pw-submit");
+    const errMsg = document.getElementById("pw-error");
+
+    if (sessionStorage.getItem(KEY) === "1") { gate.classList.add("hidden"); return; }
+
+    async function attempt() {
+      const hash = await sha256(input.value);
+      if (hash === HASH) {
+        sessionStorage.setItem(KEY, "1");
+        gate.classList.add("hidden");
+      } else {
+        errMsg.classList.add("visible");
+        input.value = "";
+        input.focus();
+      }
+    }
+
+    btn.addEventListener("click", attempt);
+    input.addEventListener("keydown", e => { if (e.key === "Enter") attempt(); });
+  })();
+</script>
+
+<div class="top-bar">
+  <a class="brand" href="/cindy/admin/" title="Return to Admin Console" style="text-decoration:none;color:inherit;cursor:pointer;">
+    <div class="brand-icon">C</div>
+    <div class="brand-text">
+      <h1>Site Traffic</h1>
+      <p>CincySeniors.org — Web Analytics</p>
+    </div>
+  </a>
+  <div class="top-controls">
+    <select id="daySelect" onchange="load()">
+      <option value="7">Last 7 days</option>
+      <option value="30" selected>Last 30 days</option>
+      <option value="90">Last 90 days</option>
+    </select>
+    <button class="btn btn-primary" onclick="load()">Refresh</button>
+    <a href="/cindy/chat-log/" class="btn">← Chat Log</a>
+    <a href="/cindy/admin/directory/" class="btn">Directory Admin</a>
+  </div>
+</div>
+
+<div id="content">
+  <div class="loading"><div class="spinner"></div><br><br>Loading traffic data…</div>
+</div>
+
+<script>
+const API_BASE  = 'https://cincyseniors.org';
+const ADMIN_KEY = 'YOUR_ADMIN_API_KEY_HERE';
+const ADMIN_HDR = { 'X-Admin-Key': ADMIN_KEY };
+
+async function load() {
+  const days = document.getElementById('daySelect').value;
+  document.getElementById('content').innerHTML =
+    '<div class="loading"><div class="spinner"></div><br><br>Loading traffic data…</div>';
+  try {
+    const res  = await fetch(`${API_BASE}/cindy/traffic?days=${days}`, { headers: ADMIN_HDR });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    render(data);
+  } catch(e) {
+    document.getElementById('content').innerHTML =
+      `<div class="loading" style="color:#c0392b">Failed to load: ${e.message}</div>`;
+  }
+}
+
+function render(d) {
+  const botPct = d.total_requests ? Math.round(d.bot_requests / d.total_requests * 100) : 0;
+  const todayViews = d.daily_series.length ? d.daily_series[d.daily_series.length - 1].count : 0;
+
+  const html = `
+<div class="stats-grid">
+  <div class="stat-card blue">
+    <div class="stat-label">Human Requests</div>
+    <div class="stat-value">${fmt(d.human_requests)}</div>
+    <div class="stat-sub">last ${d.days} days</div>
+  </div>
+  <div class="stat-card green">
+    <div class="stat-label">Page Views</div>
+    <div class="stat-value">${fmt(d.page_views)}</div>
+    <div class="stat-sub">HTML pages only</div>
+  </div>
+  <div class="stat-card amber">
+    <div class="stat-label">Today</div>
+    <div class="stat-value">${fmt(todayViews)}</div>
+    <div class="stat-sub">human requests</div>
+  </div>
+  <div class="stat-card red">
+    <div class="stat-label">Bot Traffic</div>
+    <div class="stat-value">${fmt(d.bot_requests)}</div>
+    <div class="stat-sub">${botPct}% of all requests</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Total Requests</div>
+    <div class="stat-value">${fmt(d.total_requests)}</div>
+    <div class="stat-sub">all sources</div>
+  </div>
+  ${statusSummary(d.status_counts)}
+</div>
+
+<div class="content">
+
+  <div class="card full">
+    <div class="card-head">Daily Traffic <small>human requests</small></div>
+    ${buildChart(d.daily_series)}
+  </div>
+
+  <div class="card">
+    <div class="card-head">Top Pages <small>${d.top_pages.length} entries</small></div>
+    ${buildTopPages(d.top_pages)}
+  </div>
+
+  <div class="card">
+    <div class="card-head">Status Codes <small>all requests</small></div>
+    ${buildStatusTable(d.status_counts)}
+  </div>
+
+  ${d.top_referrers.length ? `
+  <div class="card full">
+    <div class="card-head">Top Referrers <small>external sources only</small></div>
+    ${buildReferrers(d.top_referrers)}
+  </div>` : ''}
+
+  <div class="card full">
+    <div class="card-head">Recent Requests <small>latest 100 human requests</small></div>
+    <div class="recent-wrap">${buildRecent(d.recent)}</div>
+  </div>
+
+</div>`;
+
+  document.getElementById('content').innerHTML = html;
+}
+
+function fmt(n) {
+  return Number(n).toLocaleString();
+}
+
+function statusSummary(counts) {
+  const ok    = (counts['200'] || 0) + (counts['301'] || 0) + (counts['302'] || 0) + (counts['304'] || 0);
+  const err4  = Object.entries(counts).filter(([k]) => k.startsWith('4')).reduce((a,[,v]) => a+v, 0);
+  const err5  = Object.entries(counts).filter(([k]) => k.startsWith('5')).reduce((a,[,v]) => a+v, 0);
+  return `
+  <div class="stat-card green">
+    <div class="stat-label">2xx / 3xx</div>
+    <div class="stat-value">${fmt(ok)}</div>
+    <div class="stat-sub">successful</div>
+  </div>
+  <div class="stat-card ${err4 > 0 ? 'amber' : ''}">
+    <div class="stat-label">4xx Errors</div>
+    <div class="stat-value">${fmt(err4)}</div>
+    <div class="stat-sub">client errors</div>
+  </div>
+  ${err5 > 0 ? `<div class="stat-card red">
+    <div class="stat-label">5xx Errors</div>
+    <div class="stat-value">${fmt(err5)}</div>
+    <div class="stat-sub">server errors</div>
+  </div>` : ''}`;
+}
+
+function buildChart(series) {
+  const max = Math.max(...series.map(d => d.count), 1);
+  const bars = series.map(d => {
+    const pct = Math.max(Math.round(d.count / max * 100), d.count > 0 ? 4 : 1);
+    return `<div class="bar" style="height:${pct}%" title="${d.date}: ${d.count} requests"></div>`;
+  }).join('');
+
+  // Only show every ~7th date label to avoid crowding
+  const step = Math.max(1, Math.round(series.length / 8));
+  const labels = series.map((d, i) =>
+    `<div class="x-label">${i % step === 0 ? d.date.slice(5) : ''}</div>`
+  ).join('');
+
+  return `<div class="chart-wrap"><div class="bar-chart">${bars}</div></div>
+          <div class="x-axis">${labels}</div>`;
+}
+
+function buildTopPages(pages) {
+  if (!pages.length) return '<div style="padding:16px;color:var(--muted)">No page views recorded yet.</div>';
+  const max = pages[0].views;
+  const rows = pages.map(p => `
+    <tr>
+      <td class="uri-cell">${escHtml(p.uri || '/')}</td>
+      <td>
+        <div class="bar-row">
+          <div class="inline-bar" style="width:${Math.round(p.views/max*120)}px"></div>
+          <span>${fmt(p.views)}</span>
+        </div>
+      </td>
+    </tr>`).join('');
+  return `<table><thead><tr><th>Page</th><th>Views</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+function buildStatusTable(counts) {
+  const entries = Object.entries(counts).sort((a, b) => Number(a[0]) - Number(b[0]));
+  const total = entries.reduce((s, [,v]) => s + v, 0);
+  const rows = entries.map(([code, cnt]) => {
+    const cls = code.startsWith('2') ? 's2' : code.startsWith('3') ? 's3'
+              : code.startsWith('4') ? 's4' : 's5';
+    const pct = total ? Math.round(cnt / total * 100) : 0;
+    return `<tr>
+      <td><span class="status ${cls}">${code}</span></td>
+      <td>${fmt(cnt)}</td>
+      <td style="color:var(--muted)">${pct}%</td>
+    </tr>`;
+  }).join('');
+  return `<table><thead><tr><th>Status</th><th>Count</th><th>Share</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+function buildReferrers(refs) {
+  if (!refs.length) return '<div style="padding:16px;color:var(--muted)">No external referrers.</div>';
+  const max = refs[0].count;
+  const rows = refs.map(r => `
+    <tr>
+      <td>${escHtml(r.host)}</td>
+      <td>
+        <div class="bar-row">
+          <div class="inline-bar" style="width:${Math.round(r.count/max*120)}px"></div>
+          <span>${fmt(r.count)}</span>
+        </div>
+      </td>
+    </tr>`).join('');
+  return `<table><thead><tr><th>Referrer</th><th>Visits</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+function buildRecent(rows) {
+  if (!rows.length) return '<div style="padding:16px;color:var(--muted)">No requests recorded yet.</div>';
+  const trs = rows.map(r => {
+    const cls = String(r.status).startsWith('2') ? 's2'
+              : String(r.status).startsWith('3') ? 's3'
+              : String(r.status).startsWith('4') ? 's4' : 's5';
+    return `<tr>
+      <td style="white-space:nowrap;color:var(--muted);font-size:12px">${r.ts}</td>
+      <td><span class="status ${cls}">${r.status}</span></td>
+      <td style="font-weight:600;font-size:12px">${r.method}</td>
+      <td class="uri-cell">${escHtml(r.uri)}</td>
+      <td style="color:var(--muted);font-size:12px">${r.dur_ms}ms</td>
+      <td class="ua-cell" title="${escHtml(r.ua)}">${escHtml(r.ua)}</td>
+    </tr>`;
+  }).join('');
+  return `<table>
+    <thead><tr>
+      <th>Time (UTC)</th><th>Status</th><th>Method</th>
+      <th>Path</th><th>Time</th><th>User Agent</th>
+    </tr></thead>
+    <tbody>${trs}</tbody>
+  </table>`;
+}
+
+function escHtml(s) {
+  return String(s||'')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+load();
+</script>
+</body>
+</html>

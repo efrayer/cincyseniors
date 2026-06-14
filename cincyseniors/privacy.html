@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy — CincySeniors.org</title>
+  <meta name="description" content="Privacy Policy for CincySeniors.org — how we collect, use, and protect your information." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --cream:      #FAF6EE;
+      --cream-2:    #F3ECDD;
+      --ink:        #1F1B16;
+      --ink-soft:   #4A4238;
+      --terracotta: #B45A3C;
+      --terracotta-dark: #8F4227;
+      --sage:       #6E8B6A;
+      --amber:      #C98A2B;
+      --line:       #E5DCC7;
+    }
+
+    *,*::before,*::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: "Atkinson Hyperlegible", system-ui, sans-serif;
+      font-size: 20px;
+      line-height: 1.65;
+      color: var(--ink);
+      background-color: var(--cream);
+      background-image:
+        radial-gradient(circle at 20% 30%, rgba(180, 90, 60, 0.035) 0, transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(110, 139, 106, 0.035) 0, transparent 40%);
+    }
+
+    a { color: var(--terracotta-dark); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+    a:hover { color: var(--terracotta); }
+    h1, h2, h3 { font-family: "Fraunces", Georgia, serif; font-weight: 700; color: var(--ink); letter-spacing: -0.01em; }
+
+    .skip { position: absolute; left: -1000px; top: 0; background: var(--ink); color: var(--cream); padding: 12px 18px; border-radius: 0 0 12px 0; z-index: 100; }
+    .skip:focus { left: 0; }
+
+    /* ---------- Top Bar ---------- */
+    .topbar { background: var(--cream-2); border-bottom: 1px solid var(--line); font-size: 17px; }
+    .topbar-inner { max-width: 1120px; margin: 0 auto; padding: 10px 24px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .text-size { display: inline-flex; gap: 6px; align-items: center; color: var(--ink-soft); }
+    .text-size button { background: transparent; border: 1.5px solid var(--line); border-radius: 999px; padding: 4px 10px; font-family: inherit; cursor: pointer; color: var(--ink); }
+    .text-size button:hover { border-color: var(--terracotta); }
+    .text-size button.active { background: var(--terracotta); color: #fff; border-color: var(--terracotta-dark); }
+
+    /* ---------- Header / Nav ---------- */
+    header.main { max-width: 1120px; margin: 0 auto; padding: 22px 24px 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+    .brand { display: flex; align-items: center; gap: 14px; text-decoration: none; color: var(--ink); }
+    .brand-mark { width: 52px; height: 52px; border-radius: 50%; background: var(--terracotta); color: var(--cream); display: grid; place-items: center; font-family: "Fraunces", serif; font-weight: 700; font-size: 26px; flex-shrink: 0; }
+    .brand-name { font-family: "Fraunces", serif; font-weight: 700; font-size: 26px; line-height: 1.1; }
+    .brand-tag { display: block; font-family: "Atkinson Hyperlegible", sans-serif; font-weight: 400; color: var(--ink-soft); font-size: 15px; }
+
+    nav.primary ul { list-style: none; display: flex; gap: 8px; padding: 0; margin: 0; flex-wrap: wrap; }
+    nav.primary a { display: block; padding: 10px 16px; border-radius: 999px; text-decoration: none; color: var(--ink); font-weight: 700; font-size: 18px; }
+    nav.primary a:hover { background: var(--cream-2); }
+    nav.primary a.active { background: var(--cream-2); color: var(--terracotta-dark); }
+    nav.primary a:focus { outline: 3px solid var(--terracotta); outline-offset: 2px; }
+    nav.primary .dropdown { position: relative; }
+    nav.primary .dropdown > a::after { content: " ▾"; font-size: 0.75em; }
+    nav.primary .dropdown-menu { display: none; position: absolute; top: calc(100% + 4px); right: 0; background: var(--cream); border: 1.5px solid var(--line); border-radius: 14px; padding: 8px; min-width: 240px; box-shadow: 0 8px 24px rgba(31, 27, 22, 0.12); z-index: 200; }
+    nav.primary .dropdown:hover .dropdown-menu, nav.primary .dropdown:focus-within .dropdown-menu { display: flex; flex-direction: column; gap: 2px; }
+    nav.primary .dropdown-menu a { border-radius: 8px; font-size: 17px; padding: 10px 14px; }
+
+    /* ---------- Layout ---------- */
+    main { padding-bottom: 80px; }
+    .container { max-width: 820px; margin: 0 auto; padding: 0 24px; }
+
+    /* ---------- Page header ---------- */
+    .page-header { padding: 48px 0 32px; border-bottom: 1px solid var(--line); margin-bottom: 48px; }
+    .page-header .eyebrow { display: inline-block; font-size: 15px; font-weight: 700; color: var(--terracotta-dark); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 12px; }
+    .page-header h1 { font-size: 52px; margin: 0 0 12px; line-height: 1.05; }
+    .page-header .updated { font-size: 16px; color: var(--ink-soft); margin: 0; }
+
+    /* ---------- Policy content ---------- */
+    .policy h2 {
+      font-size: 28px;
+      margin: 48px 0 14px;
+      padding-top: 8px;
+      border-top: 2px solid var(--line);
+    }
+    .policy h2:first-child { margin-top: 0; border-top: none; }
+    .policy h3 { font-size: 22px; margin: 28px 0 10px; }
+    .policy p { margin: 0 0 18px; color: var(--ink-soft); }
+    .policy p:last-child { margin-bottom: 0; }
+    .policy ul, .policy ol { margin: 0 0 18px; padding-left: 1.5em; color: var(--ink-soft); }
+    .policy li { margin-bottom: 8px; }
+    .policy strong { color: var(--ink); }
+
+    /* Highlight box */
+    .policy .highlight {
+      background: var(--cream-2);
+      border-left: 4px solid var(--sage);
+      border-radius: 6px;
+      padding: 20px 24px;
+      margin: 24px 0;
+      font-size: 18px;
+    }
+    .policy .highlight p { margin: 0; color: var(--ink); }
+
+    /* Definition table */
+    .def-table { width: 100%; border-collapse: collapse; margin: 16px 0 24px; font-size: 18px; }
+    .def-table th { text-align: left; padding: 10px 14px; background: var(--cream-2); border: 1px solid var(--line); font-family: "Fraunces", serif; font-weight: 700; color: var(--ink); }
+    .def-table td { padding: 10px 14px; border: 1px solid var(--line); color: var(--ink-soft); vertical-align: top; }
+    .def-table tr:nth-child(even) td { background: #fdfaf5; }
+
+    /* TOC */
+    .toc { background: var(--cream-2); border-radius: 16px; padding: 28px 32px; margin-bottom: 48px; }
+    .toc h2 { font-size: 22px; margin: 0 0 14px; border: none; padding: 0; }
+    .toc ol { margin: 0; padding-left: 1.4em; color: var(--ink-soft); }
+    .toc li { margin-bottom: 6px; font-size: 17px; }
+    .toc a { color: var(--terracotta-dark); font-weight: 700; }
+
+    /* ---------- Footer ---------- */
+    footer { margin-top: 96px; background: var(--cream-2); border-top: 1px solid var(--line); padding: 48px 0 36px; }
+    .footer-inner { max-width: 1120px; margin: 0 auto; padding: 0 24px; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; }
+    footer h4 { font-family: "Fraunces", serif; font-size: 20px; margin: 0 0 14px; color: var(--ink); }
+    footer ul { list-style: none; padding: 0; margin: 0; }
+    footer li { margin-bottom: 10px; font-size: 18px; }
+    footer a { color: var(--ink); text-decoration: none; border-bottom: 2px solid transparent; }
+    footer a:hover { border-bottom-color: var(--terracotta); }
+    .footer-privacy-note { margin-top: 28px; padding: 18px; background: #fff; border-left: 4px solid var(--sage); border-radius: 6px; font-size: 17px; color: var(--ink-soft); }
+    .copyright { max-width: 1120px; margin: 32px auto 0; padding: 24px 24px 0; border-top: 1px solid var(--line); font-size: 16px; color: var(--ink-soft); text-align: center; }
+
+    html.text-large body { font-size: 23px; }
+    html.text-large .page-header h1 { font-size: 58px; }
+    html.text-xl body { font-size: 26px; }
+    html.text-xl .page-header h1 { font-size: 64px; }
+
+
+    /* ---------- Nav toggle button (mobile) ---------- */
+    .nav-toggle {
+      display: none;
+      background: transparent;
+      border: 1.5px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+      color: var(--ink);
+      font-family: inherit;
+    }
+    .nav-toggle:hover { border-color: var(--terracotta); background: var(--cream-2); }
+    .nav-toggle:focus { outline: 3px solid var(--terracotta); outline-offset: 2px; }
+
+    @media (max-width: 900px) {
+      .footer-inner { grid-template-columns: 1fr; }
+      nav.primary ul { gap: 2px; }
+      nav.primary a { padding: 8px 12px; font-size: 17px; }
+    }
+    @media (max-width: 640px) {
+      .topbar-inner { flex-direction: column; align-items: flex-start; gap: 8px; padding: 10px 16px; }
+      header.main { padding: 14px 16px 8px; flex-direction: column; align-items: flex-start; gap: 12px; }
+      nav.primary { width: 100%; }
+      nav.primary ul { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+      nav.primary a { font-size: 16px; padding: 10px 12px; text-align: center; border: 1.5px solid var(--line); border-radius: 10px; }
+      /* Mobile nav */
+      .nav-toggle { display: block; }
+      nav.primary { display: none; width: 100%; }
+      nav.primary.open { display: block; }
+      nav.primary ul { display: flex; flex-direction: column; gap: 4px; padding: 4px 0; }
+      nav.primary > ul > li { width: 100%; }
+      nav.primary a { font-size: 17px; padding: 12px 14px; border-radius: 10px; border: 1.5px solid var(--line); text-align: left; width: 100%; display: block; }
+      nav.primary .dropdown > a::after { display: none; }
+      nav.primary .dropdown-menu { display: flex !important; flex-direction: column; gap: 3px; position: static; box-shadow: none; border: none; padding: 4px 0 4px 16px; border-radius: 0; background: transparent; min-width: 0; }
+      nav.primary .dropdown-menu a { font-size: 16px; padding: 10px 14px; color: var(--ink-soft); }
+      .container { padding: 0 16px; }
+      .page-header { padding: 32px 0 20px; margin-bottom: 32px; }
+      .page-header h1 { font-size: 34px; }
+      .toc { padding: 20px; }
+      footer { margin-top: 56px; padding: 36px 0 24px; }
+      main { padding-bottom: 48px; }
+    }
+    @media (max-width: 400px) { nav.primary ul { grid-template-columns: 1fr; } }
+  </style>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+</head>
+<body>
+
+  <a href="#main" class="skip">Skip to main content</a>
+
+  <div class="topbar" role="region" aria-label="Site utilities">
+    <div class="topbar-inner">
+      <div class="text-size" aria-label="Text size controls">
+        <span>Text size:</span>
+        <button type="button" aria-label="Normal text">A</button>
+        <button type="button" aria-label="Larger text">A+</button>
+        <button type="button" aria-label="Largest text">A++</button>
+      </div>
+      <a href="mailto:info@cincyseniors.org" style="font-weight:700;color:var(--ink);text-decoration:none;">✉ info@cincyseniors.org</a>
+    </div>
+  </div>
+
+  <header class="main">
+    <a class="brand" href="/">
+      <span class="brand-mark" aria-hidden="true">C</span>
+      <span>
+        <span class="brand-name">CincySeniors.org</span>
+        <span class="brand-tag">A Cincy AI Catalyst (CAIC) guide to using AI</span>
+      </span>
+    </a>
+    <button class="nav-toggle" aria-expanded="false" aria-label="Open navigation">&#9776;</button>
+    <nav class="primary" aria-label="Primary">
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li class="dropdown">
+          <a href="/learn/" aria-haspopup="true">Learn</a>
+          <ul class="dropdown-menu" role="menu">
+            <li role="none"><a href="/learn/" role="menuitem">📖 Learn About AI</a></li>
+            <li role="none"><a href="/health/" role="menuitem">❤️ Health</a></li>
+            <li role="none"><a href="/wealth/" role="menuitem">💰 Wealth</a></li>
+            <li role="none"><a href="/self/" role="menuitem">✍️ Self</a></li>
+          </ul>
+        </li>
+        <li><a href="/news/">News</a></li>
+        <li class="dropdown">
+          <a href="/resources/" aria-haspopup="true">Resources</a>
+          <ul class="dropdown-menu" role="menu">
+            <li role="none"><a href="/resources/" role="menuitem">📚 Resources</a></li>
+            <li role="none"><a href="/ai-quiz.html" role="menuitem">🧠 AI Quiz</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="/cindy/" aria-haspopup="true">Ask Cindy AI</a>
+          <ul class="dropdown-menu" role="menu">
+            <li role="none"><a href="/cindy/" role="menuitem">💬 Chat with Cindy</a></li>
+            <li role="none"><a href="/cindy/about/" role="menuitem">ℹ️ About Cindy</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="/signups/" aria-haspopup="true">Get Involved</a>
+          <ul class="dropdown-menu" role="menu">
+            <li role="none"><a href="/signups/newsletter.html" role="menuitem">📰 Newsletter</a></li>
+            <li role="none"><a href="/signups/volunteer.html" role="menuitem">🤝 Volunteer</a></li>
+            <li role="none"><a href="/signups/townhall.html" role="menuitem">🏛️ Town Hall Signup</a></li>
+            <li role="none"><a href="/signups/smallgroup.html" role="menuitem">👥 Small Group Signup</a></li>
+          </ul>
+        </li>
+        <!-- TEMP: Feedback link -->
+        <li><a href="/feedback/feedback.html">Feedback</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main">
+    <div class="container">
+
+      <div class="page-header">
+        <span class="eyebrow">Legal</span>
+        <h1>Privacy Policy</h1>
+        <p class="updated">Last updated: May 2026</p>
+      </div>
+
+      <!-- Table of Contents -->
+      <nav class="toc" aria-label="Page contents">
+        <h2>Contents</h2>
+        <ol>
+          <li><a href="#who-we-are">Who We Are</a></li>
+          <li><a href="#data-collected">Information We Collect</a></li>
+          <li><a href="#how-we-use">How We Use Your Information</a></li>
+          <li><a href="#data-sharing">How We Share Your Information</a></li>
+          <li><a href="#cookies">Cookies and Similar Technologies</a></li>
+          <li><a href="#data-retention">How Long We Keep Your Information</a></li>
+          <li><a href="#your-rights">Your Rights</a></li>
+          <li><a href="#security">Data Security</a></li>
+          <li><a href="#ai-disclaimer">AI Content Disclaimer</a></li>
+          <li><a href="#children">Children's Privacy</a></li>
+          <li><a href="#changes">Changes to This Policy</a></li>
+          <li><a href="#contact">How to Contact Us</a></li>
+          <li><a href="#definitions">Definitions</a></li>
+        </ol>
+      </nav>
+
+      <div class="policy">
+
+        <div class="highlight">
+          <p><strong>Plain-language summary:</strong> CincySeniors.org is a free, community-run educational website. We collect only what we need to serve you, we never sell your data, and you can ask us to delete your information at any time. The full details are below.</p>
+        </div>
+
+        <!-- 1 -->
+        <h2 id="who-we-are">1. Who We Are</h2>
+        <p>CincySeniors.org is operated by the Cincy AI Catalyst (CAIC), a community initiative dedicated to helping older adults in the Greater Cincinnati region learn about and confidently use artificial intelligence tools. We are a non-commercial, community-run project.</p>
+        <p><strong>Data Controller:</strong> Cincy AI Catalyst (CAIC)<br />
+        <strong>Contact:</strong> <a href="mailto:info@cincyseniors.org">info@cincyseniors.org</a><br />
+        <strong>Website:</strong> CincySeniors.org</p>
+
+        <!-- 2 -->
+        <h2 id="data-collected">2. Information We Collect</h2>
+        <h3>Information you provide directly</h3>
+        <p>When you fill out a form on our site (newsletter signup, volunteer interest, Town Hall or small group registration), we collect:</p>
+        <ul>
+          <li><strong>Required:</strong> First name, last name, and email address</li>
+          <li><strong>Optional:</strong> Age range and county / part of town</li>
+        </ul>
+        <p>You are never required to provide optional information, and leaving those fields blank will not affect your ability to sign up.</p>
+
+        <h3>Information collected automatically</h3>
+        <p>When you visit CincySeniors.org, our web hosting provider may automatically collect standard technical information, including:</p>
+        <ul>
+          <li>Your IP address (anonymized where possible)</li>
+          <li>Browser type and version</li>
+          <li>Pages visited and time spent on each page</li>
+          <li>The website that referred you to us</li>
+          <li>Date and time of your visit</li>
+        </ul>
+        <p>This information is used solely to maintain and improve the website and is not linked to your personal identity.</p>
+
+        <h3>Information from Cindy AI</h3>
+        <p>When you use our Cindy AI chat assistant, the text of your conversation is sent to our AI processing service to generate a response. We do not store the content of individual chat conversations long-term. Please do not share sensitive personal information (such as Social Security numbers, financial account details, or medical record numbers) in the chat.</p>
+
+        <!-- 3 -->
+        <h2 id="how-we-use">3. How We Use Your Information</h2>
+        <p>We use the information we collect only for the following purposes:</p>
+        <ul>
+          <li>To send you the monthly CincySeniors newsletter (if you subscribed)</li>
+          <li>To contact you about volunteer opportunities you expressed interest in</li>
+          <li>To notify you when a Town Hall or small group session is scheduled near you</li>
+          <li>To understand the geographic needs of our community so we can plan events appropriately</li>
+          <li>To maintain, improve, and troubleshoot the website</li>
+        </ul>
+        <p>We will never use your information for advertising, profiling, automated decision-making, or any purpose not listed above.</p>
+
+        <!-- 4 -->
+        <h2 id="data-sharing">4. How We Share Your Information</h2>
+        <p>We do not sell, rent, or trade your personal information — ever.</p>
+        <p>We share your information only with the following trusted service providers, strictly for the purposes described above:</p>
+        <ul>
+          <li><strong>Formspree (formspree.io):</strong> Processes and delivers form submissions to our team email. Formspree stores submissions on its servers temporarily. See <a href="https://formspree.io/legal/privacy-policy" target="_blank" rel="noopener">Formspree's Privacy Policy</a>.</li>
+          <li><strong>Web hosting provider:</strong> Hosts the website files and serves them to your browser.</li>
+        </ul>
+        <p>We may also disclose your information if required to do so by law or in response to a valid legal request.</p>
+
+        <!-- 5 -->
+        <h2 id="cookies">5. Cookies and Similar Technologies</h2>
+        <p>CincySeniors.org uses a small number of cookies — small text files stored on your device — to improve your experience:</p>
+        <ul>
+          <li><strong>Text size preference:</strong> We store your chosen text size (Normal, Large, Largest) in your browser's <code>localStorage</code> so it is remembered on future visits. This data stays on your device and is never transmitted to us.</li>
+          <li><strong>Cookie consent:</strong> We store a small cookie to remember that you have acknowledged our cookie notice, so we don't show it to you on every visit.</li>
+        </ul>
+        <p>We do not use advertising cookies, tracking cookies, or third-party analytics cookies. If you clear your browser's cookies and local storage, your preferences will be reset on your next visit.</p>
+        <p>By clicking <strong>"OK"</strong> on the cookie notice, or by continuing to use this site, you consent to our use of these limited cookies as described above.</p>
+
+        <!-- 6 -->
+        <h2 id="data-retention">6. How Long We Keep Your Information</h2>
+        <p>We retain form submission data (name, email, and any optional fields) for as long as is necessary to fulfill the purpose for which it was collected:</p>
+        <ul>
+          <li><strong>Newsletter subscribers:</strong> Until you unsubscribe. You may unsubscribe at any time by replying to any newsletter email.</li>
+          <li><strong>Volunteer interest:</strong> Until you ask us to remove you, or until our volunteer program ends.</li>
+          <li><strong>Event registrations:</strong> Until the relevant event season has concluded, typically no longer than 12 months.</li>
+        </ul>
+        <p>You may request deletion of your information at any time — see Section 7 below.</p>
+
+        <!-- 7 -->
+        <h2 id="your-rights">7. Your Rights</h2>
+        <p>You have the right to:</p>
+        <ul>
+          <li><strong>Access</strong> the personal information we hold about you</li>
+          <li><strong>Correct</strong> any inaccurate or incomplete information</li>
+          <li><strong>Delete</strong> your information from our records</li>
+          <li><strong>Withdraw consent</strong> at any time (for example, by unsubscribing from the newsletter)</li>
+          <li><strong>Object</strong> to our processing of your information</li>
+          <li><strong>Receive a copy</strong> of your data in a portable format</li>
+        </ul>
+        <p>To exercise any of these rights, simply email us at <a href="mailto:info@cincyseniors.org">info@cincyseniors.org</a> with your request. We will respond within 30 days.</p>
+
+        <!-- 8 -->
+        <h2 id="security">8. Data Security</h2>
+        <p>We take reasonable steps to protect your information from unauthorized access, loss, or misuse. All form submissions are transmitted over encrypted HTTPS connections. Our service providers are selected in part for their security practices.</p>
+        <p>However, no method of transmission over the Internet is 100% secure. While we strive to protect your information, we cannot guarantee its absolute security.</p>
+
+        <!-- 9 -->
+        <h2 id="ai-disclaimer">9. AI Content Disclaimer</h2>
+        <p>The Cindy AI chat assistant on this website is designed to provide general information about AI tools and local senior resources in Greater Cincinnati. Please be aware:</p>
+        <ul>
+          <li>Cindy AI may not have complete or current information about every local service or program.</li>
+          <li>Responses are generated by an AI model and may occasionally be inaccurate or incomplete.</li>
+          <li>Always confirm important details — such as hours, eligibility, or availability — directly with the service provider.</li>
+          <li>Cindy AI does not provide medical, legal, or financial advice. For such matters, please consult a qualified professional.</li>
+          <li>For emergencies, call <strong>911</strong>. For crisis support, call or text <strong>988</strong>.</li>
+        </ul>
+
+        <!-- 10 -->
+        <h2 id="children">10. Children's Privacy</h2>
+        <p>CincySeniors.org is intended for adults aged 60 and older, their families, and caregivers. We do not knowingly collect personal information from anyone under the age of 13. If you believe a child has submitted information to us, please contact us at <a href="mailto:info@cincyseniors.org">info@cincyseniors.org</a> and we will delete it promptly.</p>
+
+        <!-- 11 -->
+        <h2 id="changes">11. Changes to This Policy</h2>
+        <p>We may update this Privacy Policy from time to time. When we do, we will update the "Last updated" date at the top of this page. We encourage you to review this page periodically. Continued use of CincySeniors.org after any changes constitutes your acceptance of the updated policy.</p>
+
+        <!-- 12 -->
+        <h2 id="contact">12. How to Contact Us</h2>
+        <p>If you have any questions, concerns, or requests regarding this Privacy Policy or our data practices, please reach out:</p>
+        <ul>
+          <li><strong>Email:</strong> <a href="mailto:info@cincyseniors.org">info@cincyseniors.org</a></li>
+          <li><strong>Website:</strong> <a href="/">CincySeniors.org</a></li>
+        </ul>
+        <p>We are happy to answer any questions and will respond to all privacy-related inquiries within 30 days.</p>
+
+        <!-- 13 -->
+        <h2 id="definitions">13. Definitions</h2>
+        <table class="def-table" aria-label="Key definitions">
+          <thead>
+            <tr>
+              <th>Term</th>
+              <th>Definition</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Personal Data</strong></td>
+              <td>Any information that can identify you directly or indirectly, such as your name or email address.</td>
+            </tr>
+            <tr>
+              <td><strong>Usage Data</strong></td>
+              <td>Information collected automatically when you visit the site, such as browser type, pages visited, and time of visit.</td>
+            </tr>
+            <tr>
+              <td><strong>User</strong></td>
+              <td>Any individual who accesses or uses CincySeniors.org.</td>
+            </tr>
+            <tr>
+              <td><strong>Cookie</strong></td>
+              <td>A small file stored on your device by your browser that helps websites remember your preferences.</td>
+            </tr>
+            <tr>
+              <td><strong>Data Controller</strong></td>
+              <td>The organization responsible for deciding how personal data is collected and used — in this case, Cincy AI Catalyst (CAIC).</td>
+            </tr>
+            <tr>
+              <td><strong>Service Provider</strong></td>
+              <td>A third-party company that processes data on our behalf, such as Formspree for form submissions.</td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div><!-- /policy -->
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <h4>About CincySeniors.org</h4>
+        <p style="margin: 0; color: var(--ink-soft); font-size: 18px;">A local, community-run guide to using AI safely for older adults across Greater Cincinnati. Free. No ads. No sales.</p>
+        <div class="footer-privacy-note"><strong>Our promise:</strong> We're a local, community-run site.</div>
+      </div>
+      <div>
+        <h4>Pages</h4>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/resources/">Resources</a></li>
+          <li class="dropdown">
+          <a href="/cindy/" aria-haspopup="true">Ask Cindy AI</a>
+          <ul class="dropdown-menu" role="menu">
+            <li role="none"><a href="/cindy/" role="menuitem">💬 Chat with Cindy</a></li>
+            <li role="none"><a href="/cindy/about/" role="menuitem">ℹ️ About Cindy</a></li>
+          </ul>
+        </li>
+          <li><a href="/signups/">Get Involved</a></li>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Reach us</h4>
+        <ul>
+          <li><a href="mailto:info@cincyseniors.org">info@cincyseniors.org</a></li>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+          <li><a href="#">Accessibility</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="copyright">© 2026 CincySeniors.org — Made in Cincinnati with care.</p>
+  </footer>
+
+  <script>
+    (function () {
+      var html = document.documentElement;
+      var btns = document.querySelectorAll('.text-size button');
+      var classes = ['', 'text-large', 'text-xl'];
+      var labels = ['Normal', 'Large', 'Largest'];
+      function applySize(idx) {
+        html.classList.remove('text-large', 'text-xl');
+        if (classes[idx]) html.classList.add(classes[idx]);
+        btns.forEach(function (btn, i) {
+          btn.classList.toggle('active', i === idx);
+          btn.setAttribute('aria-pressed', i === idx ? 'true' : 'false');
+        });
+        try { localStorage.setItem('csTextSize', idx); } catch (e) {}
+      }
+      btns.forEach(function (btn, i) {
+        btn.setAttribute('aria-pressed', 'false');
+        btn.title = labels[i] + ' text';
+        btn.addEventListener('click', function () { applySize(i); });
+      });
+      var saved = 0;
+      try { saved = parseInt(localStorage.getItem('csTextSize') || '0', 10); } catch (e) {}
+      applySize(isNaN(saved) ? 0 : Math.min(saved, 2));
+    })();
+  </script>
+
+  <!-- ── Cookie consent banner ── -->
+  <div id="cookie-banner" role="dialog" aria-live="polite" aria-label="Cookie notice" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#1F1B16;color:#FAF6EE;font-family:'Atkinson Hyperlegible',system-ui,sans-serif;font-size:17px;line-height:1.5;padding:16px 24px;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;box-shadow:0 -4px 20px rgba(0,0,0,0.25);">
+    <p style="margin:0;max-width:720px;">We use cookies to ensure you get the best experience on our website. If you continue to use this site we'll assume you are happy with this. <a href="/privacy.html" style="color:#E5A87C;font-weight:700;text-underline-offset:3px;">Privacy Policy</a></p>
+    <button id="cookie-ok" style="flex-shrink:0;background:#B45A3C;color:#FAF6EE;border:2px solid #8F4227;border-radius:10px;padding:10px 28px;font-family:inherit;font-size:17px;font-weight:700;cursor:pointer;white-space:nowrap;">OK</button>
+  </div>
+  <script>
+    (function () {
+      function getCookie(name) {
+        var match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+        return match ? decodeURIComponent(match[1]) : null;
+      }
+      if (!getCookie('cs_cookie_ok')) {
+        var banner = document.getElementById('cookie-banner');
+        if (banner) banner.style.display = 'flex';
+        var btn = document.getElementById('cookie-ok');
+        if (btn) btn.addEventListener('click', function () {
+          var exp = new Date();
+          exp.setFullYear(exp.getFullYear() + 1);
+          document.cookie = 'cs_cookie_ok=1;path=/;expires=' + exp.toUTCString();
+          banner.style.display = 'none';
+        });
+      }
+    })();
+
+    // Mobile nav hamburger toggle
+    (function () {
+      var toggle = document.querySelector('.nav-toggle');
+      var nav = document.querySelector('nav.primary');
+      if (!toggle || !nav) return;
+      toggle.addEventListener('click', function () {
+        var isOpen = nav.classList.toggle('open');
+        toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        toggle.innerHTML = isOpen ? '&#x2715;' : '&#9776;';
+      });
+      // Close nav when a link is tapped
+      nav.querySelectorAll('a').forEach(function (a) {
+        a.addEventListener('click', function () {
+          nav.classList.remove('open');
+          toggle.setAttribute('aria-expanded', 'false');
+          toggle.innerHTML = '&#9776;';
+        });
+      });
+    })();
+    </script>
+</body>
+</html>

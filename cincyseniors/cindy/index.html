@@ -1,0 +1,1130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ask Cindy AI — CincySeniors.org</title>
+  <meta name="description" content="Chat with Cindy AI, your CincySeniors.org guide to local resources, programs, and support for seniors in the Cincinnati area." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
+  <style>
+    :root {
+      --bg:              #FBF7F1;
+      --panel:           #FFFBF3;
+      --muted:           #4A3E36;
+      --text:            #231914;
+      --border:          #D8C9AE;
+      --primary:         #2E5C7E;
+      --primary-dark:    #1F4560;
+      --primary-light:   rgba(46,92,126,.08);
+      --shadow:          0 4px 16px rgba(35,25,20,.08);
+      --user-bub:        #2E5C7E;
+      --user-bub-border: #1F4560;
+      --bot-bub:         #F1EADC;
+      --bot-bub-border:  #D8C9AE;
+      --input-bg:        #FFFBF3;
+      --btn-bg:          #FFFBF3;
+      --link:            #1F4560;
+      --danger:          #A8322A;
+      /* site palette extras */
+      --red:             #A8322A;
+      --red-dk:          #8A281F;
+      --sand:            #E7D9C0;
+      --cream:           #FFFBF3;
+      --ink:             #231914;
+      --ink-2:           #4A3E36;
+      --line:            #D8C9AE;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Source Sans 3", -apple-system, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      height: 100dvh; /* fixes mobile Safari address-bar clipping */
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Top bar ── */
+    .top-bar {
+      padding: 14px 24px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-shrink: 0;
+      border-bottom: 3px solid var(--ink);
+      background: var(--cream);
+    }
+    .top-bar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 860px;
+      padding-bottom: 12px;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); }
+    .brand-icon {
+      width: 42px; height: 36px; border-radius: 8px;
+      overflow: hidden; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .brand-icon img {
+      width: 100%; height: 100%; object-fit: contain;
+    }
+    .brand-text h1 { font-size: 17px; font-weight: 700; line-height: 1.2; font-family: "Fraunces", serif; }
+    .brand-text p  { font-size: 12px; color: var(--ink-2); }
+    .top-controls { display: flex; gap: 8px; align-items: center; }
+
+    /* ── Text size controls ── */
+    .text-size { display: inline-flex; gap: 5px; align-items: center; color: var(--ink-2); font-size: 13px; }
+    .text-size button {
+      background: transparent;
+      border: 1.5px solid var(--border);
+      border-radius: 999px;
+      padding: 3px 9px;
+      font-family: inherit;
+      font-size: 13px;
+      cursor: pointer;
+      color: var(--ink);
+      line-height: 1.4;
+    }
+    .text-size button:hover { border-color: var(--ink); }
+    .text-size button.active { background: var(--red); color: #fff; border-color: var(--red-dk); }
+
+    /* ── Primary nav ── */
+    .primary-nav {
+      width: 100%;
+      max-width: 860px;
+      padding-bottom: 8px;
+    }
+    .primary-nav ul {
+      list-style: none;
+      display: flex;
+      gap: 4px;
+      padding: 0;
+      margin: 0;
+      flex-wrap: wrap;
+    }
+    .primary-nav a {
+      display: block;
+      padding: 7px 14px;
+      border-radius: 999px;
+      text-decoration: none;
+      color: var(--ink);
+      font-weight: 600;
+      font-size: 14px;
+      font-family: "Source Sans 3", sans-serif;
+      transition: background 0.15s;
+    }
+    .primary-nav a:hover { background: var(--sand); }
+    .primary-nav a.active { background: var(--sand); color: var(--red-dk); }
+    .primary-nav a:focus { outline: 2px solid var(--red); outline-offset: 2px; }
+
+    /* Dropdown */
+    .primary-nav .dropdown { position: relative; }
+    .primary-nav .dropdown > a::after { content: " ▾"; font-size: 0.75em; }
+    .primary-nav .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      background: var(--cream);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 6px;
+      min-width: 200px;
+      box-shadow: 0 6px 20px rgba(35, 25, 20, 0.12);
+      z-index: 200;
+    }
+    .primary-nav .dropdown:hover .dropdown-menu,
+    .primary-nav .dropdown:focus-within .dropdown-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .primary-nav .dropdown-menu a {
+      border-radius: 6px;
+      font-size: 13px;
+      padding: 8px 12px;
+    }
+
+    /* ---------- Nav toggle button (mobile) ---------- */
+    .nav-toggle {
+      display: none;
+      background: transparent;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 20px;
+      line-height: 1;
+      cursor: pointer;
+      color: var(--ink);
+      font-family: inherit;
+    }
+    .nav-toggle:hover { border-color: var(--ink); }
+    .nav-toggle:focus { outline: 2px solid var(--red); outline-offset: 2px; }
+
+    @media (max-width: 600px) {
+      .nav-toggle { display: block; }
+      .primary-nav { display: none; width: 100%; }
+      .primary-nav.open { display: block; }
+      .primary-nav ul { display: flex; flex-direction: column; gap: 4px; padding: 6px 0; }
+      .primary-nav > ul > li { width: 100%; }
+      .primary-nav a { font-size: 15px; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); text-align: left; width: 100%; display: block; }
+      .primary-nav .dropdown > a::after { display: none; }
+      .primary-nav .dropdown-menu { display: flex !important; flex-direction: column; gap: 2px; position: static; box-shadow: none; border: none; padding: 3px 0 3px 14px; border-radius: 0; background: transparent; min-width: 0; }
+      .primary-nav .dropdown-menu a { font-size: 13px; padding: 8px 12px; color: var(--ink-2); }
+    }
+
+    /* ── Buttons ── */
+    .btn {
+      border: 1px solid var(--border);
+      background: var(--btn-bg);
+      border-radius: 8px;
+      padding: 7px 14px;
+      min-width: 88px;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--text);
+      font-size: 13px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .btn:hover { border-color: var(--ink); background: var(--ink); color: var(--cream); }
+    .btn.primary { background: var(--red); border-color: var(--red-dk); color: var(--cream); box-shadow: 0 2px 0 var(--red-dk); }
+    .btn.primary:hover { background: var(--red-dk); border-color: var(--red-dk); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* ── Layout ── */
+    .main-layout {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      max-width: 860px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 16px;
+      gap: 12px;
+      overflow: hidden;
+      min-height: 0;
+    }
+
+    /* ── Chat card ── */
+    .chat-card {
+      flex: 1;
+      min-height: 0;
+      background: var(--panel);
+      border: 2px solid var(--ink);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .chat-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--line);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink-2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+      background: var(--sand);
+    }
+    .status-dot {
+      display: inline-block;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #6db56d;
+      margin-right: 6px;
+    }
+    .chat-header-link {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--link);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .chat-header-link:hover { text-decoration: underline; }
+
+    /* ── Messages ── */
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 16px;
+    }
+    .msg { margin: 0; }
+    .msg.user { text-align: right; }
+    .bub {
+      display: inline-block;
+      max-width: 85%;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1.5px solid var(--bot-bub-border);
+      background: var(--bot-bub);
+      text-align: left;
+      font-size: 14px;
+      line-height: 1.65;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      word-break: break-word;
+      color: var(--ink);
+    }
+    .msg:not(.user) .bub {
+      display: block;
+      max-width: 100%;
+    }
+    .user .bub { background: var(--user-bub); border-color: var(--user-bub-border); color: var(--cream); }
+    .bub.error { border-color: var(--red); color: var(--red-dk); background: #fdf0ef; }
+    .bub p  { margin: 0.45em 0; }
+    .bub p:first-child { margin-top: 0; }
+    .bub p:last-child  { margin-bottom: 0; }
+    .bub ul, .bub ol { margin: 0.4em 0; padding-left: 1.4em; }
+    .bub li { margin: 0.2em 0; }
+    .bub strong { font-weight: 600; }
+    .bub a { color: var(--link); }
+    .bub h1, .bub h2, .bub h3 { font-size: 14px; font-weight: 700; margin: 0.6em 0 0.2em; }
+
+    /* ── Tables inside responses ── */
+    .table-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 0.6em 0;
+      border-radius: 6px;
+    }
+    .bub table {
+      border-collapse: collapse;
+      width: 100%;
+      font-size: 13px;
+      min-width: 400px; /* force scroll before columns collapse */
+    }
+    .bub table th,
+    .bub table td {
+      border: 1px solid var(--border);
+      padding: 6px 10px;
+      text-align: left;
+      vertical-align: top;
+      white-space: normal;
+      word-break: normal;
+      min-width: 80px;
+    }
+    .bub table th {
+      background: var(--bg);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .bub table tr:nth-child(even) td {
+      background: rgba(35, 25, 20, 0.03);
+    }
+
+    /* ── Code blocks inside responses ── */
+    .bub pre {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 12px;
+      overflow-x: auto;
+      font-size: 12px;
+      line-height: 1.5;
+      margin: 0.5em 0;
+    }
+    .bub code {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 12.5px;
+      background: rgba(35, 25, 20, 0.06);
+      padding: 2px 5px;
+      border-radius: 4px;
+    }
+    .bub pre code {
+      background: none;
+      padding: 0;
+      font-size: 12px;
+    }
+
+    /* thinking dots */
+    .thinking-indicator { display: inline-flex; align-items: center; gap: 4px; padding: 4px 2px; }
+    .thinking-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--primary);
+      animation: thinking 1.4s infinite;
+    }
+    .thinking-dot:nth-child(2) { animation-delay: 0.2s; }
+    .thinking-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes thinking { 0%,60%,100%{transform:scale(0.8);opacity:0.5} 30%{transform:scale(1.2);opacity:1} }
+
+    /* ── Read aloud button ── */
+    .read-aloud-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      margin-top: 10px;
+      padding: 9px 18px;
+      font-size: 16px;
+      font-family: inherit;
+      font-weight: 700;
+      color: var(--ink-2);
+      background: transparent;
+      border: 1.5px solid var(--border);
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+      line-height: 1.4;
+      min-height: 44px;
+    }
+    .read-aloud-btn:hover { border-color: var(--ink); background: var(--sand); color: var(--ink); }
+    .read-aloud-btn.speaking { background: var(--red); border-color: var(--red-dk); color: #fff; }
+    .read-aloud-btn:focus { outline: 2px solid var(--red); outline-offset: 2px; }
+    .tts-note {
+      display: block;
+      margin-top: 6px;
+      font-size: 14px;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    /* system event note in chat log */
+    .msg-event {
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+      font-style: italic;
+      padding: 2px 0;
+    }
+
+    /* sources */
+    .sources {
+      margin-top: 8px; padding-top: 8px;
+      border-top: 1px solid var(--border);
+      font-size: 12px; color: var(--muted);
+    }
+    .sources summary { cursor: pointer; font-weight: 600; margin-bottom: 4px; }
+    .source-card {
+      background: var(--bg); border: 1px solid var(--line);
+      border-radius: 8px; padding: 8px; margin-top: 6px;
+    }
+    .source-file { font-size: 11px; color: var(--primary); font-weight: 600; margin-bottom: 3px; font-family: "Source Sans 3", sans-serif; }
+    .source-text { font-size: 11px; line-height: 1.4; color: var(--muted); white-space: pre-wrap; }
+
+    /* welcome */
+    .welcome {
+      flex: 1; display: flex; align-items: center;
+      justify-content: center; text-align: center; padding: 40px;
+    }
+    .welcome h2 { font-size: 22px; font-weight: 600; margin-bottom: 8px; color: var(--ink); font-family: "Fraunces", serif; }
+    .welcome p  { color: var(--ink-2); font-size: 15px; max-width: 380px; line-height: 1.6; }
+
+    /* ── Input bar ── */
+    .input-bar {
+      display: flex; gap: 8px; flex-shrink: 0;
+      padding: 12px; border-top: 1.5px solid var(--line);
+      background: var(--sand);
+    }
+    .input-bar input {
+      flex: 1; padding: 9px 14px;
+      border-radius: 8px; border: 2px solid var(--line);
+      background: var(--input-bg); color: var(--ink);
+      font-size: 14px; outline: none;
+      font-family: "Source Sans 3", sans-serif;
+    }
+    .input-bar input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(46,92,126,.15); }
+
+    /* ── Info note ── */
+    .info-note {
+      flex-shrink: 0;
+      font-size: 14px;
+      color: var(--muted);
+      text-align: center;
+      padding-bottom: 4px;
+      line-height: 1.7;
+    }
+    .info-note a { color: var(--red-dk); text-decoration: none; }
+    .info-note a:hover { color: var(--red); text-decoration: underline; }
+
+    /* ── Footer nav ── */
+    .nav {
+      text-align: center; padding: 8px 16px;
+      font-size: 12px; color: var(--ink-2); flex-shrink: 0;
+    }
+    .nav a { color: var(--red-dk); text-decoration: none; }
+    .nav a:hover { color: var(--red); text-decoration: underline; }
+
+    /* ── Text size overrides ── */
+    /* ── Text-large overrides ── */
+    html.text-large .bub                  { font-size: 17px; }
+    html.text-large .input-bar input      { font-size: 17px; }
+    html.text-large .primary-nav a        { font-size: 16px; }
+    html.text-large .primary-nav .dropdown-menu a { font-size: 15px; }
+    html.text-large .read-aloud-btn       { font-size: 18px; }
+    html.text-large .tts-note             { font-size: 16px; }
+    html.text-large .chat-header          { font-size: 15px; }
+    html.text-large .chat-header-link     { font-size: 15px; }
+    html.text-large .welcome h2           { font-size: 25px; }
+    html.text-large .welcome p            { font-size: 17px; }
+    html.text-large .btn                  { font-size: 15px; }
+    html.text-large .sources              { font-size: 14px; }
+    html.text-large .info-note            { font-size: 14px; }
+
+    /* ── Text-xl overrides ── */
+    html.text-xl .bub                     { font-size: 20px; }
+    html.text-xl .input-bar input         { font-size: 20px; }
+    html.text-xl .primary-nav a           { font-size: 18px; }
+    html.text-xl .primary-nav .dropdown-menu a { font-size: 17px; }
+    html.text-xl .read-aloud-btn          { font-size: 21px; }
+    html.text-xl .tts-note                { font-size: 18px; }
+    html.text-xl .chat-header             { font-size: 17px; }
+    html.text-xl .chat-header-link        { font-size: 17px; }
+    html.text-xl .welcome h2              { font-size: 28px; }
+    html.text-xl .welcome p               { font-size: 20px; }
+    html.text-xl .btn                     { font-size: 17px; }
+    html.text-xl .sources                 { font-size: 16px; }
+    html.text-xl .info-note               { font-size: 16px; }
+
+    @media (max-width: 600px) {
+      .top-bar { padding: 8px 12px 0; }
+      .brand-text h1 { font-size: 15px; }
+      .brand-text p  { display: none; } /* hide subtitle on small screens */
+      .brand-icon { width: 35px; height: 30px; }
+      .text-size span { display: none; } /* hide "Text size:" label on mobile */
+
+      .main-layout { padding: 8px; gap: 8px; }
+
+      .chat-header { padding: 10px 12px; font-size: 12px; }
+
+      .messages { padding: 10px; gap: 10px; }
+
+      .bub { font-size: 15px; padding: 10px 12px; }
+      .bub table { font-size: 12px; }
+      .bub table th,
+      .bub table td { padding: 5px 7px; }
+
+      .input-bar { padding: 8px 10px; gap: 6px; }
+      .input-bar input {
+        font-size: 16px; /* prevents iOS zoom-on-focus */
+        padding: 10px 12px;
+      }
+      .btn { padding: 10px 14px; font-size: 14px; min-height: 44px; }
+
+      .info-note { font-size: 11px; }
+    }
+  </style>
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <a class="brand" href="/">
+      <div class="brand-icon">
+        <img src="/cindy/about/cindy_logo.png" alt="Cindy AI logo" />
+      </div>
+      <div class="brand-text">
+        <h1>CincySeniors.org</h1>
+        <p>Your Greater Cincinnati Senior AI Resource Guide</p>
+      </div>
+    </a>
+    <div class="top-controls">
+      <div class="text-size" aria-label="Text size controls">
+        <span>Text size:</span>
+        <button type="button" aria-label="Normal text">A</button>
+        <button type="button" aria-label="Larger text">A+</button>
+        <button type="button" aria-label="Largest text">A++</button>
+      </div>
+      <button class="nav-toggle" aria-label="Open navigation menu" aria-expanded="false">&#9776;</button>
+    </div>
+  </div>
+  <nav class="primary-nav" aria-label="Primary">
+    <ul>
+      <li><a href="/">Home</a></li>
+      <li class="dropdown">
+        <a href="/learn/" aria-haspopup="true">Learn</a>
+        <ul class="dropdown-menu" role="menu">
+          <li role="none"><a href="/learn/" role="menuitem">📖 Learn About AI</a></li>
+          <li role="none"><a href="/health/" role="menuitem">❤️ Health</a></li>
+          <li role="none"><a href="/wealth/" role="menuitem">💰 Wealth</a></li>
+          <li role="none"><a href="/self/" role="menuitem">✍️ Self</a></li>
+        </ul>
+      </li>
+      <li><a href="/news/">News</a></li>
+      <li class="dropdown">
+          <a href="/resources/" aria-haspopup="true">Resources</a>
+          <ul class="dropdown-menu" role="menu">
+            <li role="none"><a href="/resources/" role="menuitem">📚 Resources</a></li>
+            <li role="none"><a href="/ai-quiz.html" role="menuitem">🧠 AI Quiz</a></li>
+          </ul>
+        </li>
+      <li class="dropdown">
+        <a href="/cindy/" aria-haspopup="true" class="active">Ask Cindy AI</a>
+        <ul class="dropdown-menu" role="menu">
+          <li role="none"><a href="/cindy/" role="menuitem" aria-current="page">💬 Chat with Cindy</a></li>
+          <li role="none"><a href="/cindy/about/" role="menuitem">ℹ️ About Cindy</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="/signups/" aria-haspopup="true">Get Involved</a>
+        <ul class="dropdown-menu" role="menu">
+          <li role="none"><a href="/signups/newsletter.html" role="menuitem">📰 Newsletter</a></li>
+          <li role="none"><a href="/signups/volunteer.html" role="menuitem">🤝 Volunteer</a></li>
+          <li role="none"><a href="/signups/townhall.html" role="menuitem">🏛️ Town Hall Signup</a></li>
+          <li role="none"><a href="/signups/smallgroup.html" role="menuitem">👥 Small Group Signup</a></li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+</div>
+
+<div class="main-layout">
+
+  <div class="chat-card">
+    <div class="chat-header">
+      <span><span class="status-dot"></span>Cindy AI &mdash; Online &middot; no sign-up needed</span>
+      <a href="/cindy/about/" class="chat-header-link">Learn how Cindy works! →</a>
+    </div>
+
+    <div class="messages" id="messages" aria-live="polite" aria-label="Conversation">
+      <div class="welcome" id="welcome">
+        <div>
+          <h2>Hello! I'm Cindy AI!</h2>
+          <p>Your guide to AI and local Senior resources<br>across the Greater Cincinnati region!</p>
+          <p>Ask me anything about AI!</p>
+          <p>Responses may take 7-10 seconds as Cindy looks up Cincy specific information!</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="input-bar">
+      <input type="text" id="user-input" placeholder="Enter your question here. Well formed &quot;prompts&quot; get the best responses!" autocomplete="off" aria-label="Your message to Cindy AI" />
+      <button class="btn primary" id="send-btn">Send</button>
+      <button class="btn" id="new-chat-btn">New Chat</button>
+    </div>
+  </div>
+
+  <div class="info-note">
+    Cindy AI may not have every local detail — always confirm directly with service providers.<br>
+    For emergencies call <strong>911</strong>. Crisis support: <strong>988</strong>.
+  </div>
+
+</div>
+
+<div class="nav">
+  <a href="/">CincySeniors.org</a>
+</div>
+
+<script>
+  // ── Configuration ──────────────────────────────────────────────────────────
+  const API_URL = "/cindy/chat";
+
+  const SYSTEM_PROMPT = `You are Cindy, a warm and knowledgeable guide for CincySeniors.org — a community resource website for older adults and caregivers in the Greater Cincinnati area.
+
+Your role is to help seniors, their families, and caregivers find local programs, services, transportation, healthcare support, social activities, meal programs, housing assistance, and other resources in the Greater Cincinnati region. Please rely on the resources in the RAG application for answers first.
+
+Guidelines:
+- Be warm, patient, and clear. Use plain language — avoid jargon.
+- Focus on Cincinnati-area resources when possible (Hamilton County, Butler County, Warren County, Clermont County, and Northern Kentucky).
+- When recommending services, provide names, general descriptions, and suggest users call or visit the organization to confirm current details.
+- If you are unsure about specific details, say so honestly and direct users.
+- Keep responses concise but complete. Use short paragraphs or bullet points for readability.
+- Never provide medical diagnoses or legal advice.
+- If you do not have enough information in your knowledge base to answer a question, respond with: "I'm sorry, I don't have enough information in my knowledge base to fully answer that. My database is curated information about AI and local area resources. You may need to try your prompt again. I'd recommend contacting a local senior resource center or visiting other parts of CincySeniors.org for more help." Do not list or display any sources in that case.`;
+
+  // ── State ──────────────────────────────────────────────────────────────────
+  const conversationHistory = [];
+  let isLoading = false;
+
+  // ── DOM refs ───────────────────────────────────────────────────────────────
+  const messagesEl = document.getElementById("messages");
+  const welcomeEl  = document.getElementById("welcome");
+  const inputEl    = document.getElementById("user-input");
+  const sendBtn    = document.getElementById("send-btn");
+  const newChatBtn = document.getElementById("new-chat-btn");
+
+  // ── New chat ───────────────────────────────────────────────────────────────
+  newChatBtn.addEventListener("click", () => {
+    conversationHistory.length = 0;
+    messagesEl.innerHTML = "";
+    messagesEl.appendChild(welcomeEl);
+    welcomeEl.style.display = "flex";
+    inputEl.value = "";
+    inputEl.focus();
+  });
+
+  // ── Send on Enter ──────────────────────────────────────────────────────────
+  inputEl.addEventListener("keydown", e => {
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); }
+  });
+  sendBtn.addEventListener("click", handleSend);
+
+  // ── PII detection ──────────────────────────────────────────────────────────
+  function containsPII(text) {
+    var patterns = [
+      /\b\d{3}[-.\s]?\d{2}[-.\s]?\d{4}\b/,           // SSN
+      /\b\d{4}[-.\s]?\d{4}[-.\s]?\d{4}[-.\s]?\d{4}\b/, // credit/debit card
+      /\b[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}\b/, // email
+      /\b(\+1[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/,  // phone number
+      /\b\d{5}(-\d{4})?\b(?=.*\b(ssn|social|account|password|dob|birth|medicare|medicaid)\b)/i, // zip near sensitive word
+    ];
+    return patterns.some(function (p) { return p.test(text); });
+  }
+
+  // Show a gentle PII warning and return a Promise resolving to true (proceed) or false (cancel)
+  function warnPII() {
+    return new Promise(function (resolve) {
+      var overlay = document.createElement("div");
+      overlay.id = "pii-overlay";
+      overlay.style.cssText = "position:fixed;inset:0;background:rgba(35,25,20,.55);z-index:9000;display:flex;align-items:center;justify-content:center;padding:20px;";
+      overlay.innerHTML = `
+        <div style="background:var(--cream);border:2px solid var(--ink);border-radius:14px;max-width:420px;width:100%;padding:28px 24px;box-shadow:0 8px 32px rgba(35,25,20,.18);font-family:'Source Sans 3',sans-serif;">
+          <div style="font-size:28px;margin-bottom:10px;">⚠️</div>
+          <h2 style="font-family:'Fraunces',serif;font-size:18px;margin:0 0 12px;color:var(--ink);">Privacy Reminder</h2>
+          <p style="font-size:15px;line-height:1.6;color:var(--ink-2);margin:0 0 18px;">It looks like your message may include personal information such as a phone number, email address, or Social Security number.</p>
+          <p style="font-size:15px;line-height:1.6;color:var(--ink-2);margin:0 0 22px;">For your safety, we kindly suggest <strong>not sharing personal details</strong> in this chat. Cindy AI does not need your personal information to help you find local resources.</p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button id="pii-edit" style="flex:1;min-width:120px;padding:11px 16px;border-radius:8px;border:1.5px solid var(--border);background:var(--cream);font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;color:var(--ink);">Edit my message</button>
+            <button id="pii-send" style="flex:1;min-width:120px;padding:11px 16px;border-radius:8px;border:1.5px solid var(--red-dk);background:var(--red);font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;color:#fff;">Send anyway</button>
+          </div>
+        </div>`;
+      document.body.appendChild(overlay);
+      document.getElementById("pii-edit").addEventListener("click", function () {
+        overlay.remove(); resolve(false);
+      });
+      document.getElementById("pii-send").addEventListener("click", function () {
+        overlay.remove(); resolve(true);
+      });
+    });
+  }
+
+  // ── Core send logic ────────────────────────────────────────────────────────
+  async function handleSend() {
+    const text = inputEl.value.trim();
+    if (!text || isLoading) return;
+
+    // Check for PII before sending
+    if (containsPII(text)) {
+      const proceed = await warnPII();
+      if (!proceed) { inputEl.focus(); return; }
+    }
+
+    if (welcomeEl) welcomeEl.style.display = "none";
+
+    appendMessage("user", text);
+    conversationHistory.push({ role: "user", content: text });
+    inputEl.value = "";
+
+    setLoading(true);
+
+    try {
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: [
+            { role: "system", content: SYSTEM_PROMPT },
+            ...conversationHistory,
+          ],
+          temperature: 0.65,
+          useRag: true,
+        }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || `Server error (${res.status})`);
+      }
+
+      const data  = await res.json();
+      const reply = data.reply || "";
+      if (!reply) throw new Error("Received an empty response. Please try again.");
+
+      conversationHistory.push({ role: "assistant", content: reply });
+      appendMessage("cindy", reply, data.sources, data.log_id || 0);
+
+    } catch (err) {
+      const div = document.createElement("div");
+      div.className = "msg";
+      div.innerHTML = `<div class="bub error">${esc(err.message)}</div>`;
+      messagesEl.appendChild(div);
+      scrollBottom();
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // ── Append a message bubble ────────────────────────────────────────────────
+  function appendMessage(role, text, sources, logId) {
+    const div = document.createElement("div");
+    div.className = `msg ${role === "user" ? "user" : ""}`;
+
+    const bub = document.createElement("div");
+    bub.className = "bub";
+
+    if (role === "user") {
+      bub.textContent = text;
+    } else {
+      bub.innerHTML = typeof marked !== "undefined" ? marked.parse(text) : esc(text);
+      // Wrap tables in a scrollable container for mobile
+      bub.querySelectorAll("table").forEach(function (table) {
+        var wrap = document.createElement("div");
+        wrap.className = "table-wrap";
+        table.parentNode.insertBefore(wrap, table);
+        wrap.appendChild(table);
+      });
+      const isNoInfo = /don.t have enough information/i.test(text) || /not enough information/i.test(text) || /don.t have (the|enough)/i.test(text);
+      if (sources && sources.length > 0 && !isNoInfo) {
+        bub.innerHTML += buildSourcesHtml(sources);
+      }
+      // Add read-aloud button
+      const readBtn = document.createElement("button");
+      readBtn.className = "read-aloud-btn";
+      readBtn.setAttribute("aria-label", "Read response aloud");
+      readBtn.innerHTML = "🔊 Read aloud";
+      readBtn.dataset.logId = logId || 0;
+      readBtn.addEventListener("click", function () { toggleSpeech(readBtn, text); });
+      bub.appendChild(readBtn);
+      var ttsNote = document.createElement("span");
+      ttsNote.className = "tts-note";
+      ttsNote.textContent = "Note: voice will begin within a few seconds and continue sentence by sentence.";
+      bub.appendChild(ttsNote);
+    }
+
+    div.appendChild(bub);
+    messagesEl.appendChild(div);
+    scrollBottom();
+  }
+
+  // ── Sources HTML ───────────────────────────────────────────────────────────
+  function buildSourcesHtml(sources) {
+    let html = `<div class="sources"><details><summary>Sources (${sources.length})</summary>`;
+    sources.forEach(s => {
+      const title   = s.title || (s.metadata && s.metadata.source
+        ? s.metadata.source.split("/").pop() : "Resource");
+      const snippet = s.snippet || s.content || "";
+      html += `<div class="source-card">
+        <div class="source-file">${esc(title)}</div>
+        <div class="source-text">${esc(snippet.slice(0, 200))}</div>
+      </div>`;
+    });
+    html += `</details></div>`;
+    return html;
+  }
+
+  // ── Thinking indicator ─────────────────────────────────────────────────────
+  let thinkDiv = null;
+
+  function setLoading(state) {
+    isLoading = state;
+    sendBtn.disabled = state;
+    inputEl.disabled = state;
+
+    if (state) {
+      thinkDiv = document.createElement("div");
+      thinkDiv.className = "msg";
+      thinkDiv.innerHTML = '<div class="bub"><div class="thinking-indicator"><span class="thinking-dot"></span><span class="thinking-dot"></span><span class="thinking-dot"></span></div></div>';
+      messagesEl.appendChild(thinkDiv);
+      scrollBottom();
+    } else {
+      if (thinkDiv) { thinkDiv.remove(); thinkDiv = null; }
+      inputEl.focus();
+    }
+  }
+
+  // ── Helpers ────────────────────────────────────────────────────────────────
+  function esc(s) {
+    const d = document.createElement("div");
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function scrollBottom() {
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  inputEl.focus();
+
+// ── Text-to-speech ─────────────────────────────────────────────────────────
+var currentSpeakBtn      = null;
+var currentAudio         = null;
+var currentAbortCtrl     = null;
+var ttsEngine            = "browser"; // default until config loads
+
+// Fetch TTS engine setting from server on page load
+fetch("/cindy/tts-config")
+  .then(function (r) { return r.json(); })
+  .then(function (cfg) { ttsEngine = cfg.engine || "browser"; })
+  .catch(function () { ttsEngine = "browser"; });
+
+// ── Stop everything currently playing ──────────────────────────────────────
+function stopCurrentSpeech() {
+  if (currentAbortCtrl) { currentAbortCtrl.abort(); currentAbortCtrl = null; }
+  if (currentAudio) { currentAudio.pause(); currentAudio.src = ""; currentAudio = null; }
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
+  if (currentSpeakBtn) {
+    currentSpeakBtn.classList.remove("speaking");
+    currentSpeakBtn.innerHTML = "🔊 Read aloud";
+    currentSpeakBtn.setAttribute("aria-label", "Read response aloud");
+    currentSpeakBtn = null;
+  }
+}
+
+function toggleSpeech(btn, rawText) {
+  if (btn.classList.contains("speaking")) { stopCurrentSpeech(); return; }
+  stopCurrentSpeech();
+  // Log read-aloud event in the chat window
+  var eventDiv = document.createElement("div");
+  eventDiv.className = "msg-event";
+  eventDiv.textContent = "🔊 Read Aloud selected — " + new Date().toLocaleTimeString([], {hour: "2-digit", minute: "2-digit"});
+  messagesEl.appendChild(eventDiv);
+  scrollBottom();
+  // Record the event in the backend chat log
+  var logId = parseInt(btn.dataset.logId || "0", 10);
+  if (logId > 0) {
+    fetch("/cindy/log-read-aloud", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ log_id: logId }),
+    }).catch(function () {}); // fire-and-forget, never block the user
+  }
+  if (ttsEngine === "openai") {
+    speakOpenAI(btn, rawText);
+  } else {
+    speakBrowser(btn, rawText);
+  }
+}
+
+// ── Split text into sentence-sized chunks for parallel TTS fetching ─────────
+function stripMarkdown(text) {
+  return text
+    .replace(/#{1,6}\s+/g, "")
+    .replace(/\*\*(.+?)\*\*/g, "$1")
+    .replace(/\*(.+?)\*/g, "$1")
+    .replace(/`{1,3}[^`]*`{1,3}/g, "")
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .replace(/^[-*+]\s+/gm, "")
+    .replace(/^\d+\.\s+/gm, "")
+    .replace(/\|[^\n]+/g, "")
+    .replace(/-{3,}/g, "")
+    .replace(/\n{2,}/g, ". ")
+    .replace(/\n/g, " ")
+    .trim();
+}
+
+function splitIntoChunks(text) {
+  var clean = stripMarkdown(text);
+  // Split on sentence-ending punctuation followed by whitespace
+  var sentences = clean.split(/(?<=[.!?])\s+/).filter(function (s) { return s.trim().length > 0; });
+  var chunks = [];
+  var current = "";
+  for (var i = 0; i < sentences.length; i++) {
+    current += (current ? " " : "") + sentences[i];
+    // Flush when we hit ~120 chars or a natural sentence end at 60+ chars
+    if (current.length >= 120 || (current.length >= 60 && /[.!?]$/.test(sentences[i]))) {
+      chunks.push(current.trim());
+      current = "";
+    }
+  }
+  if (current.trim()) chunks.push(current.trim());
+  return chunks.filter(function (c) { return c.length > 4; });
+}
+
+// ── OpenAI TTS — parallel chunk fetching, sequential playback ──────────────
+function speakOpenAI(btn, rawText) {
+  // Show loading state immediately so user gets instant feedback
+  btn.classList.add("speaking");
+  btn.innerHTML = "⏳ Loading...";
+  btn.setAttribute("aria-label", "Loading audio, please wait");
+  currentSpeakBtn = btn;
+
+  var abort = new AbortController();
+  currentAbortCtrl = abort;
+
+  var chunks = splitIntoChunks(rawText);
+  if (chunks.length === 0) { stopCurrentSpeech(); return; }
+
+  // Kick off ALL chunk fetches simultaneously
+  var fetchPromises = chunks.map(function (chunk) {
+    return fetch("/cindy/tts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: chunk }),
+      signal: abort.signal,
+    })
+    .then(function (res) {
+      if (!res.ok) throw new Error("TTS chunk failed (" + res.status + ")");
+      return res.blob();
+    })
+    .then(function (blob) { return URL.createObjectURL(blob); })
+    .catch(function () { return null; }); // null = skip this chunk if aborted/failed
+  });
+
+  // Play chunks in order as each one resolves
+  function playQueue(index) {
+    if (abort.signal.aborted || !currentSpeakBtn || index >= fetchPromises.length) {
+      if (currentSpeakBtn === btn) stopCurrentSpeech();
+      return;
+    }
+    fetchPromises[index].then(function (url) {
+      if (!url || abort.signal.aborted || !currentSpeakBtn) {
+        if (url) URL.revokeObjectURL(url);
+        if (currentSpeakBtn === btn) stopCurrentSpeech();
+        return;
+      }
+      var audio = new Audio(url);
+      currentAudio = audio;
+      // Switch from "Loading..." to "Stop" as soon as audio actually begins
+      if (btn.innerHTML === "⏳ Loading...") {
+        btn.innerHTML = "⏹ Stop";
+        btn.setAttribute("aria-label", "Stop reading");
+      }
+      audio.onended = function () {
+        URL.revokeObjectURL(url);
+        currentAudio = null;
+        playQueue(index + 1); // advance to next chunk
+      };
+      audio.onerror = function () {
+        URL.revokeObjectURL(url);
+        currentAudio = null;
+        playQueue(index + 1); // skip broken chunk, keep going
+      };
+      abort.signal.addEventListener("abort", function () {
+        audio.pause();
+      }, { once: true });
+      audio.play();
+    });
+  }
+
+  playQueue(0);
+}
+
+// ── Browser Web Speech API (Option 1 fallback) ──────────────────────────────
+function speakBrowser(btn, rawText) {
+  var synth = window.speechSynthesis;
+  if (!synth) { alert("Sorry, your browser does not support text-to-speech."); return; }
+
+  var clean = stripMarkdown(rawText);
+  var utt = new SpeechSynthesisUtterance(clean);
+  utt.rate  = 1.0;
+  utt.pitch = 1.0;
+  utt.lang  = "en-US";
+
+  function speak() {
+    var enVoices = synth.getVoices().filter(function (v) { return v.lang.startsWith("en"); });
+    var priority = [
+      "Ava (Enhanced)", "Allison (Enhanced)", "Evan (Enhanced)",
+      "Samantha (Enhanced)", "Nicky (Enhanced)",
+      "Microsoft Aria Online (Natural) - English (United States)",
+      "Microsoft Jenny Online (Natural) - English (United States)",
+      "Microsoft Aria - English (United States)",
+      "Microsoft Jenny - English (United States)",
+      "Microsoft Zira - English (United States)",
+      "Google US English",
+    ];
+    var preferred = null;
+    for (var i = 0; i < priority.length; i++) {
+      preferred = enVoices.find(function (v) { return v.name === priority[i]; });
+      if (preferred) break;
+    }
+    if (!preferred) preferred = enVoices.find(function (v) { return /enhanced|premium|natural/i.test(v.name); });
+    if (!preferred && enVoices.length > 0) preferred = enVoices[0];
+    if (preferred) utt.voice = preferred;
+
+    utt.onend = function () { stopCurrentSpeech(); };
+    utt.onerror = function () { stopCurrentSpeech(); };
+
+    btn.classList.add("speaking");
+    btn.innerHTML = "⏹ Stop";
+    btn.setAttribute("aria-label", "Stop reading");
+    currentSpeakBtn = btn;
+    synth.speak(utt);
+  }
+
+  if (synth.getVoices().length > 0) {
+    speak();
+  } else {
+    synth.onvoiceschanged = function () { synth.onvoiceschanged = null; speak(); };
+  }
+}
+</script>
+
+  <!-- ── Cookie consent banner ── -->
+  <div id="cookie-banner" role="dialog" aria-live="polite" aria-label="Cookie notice" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#1F1B16;color:#FAF6EE;font-family:'Atkinson Hyperlegible',system-ui,sans-serif;font-size:17px;line-height:1.5;padding:16px 24px;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;box-shadow:0 -4px 20px rgba(0,0,0,0.25);">
+    <p style="margin:0;max-width:720px;">We use cookies to ensure you get the best experience on our website. If you continue to use this site we'll assume you are happy with this. <a href="/privacy.html" style="color:#E5A87C;font-weight:700;text-underline-offset:3px;">Privacy Policy</a></p>
+    <button id="cookie-ok" style="flex-shrink:0;background:#B45A3C;color:#FAF6EE;border:2px solid #8F4227;border-radius:10px;padding:10px 28px;font-family:inherit;font-size:17px;font-weight:700;cursor:pointer;white-space:nowrap;">OK</button>
+  </div>
+  <script>
+    (function () {
+      function getCookie(name) {
+        var match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+        return match ? decodeURIComponent(match[1]) : null;
+      }
+      if (!getCookie('cs_cookie_ok')) {
+        var banner = document.getElementById('cookie-banner');
+        if (banner) banner.style.display = 'flex';
+        var btn = document.getElementById('cookie-ok');
+        if (btn) btn.addEventListener('click', function () {
+          var exp = new Date();
+          exp.setFullYear(exp.getFullYear() + 1);
+          document.cookie = 'cs_cookie_ok=1;path=/;expires=' + exp.toUTCString();
+          banner.style.display = 'none';
+        });
+      }
+    })();
+
+    // Text size controls
+    (function () {
+      var html = document.documentElement;
+      var btns = document.querySelectorAll('.text-size button');
+      var classes = ['', 'text-large', 'text-xl'];
+      var labels = ['Normal', 'Large', 'Largest'];
+      function applySize(idx) {
+        html.classList.remove('text-large', 'text-xl');
+        if (classes[idx]) html.classList.add(classes[idx]);
+        btns.forEach(function (btn, i) {
+          btn.classList.toggle('active', i === idx);
+          btn.setAttribute('aria-pressed', i === idx ? 'true' : 'false');
+        });
+        try { localStorage.setItem('csTextSize', idx); } catch (e) {}
+      }
+      btns.forEach(function (btn, i) {
+        btn.setAttribute('aria-pressed', 'false');
+        btn.title = labels[i] + ' text';
+        btn.addEventListener('click', function () { applySize(i); });
+      });
+      var saved = 0;
+      try { saved = parseInt(localStorage.getItem('csTextSize') || '0', 10); } catch (e) {}
+      applySize(isNaN(saved) ? 0 : Math.min(saved, 2));
+    })();
+
+    // Mobile nav hamburger toggle
+    (function () {
+      var toggle = document.querySelector('.nav-toggle');
+      var nav = document.querySelector('.primary-nav');
+      if (!toggle || !nav) return;
+      toggle.addEventListener('click', function () {
+        var isOpen = nav.classList.toggle('open');
+        toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        toggle.innerHTML = isOpen ? '&#x2715;' : '&#9776;';
+      });
+      nav.querySelectorAll('a').forEach(function (a) {
+        a.addEventListener('click', function () {
+          nav.classList.remove('open');
+          toggle.setAttribute('aria-expanded', 'false');
+          toggle.innerHTML = '&#9776;';
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

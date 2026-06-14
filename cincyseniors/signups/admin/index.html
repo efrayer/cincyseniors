@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Signup Admin — CincySeniors.org</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <style>
+    :root {
+      --bg:      #f4f7f6;
+      --panel:   #ffffff;
+      --muted:   rgba(0,0,0,.55);
+      --text:    rgba(0,0,0,.85);
+      --border:  rgba(0,0,0,.10);
+      --primary: #B45A3C;
+      --primary-dark: #8F4227;
+      --sage:    #6E8B6A;
+      --shadow:  0 4px 16px rgba(0,0,0,.07);
+      --danger:  #c0392b;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Atkinson Hyperlegible", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Password gate ── */
+    #pw-gate {
+      position: fixed; inset: 0; z-index: 9999;
+      background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+    }
+    #pw-gate.hidden { display: none; }
+    .pw-box {
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: 16px; box-shadow: var(--shadow);
+      padding: 40px 36px; width: 100%; max-width: 360px; text-align: center;
+    }
+    .pw-icon {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: var(--primary); color: #fff;
+      font-size: 22px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px;
+    }
+    .pw-box h2 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+    .pw-box p  { font-size: 13px; color: var(--muted); margin-bottom: 22px; }
+    .pw-field {
+      width: 100%; padding: 10px 14px;
+      border: 1px solid var(--border); border-radius: 10px;
+      background: #fff; color: var(--text);
+      font-size: 15px; outline: none; margin-bottom: 12px;
+    }
+    .pw-field:focus { border-color: var(--primary); }
+    .pw-submit {
+      width: 100%; padding: 10px;
+      background: var(--primary); color: #fff;
+      border: none; border-radius: 10px;
+      font-size: 15px; font-weight: 600; cursor: pointer;
+    }
+    .pw-submit:hover { background: var(--primary-dark); }
+    .pw-error { margin-top: 10px; font-size: 13px; color: var(--danger); display: none; }
+    .pw-error.visible { display: block; }
+
+    /* ── Header ── */
+    .top-bar {
+      padding: 14px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      background: #fff; flex-shrink: 0; gap: 12px; flex-wrap: wrap;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand-icon {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--primary); color: #fff;
+      font-size: 18px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .brand-text h1 { font-size: 17px; font-weight: 700; line-height: 1.2; }
+    .brand-text p  { font-size: 12px; color: var(--muted); }
+    .top-controls { display: flex; gap: 8px; align-items: center; }
+
+    /* ── Buttons ── */
+    .btn {
+      border: 1px solid var(--border); background: #fff;
+      border-radius: 8px; padding: 7px 14px;
+      font-weight: 600; cursor: pointer; color: var(--text);
+      font-size: 13px; transition: border-color 0.15s;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn:hover { border-color: var(--primary); color: var(--primary); }
+    .btn.primary { background: var(--primary); border-color: var(--primary); color: #fff; }
+    .btn.primary:hover { background: var(--primary-dark); border-color: var(--primary-dark); }
+
+    /* ── Content ── */
+    .content {
+      flex: 1; max-width: 1100px; width: 100%;
+      margin: 0 auto; padding: 24px 16px 48px;
+    }
+
+    /* ── Controls bar ── */
+    .controls {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px; flex-wrap: wrap; gap: 12px;
+    }
+    .controls h2 { font-size: 20px; font-weight: 700; }
+    .controls-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+    .filter-select {
+      border: 1px solid var(--border); border-radius: 8px;
+      padding: 6px 10px; font-size: 13px;
+      background: #fff; color: var(--text); cursor: pointer;
+    }
+    .filter-select:focus { outline: none; border-color: var(--primary); }
+
+    /* ── Stats ── */
+    .stats { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+    .stat-chip {
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: 10px; padding: 10px 16px; font-size: 13px;
+      display: flex; flex-direction: column; gap: 2px; min-width: 100px;
+    }
+    .stat-label { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; }
+    .stat-value { font-weight: 700; font-size: 22px; }
+
+    /* ── Table ── */
+    .table-wrap { overflow-x: auto; border-radius: 12px; box-shadow: var(--shadow); }
+    table {
+      width: 100%; border-collapse: collapse;
+      background: var(--panel); font-size: 14px;
+    }
+    thead { background: #f0f5f4; }
+    th {
+      text-align: left; padding: 11px 14px;
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.06em;
+      color: var(--muted); border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    td {
+      padding: 11px 14px; border-bottom: 1px solid var(--border);
+      vertical-align: top; line-height: 1.5;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #faf7f4; }
+
+    .badge {
+      display: inline-block; padding: 2px 9px; border-radius: 999px;
+      font-size: 11px; font-weight: 700;
+    }
+    .badge-newsletter  { background: #dbeafe; color: #1e40af; }
+    .badge-volunteer   { background: #d1fae5; color: #065f46; }
+    .badge-town_hall   { background: #fef3c7; color: #92400e; }
+    .badge-small_group { background: #ede9fe; color: #5b21b6; }
+    .badge-unknown     { background: #f3f4f6; color: #374151; }
+
+    /* ── Export ── */
+    .export-row { margin-bottom: 16px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+    /* ── Empty/loading ── */
+    .state-box {
+      text-align: center; padding: 60px 20px;
+      color: var(--muted); font-size: 15px; background: var(--panel);
+      border-radius: 12px; box-shadow: var(--shadow);
+    }
+    .state-box .icon { font-size: 36px; margin-bottom: 12px; }
+
+    /* ── Footer ── */
+    .nav { text-align: center; padding: 12px 16px; font-size: 12px; color: var(--muted); }
+    .nav a { color: var(--primary); text-decoration: none; }
+    .nav a:hover { text-decoration: underline; }
+
+    @media (max-width: 600px) {
+      .top-bar { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+  <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+</head>
+<body>
+
+<!-- Password gate (same hash as chat-log / rag-admin) -->
+<div id="pw-gate">
+  <div class="pw-box">
+    <div class="pw-icon">C</div>
+    <h2>Admin Access</h2>
+    <p>CincySeniors — Signup Log Viewer<br>Enter your password to continue.</p>
+    <input class="pw-field" type="password" id="pw-input" placeholder="Password" autocomplete="current-password" />
+    <button class="pw-submit" id="pw-submit">Unlock</button>
+    <div class="pw-error" id="pw-error">Incorrect password. Please try again.</div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const HASH = "d0cafc5533f05c610909887d74d9232650aaab2f3f4bb5dfba250cc08805071d";
+    const KEY  = "rag_admin_auth";
+
+    async function sha256(str) {
+      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
+    }
+
+    const gate   = document.getElementById("pw-gate");
+    const input  = document.getElementById("pw-input");
+    const btn    = document.getElementById("pw-submit");
+    const errMsg = document.getElementById("pw-error");
+
+    if (sessionStorage.getItem(KEY) === "1") { gate.classList.add("hidden"); return; }
+
+    async function attempt() {
+      const hash = await sha256(input.value);
+      if (hash === HASH) {
+        sessionStorage.setItem(KEY, "1");
+        gate.classList.add("hidden");
+      } else {
+        errMsg.classList.add("visible");
+        input.value = "";
+        input.focus();
+      }
+    }
+
+    btn.addEventListener("click", attempt);
+    input.addEventListener("keydown", e => { if (e.key === "Enter") attempt(); });
+    input.focus();
+  })();
+</script>
+
+<!-- Header -->
+<div class="top-bar">
+  <div class="brand">
+    <div class="brand-icon">C</div>
+    <div class="brand-text">
+      <h1>Signup Log Viewer</h1>
+      <p>CincySeniors.org &mdash; Review form submissions</p>
+    </div>
+  </div>
+  <div class="top-controls">
+    <button class="btn" id="refresh-btn">&#8635; Refresh</button>
+    <button class="btn" id="export-btn">&#8595; Export CSV</button>
+    <a class="btn primary" href="/signups/">Get Involved</a>
+  </div>
+</div>
+
+<!-- Content -->
+<div class="content">
+
+  <div class="controls">
+    <h2>Form Submissions</h2>
+    <div class="controls-right">
+      <label for="form-filter" style="font-size:13px;color:var(--muted);">Filter:</label>
+      <select class="filter-select" id="form-filter">
+        <option value="">All forms</option>
+        <option value="newsletter">Newsletter</option>
+        <option value="volunteer">Volunteer</option>
+        <option value="town_hall">Town Hall</option>
+        <option value="small_group">Small Group</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="stats" id="stats"></div>
+  <div id="table-area">
+    <div class="state-box"><div class="icon">⏳</div>Loading…</div>
+  </div>
+
+</div>
+
+<div class="nav">
+  <a href="https://www.cincyseniors.org">CincySeniors.org</a>
+  &nbsp;&middot;&nbsp;
+  <a href="/cindy/chat-log/">Cindy Chat Log</a>
+  &nbsp;&middot;&nbsp;
+  <a href="/cindy/rag-admin/">RAG Admin</a>
+</div>
+
+<script>
+  let allSignups = [];
+
+  const FORM_LABELS = {
+    newsletter:  "Newsletter",
+    volunteer:   "Volunteer",
+    town_hall:   "Town Hall",
+    small_group: "Small Group",
+  };
+
+  // All possible field columns in display order
+  const COLUMNS = [
+    { key: "submitted_at", label: "Submitted" },
+    { key: "form_type",    label: "Signup Type" },
+    { key: "first_name",   label: "First Name" },
+    { key: "last_name",    label: "Last Name" },
+    { key: "name",         label: "Name" },
+    { key: "email",        label: "Email" },
+    { key: "phone",        label: "Phone" },
+    { key: "age_range",    label: "Age Range" },
+    { key: "county",       label: "County" },
+    { key: "area",         label: "Part of Town" },
+    { key: "neighborhood", label: "Part of Town (alt)" },
+    { key: "zip",          label: "ZIP" },
+    { key: "availability", label: "Availability" },
+    { key: "interests",    label: "Interests" },
+    { key: "skills",       label: "Skills" },
+    { key: "experience",   label: "Experience" },
+    { key: "message",      label: "Message / Notes" },
+  ];
+
+  function esc(s) {
+    const d = document.createElement("div");
+    d.textContent = String(s ?? "");
+    return d.innerHTML;
+  }
+
+  function formatDate(iso) {
+    try {
+      return new Date(iso).toLocaleString("en-US", {
+        month: "short", day: "numeric", year: "numeric",
+        hour: "numeric", minute: "2-digit", timeZone: "America/New_York"
+      });
+    } catch { return iso; }
+  }
+
+  function badgeClass(formType) {
+    return "badge badge-" + (formType || "unknown").replace(/[^a-z_]/g, "");
+  }
+
+  function renderStats(records) {
+    const counts = {};
+    records.forEach(r => {
+      const t = r.form_type || "unknown";
+      counts[t] = (counts[t] || 0) + 1;
+    });
+    const chips = [
+      `<div class="stat-chip"><span class="stat-label">Total</span><span class="stat-value">${records.length}</span></div>`
+    ];
+    Object.entries(counts).sort().forEach(([type, n]) => {
+      chips.push(`<div class="stat-chip"><span class="stat-label">${FORM_LABELS[type] || type}</span><span class="stat-value">${n}</span></div>`);
+    });
+    document.getElementById("stats").innerHTML = chips.join("");
+  }
+
+  function renderTable(records) {
+    const area = document.getElementById("table-area");
+    if (records.length === 0) {
+      area.innerHTML = '<div class="state-box"><div class="icon">📋</div>No submissions found.</div>';
+      return;
+    }
+
+    // Only show columns that have at least one value in the current data
+    const activeCols = COLUMNS.filter(col =>
+      records.some(r => r[col.key] != null && r[col.key] !== "")
+    );
+
+    const thead = `<thead><tr>${activeCols.map(c => `<th>${c.label}</th>`).join("")}</tr></thead>`;
+
+    const rows = [...records].reverse().map(r => {
+      const cells = activeCols.map(col => {
+        if (col.key === "submitted_at") return `<td style="white-space:nowrap">${formatDate(r[col.key])}</td>`;
+        if (col.key === "form_type") return `<td><span class="${badgeClass(r[col.key])}">${esc(FORM_LABELS[r[col.key]] || r[col.key])}</span></td>`;
+        if (col.key === "email") return `<td><a href="mailto:${esc(r[col.key])}" style="color:var(--primary)">${esc(r[col.key])}</a></td>`;
+        return `<td>${esc(r[col.key] ?? "")}</td>`;
+      });
+      return `<tr>${cells.join("")}</tr>`;
+    }).join("");
+
+    area.innerHTML = `<div class="table-wrap"><table>${thead}<tbody>${rows}</tbody></table></div>`;
+  }
+
+  function applyFilter() {
+    const form = document.getElementById("form-filter").value;
+    const filtered = form ? allSignups.filter(r => r.form_type === form) : allSignups;
+    renderStats(filtered);
+    renderTable(filtered);
+  }
+
+  async function load() {
+    document.getElementById("table-area").innerHTML = '<div class="state-box"><div class="icon">⏳</div>Loading…</div>';
+    document.getElementById("stats").innerHTML = "";
+    try {
+      const res = await fetch("/api/signups");
+      if (!res.ok) throw new Error(`Server error (${res.status})`);
+      const data = await res.json();
+      allSignups = data.signups || [];
+      applyFilter();
+    } catch (err) {
+      document.getElementById("table-area").innerHTML =
+        `<div class="state-box"><div class="icon">⚠️</div>${esc(err.message)}</div>`;
+    }
+  }
+
+  // CSV export
+  document.getElementById("export-btn").addEventListener("click", () => {
+    const form = document.getElementById("form-filter").value;
+    const records = form ? allSignups.filter(r => r.form_type === form) : allSignups;
+    if (!records.length) return;
+
+    const allKeys = [...new Set(records.flatMap(r => Object.keys(r)))].filter(k => k !== "id");
+    const csvRows = [
+      allKeys.join(","),
+      ...records.map(r =>
+        allKeys.map(k => {
+          const v = String(r[k] ?? "").replace(/"/g, '""');
+          return v.includes(",") || v.includes('"') || v.includes("\n") ? `"${v}"` : v;
+        }).join(",")
+      )
+    ];
+
+    const blob = new Blob([csvRows.join("\n")], { type: "text/csv" });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement("a");
+    a.href     = url;
+    a.download = `cincyseniors-signups-${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  document.getElementById("refresh-btn").addEventListener("click", load);
+  document.getElementById("form-filter").addEventListener("change", applyFilter);
+
+  load();
+</script>
+
+</body>
+</html>

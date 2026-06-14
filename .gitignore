@@ -1,0 +1,40 @@
+# ── Secrets & credentials ──────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+
+# ── Python ─────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+venv/
+.venv/
+*.egg-info/
+dist/
+build/
+
+# ── Data & databases ───────────────────────────────────────────────────────
+# ChromaDB vector store (large, rebuilt on first run)
+/rag_app_01/chroma_store/
+# SQLite chat log (runtime data)
+/rag_app_01/cindy_chat_log.db
+# Uploaded/ingested documents
+/rag_app_01/data/
+/rag_app_01/data_cincyseniors/
+
+# ── Logs ───────────────────────────────────────────────────────────────────
+logs/
+*.log
+
+# ── Caddy runtime data (auto-generated TLS certs etc.) ─────────────────────
+# Note: caddy_data and caddy_config are Docker volumes, not local dirs
+
+# ── OS / editor ────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+# ── Claude Code local settings ─────────────────────────────────────────────
+.claude/

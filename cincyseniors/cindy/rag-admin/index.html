@@ -1,0 +1,820 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cindy — Knowledge Base Admin | CincySeniors.org</title>
+  <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
+  <style>
+    :root {
+      --bg: #f4f7f6;
+      --panel: #ffffff;
+      --muted: rgba(0,0,0,.55);
+      --text: rgba(0,0,0,.85);
+      --border: rgba(0,0,0,.10);
+      --primary: #2a7d6f;
+      --primary-light: rgba(42,125,111,.08);
+      --shadow: 0 4px 16px rgba(0,0,0,.07);
+      --chip: #f0f5f4;
+      --chip-border: #d4e5e2;
+      --user-bub: #e6f3f1;
+      --user-bub-border: #b8ddd9;
+      --bot-bub: #f8fafa;
+      --bot-bub-border: rgba(0,0,0,.09);
+      --input-bg: #ffffff;
+      --btn-bg: #ffffff;
+      --link: #2a7d6f;
+      --danger: #c0392b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Header ── */
+    .top-bar {
+      padding: 14px 24px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-shrink: 0;
+      border-bottom: 1px solid var(--border);
+      background: #fff;
+    }
+    .top-bar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 1020px;
+      padding-bottom: 12px;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand-icon {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--primary);
+      color: #fff; font-size: 18px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700;
+    }
+    .brand-text h1 { font-size: 17px; font-weight: 700; line-height: 1.2; }
+    .brand-text p  { font-size: 12px; color: var(--muted); }
+    .top-controls { display: flex; gap: 8px; align-items: center; }
+
+    /* ── Buttons ── */
+    .btn {
+      border: 1px solid var(--border);
+      background: var(--btn-bg);
+      border-radius: 8px;
+      padding: 7px 14px;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--text);
+      font-size: 13px;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .btn:hover { border-color: var(--primary); }
+    .btn.primary { background: var(--primary); border-color: var(--primary); color: #fff; }
+    .btn.primary:hover { background: #236158; border-color: #236158; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* ── Layout ── */
+    .main-layout {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 16px;
+      max-width: 1020px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 16px;
+      overflow: hidden;
+      min-height: 0;
+    }
+
+    /* ── Chat card ── */
+    .chat-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      min-height: 0;
+    }
+    .chat-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 16px;
+    }
+    .msg { margin: 0; }
+    .msg.user { text-align: right; }
+    .bub {
+      display: inline-block;
+      max-width: 85%;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--bot-bub-border);
+      background: var(--bot-bub);
+      text-align: left;
+      font-size: 14px;
+      line-height: 1.65;
+      word-wrap: break-word;
+    }
+    .msg:not(.user) .bub { display: block; max-width: 100%; }
+    .user .bub { background: var(--user-bub); border-color: var(--user-bub-border); }
+    .bub.error { border-color: rgba(192,57,43,.35); color: var(--danger); }
+    .bub p { margin: 0.45em 0; }
+    .bub p:first-child { margin-top: 0; }
+    .bub p:last-child  { margin-bottom: 0; }
+    .bub ul, .bub ol { margin: 0.4em 0; padding-left: 1.4em; }
+    .bub li { margin: 0.2em 0; }
+    .bub strong { font-weight: 600; }
+    .bub a { color: var(--link); }
+
+    /* thinking dots */
+    .thinking-indicator { display: inline-flex; align-items: center; gap: 4px; padding: 4px 2px; }
+    .thinking-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--primary);
+      animation: thinking 1.4s infinite;
+    }
+    .thinking-dot:nth-child(2) { animation-delay: 0.2s; }
+    .thinking-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes thinking { 0%,60%,100%{transform:scale(0.8);opacity:0.5} 30%{transform:scale(1.2);opacity:1} }
+
+    /* sources */
+    .sources {
+      margin-top: 8px; padding-top: 8px;
+      border-top: 1px solid var(--border);
+      font-size: 12px; color: var(--muted);
+    }
+    .sources summary { cursor: pointer; font-weight: 600; margin-bottom: 4px; }
+    .source-card {
+      background: var(--chip); border: 1px solid var(--chip-border);
+      border-radius: 8px; padding: 8px; margin-top: 6px;
+    }
+    .source-file { font-size: 11px; color: var(--primary); font-weight: 600; margin-bottom: 3px; }
+    .source-text { font-size: 11px; line-height: 1.4; color: var(--muted); white-space: pre-wrap; }
+
+    /* welcome */
+    .welcome {
+      flex: 1; display: flex; align-items: center;
+      justify-content: center; text-align: center; padding: 40px;
+    }
+    .welcome h2 { font-size: 18px; font-weight: 600; margin-bottom: 8px; color: var(--primary); }
+    .welcome p  { color: var(--muted); font-size: 14px; max-width: 340px; line-height: 1.6; }
+
+    /* input bar */
+    .input-bar {
+      display: flex; gap: 8px; flex-shrink: 0;
+      padding: 12px; border-top: 1px solid var(--border);
+    }
+    .input-bar input {
+      flex: 1; padding: 9px 14px;
+      border-radius: 10px; border: 1px solid var(--border);
+      background: var(--input-bg); color: var(--text);
+      font-size: 14px; outline: none;
+    }
+    .input-bar input:focus { border-color: var(--primary); }
+
+    /* ── Sidebar ── */
+    .sidebar-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      display: flex; flex-direction: column;
+      overflow: hidden; min-height: 0;
+    }
+    .section { padding: 14px; border-bottom: 1px solid var(--border); }
+    .section:last-child { border-bottom: none; flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+    .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .section-header h2 { font-size: 15px; margin: 0; font-weight: 600; }
+    .badge {
+      display: inline-block; background: var(--chip);
+      border: 1px solid var(--chip-border); border-radius: 6px;
+      padding: 2px 8px; font-size: 11px;
+    }
+
+    /* upload zone */
+    .upload-zone {
+      border: 2px dashed var(--border); border-radius: 10px;
+      padding: 20px 14px; text-align: center; cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .upload-zone:hover, .upload-zone.drag-over {
+      border-color: var(--primary); background: var(--primary-light);
+    }
+    .upload-icon { font-size: 28px; margin-bottom: 6px; opacity: 0.65; }
+    .upload-label { font-size: 13px; margin-bottom: 3px; font-weight: 600; }
+    .upload-hint  { font-size: 11px; color: var(--muted); }
+
+    .status-msg { margin-top: 10px; padding: 9px 12px; border-radius: 8px; font-size: 12px; display: none; }
+    .status-msg.success    { display:block; background:rgba(42,125,111,.08); border:1px solid rgba(42,125,111,.3); color:#2a7d6f; }
+    .status-msg.error      { display:block; background:rgba(192,57,43,.07); border:1px solid rgba(192,57,43,.3); color:var(--danger); }
+    .status-msg.processing { display:block; background:rgba(42,125,111,.06); border:1px solid rgba(42,125,111,.2); color:var(--primary); }
+
+    /* ── Collapsible section toggle ── */
+    .section-toggle {
+      width: 100%; background: none; border: none;
+      display: flex; justify-content: space-between; align-items: center;
+      cursor: pointer; padding: 0; color: var(--text);
+    }
+    .section-toggle h2 { font-size: 15px; margin: 0; font-weight: 600; }
+    .toggle-icon { font-size: 11px; color: var(--muted); transition: transform 0.2s; }
+    .section-toggle[aria-expanded="false"] + .section-body { display: none; }
+    .section-toggle[aria-expanded="true"] .toggle-icon { transform: rotate(180deg); }
+
+    /* text ingest */
+    .text-ingest { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+    .text-ingest input, .text-ingest textarea {
+      width: 100%; padding: 8px 10px;
+      border: 1px solid var(--border); border-radius: 8px;
+      background: var(--input-bg); color: var(--text);
+      font-size: 13px; font-family: inherit; outline: none; resize: vertical;
+    }
+    .text-ingest input:focus, .text-ingest textarea:focus { border-color: var(--primary); }
+    .text-ingest textarea { min-height: 90px; }
+
+    /* url ingest */
+    .url-ingest { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+    .url-ingest textarea {
+      width: 100%; padding: 8px 10px;
+      border: 1px solid var(--border); border-radius: 8px;
+      background: var(--input-bg); color: var(--text);
+      font-size: 13px; font-family: inherit; outline: none; resize: vertical;
+      min-height: 72px;
+    }
+    .url-ingest textarea:focus { border-color: var(--primary); }
+
+    /* doc list */
+    .doc-list { flex: 1; overflow-y: auto; padding: 0 14px 8px; }
+    .doc-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 12px; border: 1px solid var(--border);
+      border-radius: 8px; margin-bottom: 6px;
+      background: var(--panel); font-size: 13px;
+      transition: border-color 0.15s;
+    }
+    .doc-item:hover { border-color: var(--primary); }
+    .doc-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; font-weight: 500; }
+    .delete-btn {
+      background: none; border: none; color: var(--muted);
+      cursor: pointer; font-size: 16px; padding: 2px 6px;
+      border-radius: 4px; flex-shrink: 0; transition: color 0.15s;
+    }
+    .delete-btn:hover { color: var(--danger); }
+    .no-docs { padding: 20px 14px; text-align: center; color: var(--muted); font-size: 13px; line-height: 1.6; }
+
+    /* footer nav */
+    .nav { text-align: center; padding: 8px 16px; font-size: 12px; color: var(--muted); flex-shrink: 0; }
+    .nav a { color: var(--primary); text-decoration: none; }
+    .nav a:hover { text-decoration: underline; }
+
+    @media (max-width: 768px) {
+      .main-layout { grid-template-columns: 1fr; }
+      .sidebar-card { max-height: 280px; }
+    }
+
+    /* ── Password gate ── */
+    #pw-gate {
+      position: fixed; inset: 0; z-index: 9999;
+      background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+    }
+    #pw-gate.hidden { display: none; }
+    .pw-box {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 40px 36px;
+      width: 100%; max-width: 360px;
+      text-align: center;
+    }
+    .pw-icon {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: var(--primary); color: #fff;
+      font-size: 22px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px;
+    }
+    .pw-box h2 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+    .pw-box p  { font-size: 13px; color: var(--muted); margin-bottom: 22px; }
+    .pw-field {
+      width: 100%; padding: 10px 14px;
+      border: 1px solid var(--border); border-radius: 10px;
+      background: var(--input-bg); color: var(--text);
+      font-size: 15px; outline: none; margin-bottom: 12px;
+    }
+    .pw-field:focus { border-color: var(--primary); }
+    .pw-submit {
+      width: 100%; padding: 10px;
+      background: var(--primary); color: #fff;
+      border: none; border-radius: 10px;
+      font-size: 15px; font-weight: 600; cursor: pointer;
+    }
+    .pw-submit:hover { background: #236158; }
+    .pw-error {
+      margin-top: 10px; font-size: 13px;
+      color: var(--danger); display: none;
+    }
+    .pw-error.visible { display: block; }
+  </style>
+  <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+</head>
+<body>
+
+<!-- Password gate -->
+<div id="pw-gate">
+  <div class="pw-box">
+    <div class="pw-icon">C</div>
+    <h2>Admin Access</h2>
+    <p>Cindy — Knowledge Base Admin<br>Enter your password to continue.</p>
+    <input class="pw-field" type="password" id="pw-input" placeholder="Password" autocomplete="current-password">
+    <button class="pw-submit" id="pw-submit">Unlock</button>
+    <div class="pw-error" id="pw-error">Incorrect password. Please try again.</div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const HASH = "d0cafc5533f05c610909887d74d9232650aaab2f3f4bb5dfba250cc08805071d";
+    const KEY  = "rag_admin_auth";
+
+    async function sha256(str) {
+      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
+    }
+
+    const gate    = document.getElementById("pw-gate");
+    const input   = document.getElementById("pw-input");
+    const btn     = document.getElementById("pw-submit");
+    const errMsg  = document.getElementById("pw-error");
+
+    if (sessionStorage.getItem(KEY) === "1") {
+      gate.classList.add("hidden");
+      return;
+    }
+
+    async function attempt() {
+      const hash = await sha256(input.value);
+      if (hash === HASH) {
+        sessionStorage.setItem(KEY, "1");
+        gate.classList.add("hidden");
+      } else {
+        errMsg.classList.add("visible");
+        input.value = "";
+        input.focus();
+      }
+    }
+
+    btn.addEventListener("click", attempt);
+    input.addEventListener("keydown", e => { if (e.key === "Enter") attempt(); });
+    input.focus();
+  })();
+</script>
+
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <div class="brand">
+      <div class="brand-icon">C</div>
+      <div class="brand-text">
+        <h1>Cindy — Knowledge Base Admin</h1>
+        <p>CincySeniors.org &mdash; Manage Cindy's RAG documents</p>
+      </div>
+    </div>
+    <div class="top-controls">
+      <button class="btn" id="new-chat-btn">New Chat</button>
+      <a class="btn primary" href="/cindy/">Open Cindy Chat</a>
+    </div>
+  </div>
+</div>
+
+<div class="main-layout">
+
+  <!-- Chat test panel -->
+  <div class="chat-card">
+    <div class="chat-header">
+      <span>Test Cindy's responses</span>
+      <span id="doc-count-chat" style="font-size:11px;color:var(--muted)"></span>
+    </div>
+    <div class="messages" id="messages">
+      <div class="welcome" id="welcome">
+        <div>
+          <h2>Test Cindy's Knowledge</h2>
+          <p>Upload PDFs, add plain text, or fetch webpage URLs in the panel on the right — then ask Cindy questions to test her knowledge.</p>
+        </div>
+      </div>
+    </div>
+    <div class="input-bar">
+      <input type="text" id="question" placeholder="Ask Cindy a question to test her knowledge..." autocomplete="off">
+      <button class="btn primary" id="send-btn">Ask</button>
+    </div>
+  </div>
+
+  <!-- Sidebar: Upload + Documents -->
+  <div class="sidebar-card">
+
+    <div class="section">
+      <div class="section-header">
+        <h2>Upload Documents</h2>
+      </div>
+      <div class="upload-zone" id="upload-zone">
+        <input type="file" id="file-input" accept=".pdf" style="display:none" multiple>
+        <div class="upload-icon">&#128196;</div>
+        <div class="upload-label">Drop PDFs here or click to browse</div>
+        <div class="upload-hint">PDF files only &mdash; resource guides, directories, program info</div>
+      </div>
+      <div class="status-msg" id="upload-status"></div>
+    </div>
+
+    <!-- Plain text ingest -->
+    <div class="section">
+      <div class="section-header" style="margin-bottom:0">
+        <button class="section-toggle" aria-expanded="false" id="text-toggle">
+          <h2>Add Plain Text</h2>
+          <span class="toggle-icon">▼</span>
+        </button>
+      </div>
+      <div class="section-body" id="text-body">
+        <div class="text-ingest">
+          <input type="text" id="text-title" placeholder="Title (e.g. Pro Seniors Contact Info)" maxlength="120" />
+          <textarea id="text-content" placeholder="Paste your text here…"></textarea>
+          <button class="btn primary" id="text-submit-btn">Add to Knowledge Base</button>
+        </div>
+        <div class="status-msg" id="text-status"></div>
+      </div>
+    </div>
+
+    <!-- URL ingest -->
+    <div class="section">
+      <div class="section-header" style="margin-bottom:0">
+        <button class="section-toggle" aria-expanded="false" id="url-toggle">
+          <h2>Add Webpage URLs</h2>
+          <span class="toggle-icon">▼</span>
+        </button>
+      </div>
+      <div class="section-body" id="url-body">
+        <div class="url-ingest">
+          <textarea id="url-input" placeholder="Enter one URL per line&#10;https://proseniors.org/services&#10;https://example.org/page"></textarea>
+          <button class="btn primary" id="url-submit-btn">Fetch &amp; Add to Knowledge Base</button>
+        </div>
+        <div class="status-msg" id="url-status"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header">
+        <h2>Ingested Documents</h2>
+        <span class="badge" id="doc-count">0</span>
+      </div>
+      <div class="doc-list" id="doc-list"></div>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="nav">
+  <a href="https://www.cincyseniors.org">CincySeniors.org</a>
+  &nbsp;&middot;&nbsp;
+  <a href="/cindy/">Cindy Chat</a>
+</div>
+
+<script>
+  // ── API endpoints ──────────────────────────────────────────────────────────
+  const CHAT_URL        = "/cindy/chat";
+  const INGEST_URL      = "/cindy/ingest";
+  const INGEST_TEXT_URL = "/cindy/ingest-text";
+  const INGEST_URL_URL  = "/cindy/ingest-url";
+  const DOCS_URL        = "/cindy/documents";
+  const ADMIN_KEY     = "YOUR_ADMIN_API_KEY_HERE";
+  const ADMIN_HEADERS = { "X-Admin-Key": ADMIN_KEY };
+
+  // ── DOM refs ───────────────────────────────────────────────────────────────
+  const $ = id => document.getElementById(id);
+  const messagesEl     = $("messages");
+  const welcomeEl      = $("welcome");
+  const questionEl     = $("question");
+  const sendBtn        = $("send-btn");
+  const uploadZone     = $("upload-zone");
+  const fileInput      = $("file-input");
+  const uploadStatus   = $("upload-status");
+  const docCount       = $("doc-count");
+  const docCountChat   = $("doc-count-chat");
+  const docList        = $("doc-list");
+  const newChatBtn     = $("new-chat-btn");
+  // text ingest
+  const textToggle     = $("text-toggle");
+  const textBody       = $("text-body");
+  const textTitle      = $("text-title");
+  const textContent    = $("text-content");
+  const textSubmitBtn  = $("text-submit-btn");
+  const textStatus     = $("text-status");
+  // url ingest
+  const urlToggle      = $("url-toggle");
+  const urlBody        = $("url-body");
+  const urlInput       = $("url-input");
+  const urlSubmitBtn   = $("url-submit-btn");
+  const urlStatus      = $("url-status");
+
+  // conversation history for multi-turn chat
+  const history = [];
+
+  // ── New chat ───────────────────────────────────────────────────────────────
+  newChatBtn.addEventListener("click", () => {
+    history.length = 0;
+    messagesEl.innerHTML = "";
+    messagesEl.appendChild(welcomeEl);
+    welcomeEl.style.display = "flex";
+  });
+
+  // ── Document list ──────────────────────────────────────────────────────────
+  async function refreshDocs() {
+    try {
+      const res  = await fetch(DOCS_URL, { headers: ADMIN_HEADERS });
+      const data = await res.json();
+      const docs = data.documents || [];
+      docCount.textContent = docs.length;
+      docCountChat.textContent = docs.length === 0
+        ? "No documents ingested yet"
+        : `${docs.length} document${docs.length > 1 ? "s" : ""} in knowledge base`;
+
+      docList.innerHTML = "";
+      if (docs.length === 0) {
+        docList.innerHTML = '<div class="no-docs">No documents yet.<br>Upload PDFs, add plain text, or fetch URLs above.</div>';
+        return;
+      }
+      docs.forEach(name => {
+        const item = document.createElement("div");
+        item.className = "doc-item";
+        item.innerHTML = `
+          <span class="doc-name" title="${esc(name)}">${esc(name)}</span>
+          <button class="delete-btn" title="Remove from knowledge base" data-name="${esc(name)}">&times;</button>
+        `;
+        docList.appendChild(item);
+      });
+    } catch {
+      docCount.textContent = "?";
+    }
+  }
+
+  docList.addEventListener("click", async (e) => {
+    const btn = e.target.closest(".delete-btn");
+    if (!btn) return;
+    const name = btn.dataset.name;
+    if (!confirm(`Remove "${name}" from Cindy's knowledge base?`)) return;
+    btn.textContent = "…";
+    btn.disabled = true;
+    try {
+      await fetch(`${DOCS_URL}/${encodeURIComponent(name)}`, { method: "DELETE", headers: ADMIN_HEADERS });
+      refreshDocs();
+    } catch (err) {
+      alert(`Error: ${err.message}`);
+    }
+  });
+
+  refreshDocs();
+
+  // ── Upload ─────────────────────────────────────────────────────────────────
+  uploadZone.addEventListener("click", () => fileInput.click());
+  uploadZone.addEventListener("dragover",  e => { e.preventDefault(); uploadZone.classList.add("drag-over"); });
+  uploadZone.addEventListener("dragleave", () => uploadZone.classList.remove("drag-over"));
+  uploadZone.addEventListener("drop", e => {
+    e.preventDefault();
+    uploadZone.classList.remove("drag-over");
+    handleFiles(e.dataTransfer.files);
+  });
+  fileInput.addEventListener("change", () => { handleFiles(fileInput.files); fileInput.value = ""; });
+
+  function showStatus(msg, type) {
+    uploadStatus.textContent = msg;
+    uploadStatus.className = "status-msg " + type;
+  }
+
+  async function handleFiles(files) {
+    const pdfs = Array.from(files).filter(f => f.name.toLowerCase().endsWith(".pdf"));
+    if (pdfs.length === 0) { showStatus("PDF files only.", "error"); return; }
+
+    showStatus(`Ingesting ${pdfs.length} file${pdfs.length > 1 ? "s" : ""}… this may take a moment.`, "processing");
+
+    const fd = new FormData();
+    pdfs.forEach(f => fd.append("files", f));
+
+    try {
+      const res  = await fetch(INGEST_URL, { method: "POST", body: fd, headers: ADMIN_HEADERS });
+      const data = await res.json();
+      const summary = (data.results || [])
+        .map(r => `${r.filename}: ${r.pages} pages, ${r.chunks} chunks`)
+        .join("; ");
+      showStatus(summary || "Ingested successfully.", "success");
+      refreshDocs();
+    } catch (err) {
+      showStatus(`Error: ${err.message}`, "error");
+    }
+  }
+
+  // ── Collapsible toggles ────────────────────────────────────────────────────
+  function setupToggle(btn, body) {
+    btn.addEventListener("click", () => {
+      const expanded = btn.getAttribute("aria-expanded") === "true";
+      btn.setAttribute("aria-expanded", String(!expanded));
+      body.style.display = expanded ? "none" : "block";
+    });
+    // Start collapsed — body hidden via CSS
+    body.style.display = "none";
+  }
+  setupToggle(textToggle, textBody);
+  setupToggle(urlToggle, urlBody);
+
+  // ── Plain text ingest ──────────────────────────────────────────────────────
+  function showTextStatus(msg, type) {
+    textStatus.textContent = msg;
+    textStatus.className = "status-msg " + type;
+  }
+
+  textSubmitBtn.addEventListener("click", async () => {
+    const title = textTitle.value.trim();
+    const text  = textContent.value.trim();
+    if (!title || !text) { showTextStatus("Both a title and text are required.", "error"); return; }
+
+    showTextStatus("Adding to knowledge base…", "processing");
+    textSubmitBtn.disabled = true;
+    try {
+      const res  = await fetch(INGEST_TEXT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...ADMIN_HEADERS },
+        body: JSON.stringify({ title, text }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.detail || `Server error (${res.status})`);
+      if (!data.results) throw new Error("Unexpected response from server.");
+      const r = (data.results || [])[0];
+      showTextStatus(`Added "${r.filename}" — ${r.chunks} chunks.`, "success");
+      textTitle.value = "";
+      textContent.value = "";
+      refreshDocs();
+    } catch (err) {
+      showTextStatus(`Error: ${err.message}`, "error");
+    } finally {
+      textSubmitBtn.disabled = false;
+    }
+  });
+
+  // ── URL ingest ─────────────────────────────────────────────────────────────
+  function showUrlStatus(msg, type) {
+    urlStatus.textContent = msg;
+    urlStatus.className = "status-msg " + type;
+  }
+
+  urlSubmitBtn.addEventListener("click", async () => {
+    const raw  = urlInput.value.trim();
+    const urls = raw.split("\n").map(u => u.trim()).filter(Boolean);
+    if (urls.length === 0) { showUrlStatus("Enter at least one URL.", "error"); return; }
+
+    showUrlStatus(`Fetching ${urls.length} URL${urls.length > 1 ? "s" : ""}… this may take a moment.`, "processing");
+    urlSubmitBtn.disabled = true;
+    try {
+      const res  = await fetch(INGEST_URL_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...ADMIN_HEADERS },
+        body: JSON.stringify({ urls }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.detail || `Server error (${res.status})`);
+      if (!data.results) throw new Error("Unexpected response from server.");
+      const lines = (data.results || []).map(r => {
+        if (r.status === "ok")      return `✓ ${r.title || r.url} (${r.chunks} chunks)`;
+        if (r.status === "skipped") return `– ${r.url}: ${r.reason}`;
+        return `✗ ${r.url}: ${r.reason}`;
+      });
+      showUrlStatus(lines.join(" | ") || "Done.", "success");
+      urlInput.value = "";
+      refreshDocs();
+    } catch (err) {
+      showUrlStatus(`Error: ${err.message}`, "error");
+    } finally {
+      urlSubmitBtn.disabled = false;
+    }
+  });
+
+  // ── Chat ───────────────────────────────────────────────────────────────────
+  function esc(s) {
+    const d = document.createElement("div");
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function renderMd(text) {
+    return typeof marked !== "undefined" ? marked.parse(text) : esc(text);
+  }
+
+  function buildSourcesHtml(sources) {
+    if (!sources || sources.length === 0) return "";
+    let html = `<div class="sources"><details><summary>Sources (${sources.length})</summary>`;
+    sources.forEach(s => {
+      const title = s.title || (s.metadata && s.metadata.source
+        ? s.metadata.source.split("/").pop() : "Resource");
+      const snippet = s.snippet || s.content || "";
+      html += `<div class="source-card">
+        <div class="source-file">${esc(title)}</div>
+        <div class="source-text">${esc(snippet)}</div>
+      </div>`;
+    });
+    html += `</details></div>`;
+    return html;
+  }
+
+  function addMessage(role, content, sources) {
+    if (welcomeEl) welcomeEl.style.display = "none";
+    const div = document.createElement("div");
+    div.className = `msg ${role}`;
+    const bub = document.createElement("div");
+    bub.className = "bub";
+    if (role === "assistant") {
+      bub.innerHTML = renderMd(content) + buildSourcesHtml(sources);
+    } else {
+      bub.textContent = content;
+    }
+    div.appendChild(bub);
+    messagesEl.appendChild(div);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+    return bub;
+  }
+
+  async function sendQuestion() {
+    const text = questionEl.value.trim();
+    if (!text) return;
+
+    addMessage("user", text);
+    history.push({ role: "user", content: text });
+    questionEl.value = "";
+    sendBtn.disabled = true;
+    questionEl.disabled = true;
+
+    // thinking indicator
+    const thinkDiv = document.createElement("div");
+    thinkDiv.className = "msg";
+    thinkDiv.innerHTML = '<div class="bub"><div class="thinking-indicator"><span class="thinking-dot"></span><span class="thinking-dot"></span><span class="thinking-dot"></span></div></div>';
+    if (welcomeEl) welcomeEl.style.display = "none";
+    messagesEl.appendChild(thinkDiv);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+
+    try {
+      const res = await fetch(CHAT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: history, temperature: 0.65 }),
+      });
+      thinkDiv.remove();
+      if (!res.ok) throw new Error(`Server error (${res.status})`);
+      const data = await res.json();
+      const reply = data.reply || "";
+      if (!reply) throw new Error("Empty response from Cindy.");
+      history.push({ role: "assistant", content: reply });
+      addMessage("assistant", reply, data.sources);
+    } catch (err) {
+      thinkDiv.remove();
+      const div = document.createElement("div");
+      div.className = "msg";
+      div.innerHTML = `<div class="bub error">${esc(err.message)}</div>`;
+      messagesEl.appendChild(div);
+    } finally {
+      sendBtn.disabled = false;
+      questionEl.disabled = false;
+      questionEl.focus();
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+  }
+
+  sendBtn.addEventListener("click", sendQuestion);
+  questionEl.addEventListener("keydown", e => {
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendQuestion(); }
+  });
+
+  questionEl.focus();
+</script>
+
+</body>
+</html>

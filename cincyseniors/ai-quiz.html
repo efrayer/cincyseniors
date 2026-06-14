@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Fundamentals Quiz — CincySeniors.org</title>
+  <meta name="description" content="Test your knowledge of AI basics — what it is, how it works, and how to use it safely. A free quiz from CincySeniors.org." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --cream:           #FAF6EE;
+      --cream-2:         #F3ECDD;
+      --ink:             #1F1B16;
+      --ink-soft:        #4A4238;
+      --terracotta:      #B45A3C;
+      --terracotta-dark: #8F4227;
+      --sage:            #6E8B6A;
+      --amber:           #C98A2B;
+      --line:            #E5DCC7;
+      --error:           #B03A2E;
+      --error-bg:        #fdecea;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: "Atkinson Hyperlegible", system-ui, sans-serif;
+      font-size: 20px;
+      line-height: 1.65;
+      color: var(--ink);
+      background-color: var(--cream);
+      background-image:
+        radial-gradient(circle at 20% 30%, rgba(180, 90, 60, 0.035) 0, transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(110, 139, 106, 0.035) 0, transparent 40%);
+    }
+
+    a { color: var(--terracotta-dark); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+    a:hover { color: var(--terracotta); }
+
+    h1, h2, h3 {
+      font-family: "Fraunces", Georgia, serif;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+    }
+
+    /* Skip link */
+    .skip { position: absolute; left: -1000px; top: 0; background: var(--ink); color: var(--cream); padding: 12px 18px; border-radius: 0 0 12px 0; z-index: 100; }
+    .skip:focus { left: 0; }
+
+    /* ---------- Top Bar ---------- */
+    .topbar { background: var(--cream-2); border-bottom: 1px solid var(--line); font-size: 17px; }
+    .topbar-inner { max-width: 1120px; margin: 0 auto; padding: 10px 24px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .text-size { display: inline-flex; gap: 6px; align-items: center; color: var(--ink-soft); }
+    .text-size button { background: transparent; border: 1.5px solid var(--line); border-radius: 999px; padding: 4px 10px; font-family: inherit; cursor: pointer; color: var(--ink); }
+    .text-size button:hover { border-color: var(--terracotta); }
+    .text-size button.active { background: var(--terracotta); color: #fff; border-color: var(--terracotta-dark); }
+
+    /* ---------- Header / Nav ---------- */
+    header.main { max-width: 1120px; margin: 0 auto; padding: 22px 24px 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+    .brand { display: flex; align-items: center; gap: 14px; text-decoration: none; color: var(--ink); }
+    .brand-mark { width: 52px; height: 52px; border-radius: 50%; background: var(--terracotta); color: var(--cream); display: grid; place-items: center; font-family: "Fraunces", serif; font-weight: 700; font-size: 26px; flex-shrink: 0; }
+    .brand-name { font-family: "Fraunces", serif; font-weight: 700; font-size: 26px; line-height: 1.1; }
+    .brand-tag { display: block; font-family: "Atkinson Hyperlegible", sans-serif; font-weight: 400; color: var(--ink-soft); font-size: 15px; }
+
+    nav.primary ul { list-style: none; display: flex; gap: 8px; padding: 0; margin: 0; flex-wrap: wrap; }
+    nav.primary a { display: block; padding: 10px 16px; border-radius: 999px; text-decoration: none; color: var(--ink); font-weight: 700; font-size: 18px; }
+    nav.primary a:hover { background: var(--cream-2); }
+    nav.primary a.active { background: var(--cream-2); color: var(--terracotta-dark); }
+    nav.primary a:focus { outline: 3px solid var(--terracotta); outline-offset: 2px; }
+    nav.primary .dropdown { position: relative; }
+    nav.primary .dropdown > a::after { content: " ▾"; font-size: 0.75em; }
+    nav.primary .dropdown-menu { display: none; position: absolute; top: calc(100% + 4px); right: 0; background: var(--cream); border: 1.5px solid var(--line); border-radius: 14px; padding: 8px; min-width: 220px; box-shadow: 0 8px 24px rgba(31, 27, 22, 0.12); z-index: 200; }
+    nav.primary .dropdown:hover .dropdown-menu, nav.primary .dropdown:focus-within .dropdown-menu { display: flex; flex-direction: column; gap: 2px; }
+    nav.primary .dropdown-menu a { border-radius: 8px; font-size: 17px; padding: 10px 14px; }
+
+    /* ---------- Layout ---------- */
+    main { padding-bottom: 80px; }
+    .container { max-width: 860px; margin: 0 auto; padding: 0 24px; }
+
+    /* ---------- Page header ---------- */
+    .page-header {
+      padding: 56px 0 48px;
+      text-align: center;
+    }
+    .page-header .eyebrow {
+      display: inline-block;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--terracotta);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .page-header h1 { font-size: 52px; margin: 0 0 18px; line-height: 1.05; }
+    .page-header p.lead { font-size: 22px; color: var(--ink-soft); margin: 0 auto; max-width: 58ch; }
+
+    /* ---------- Quiz card ---------- */
+    .quiz-card {
+      background: #fff;
+      border-radius: 22px;
+      box-shadow: 0 6px 24px rgba(31, 27, 22, 0.08);
+      border: 1.5px solid var(--line);
+      padding: 48px 52px;
+      margin-bottom: 48px;
+    }
+
+    /* ---------- Buttons ---------- */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 28px;
+      min-height: 52px;
+      border-radius: 14px;
+      font-family: inherit;
+      font-size: 19px;
+      font-weight: 700;
+      text-decoration: none;
+      border: 2.5px solid transparent;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s, border-color 0.15s;
+      white-space: nowrap;
+    }
+    .btn-primary { background: var(--terracotta); color: var(--cream); border-color: var(--terracotta); }
+    .btn-primary:hover { background: var(--terracotta-dark); border-color: var(--terracotta-dark); color: var(--cream); }
+    .btn-primary:active { transform: scale(0.98); }
+    .btn-secondary { background: transparent; color: var(--ink); border-color: var(--ink); }
+    .btn-secondary:hover { background: var(--cream-2); color: var(--ink); }
+    .btn:disabled { background: var(--line); border-color: var(--line); color: #999; cursor: not-allowed; }
+
+    /* ---------- Progress ---------- */
+    .progress-bar-wrap {
+      background: var(--cream-2);
+      border-radius: 6px;
+      height: 10px;
+      margin-bottom: 10px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--terracotta);
+      border-radius: 6px;
+      transition: width 0.3s ease;
+    }
+    .progress-label {
+      font-size: 15px;
+      color: var(--ink-soft);
+      margin-bottom: 28px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    /* ---------- Question ---------- */
+    .question-text {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 26px;
+      font-weight: 700;
+      margin: 0 0 24px;
+      color: var(--ink);
+      line-height: 1.3;
+    }
+
+    /* ---------- Answer options ---------- */
+    .options-list { list-style: none; margin: 0 0 24px; display: flex; flex-direction: column; gap: 12px; }
+
+    .option-btn {
+      width: 100%;
+      text-align: left;
+      padding: 16px 22px;
+      font-size: 19px;
+      font-family: inherit;
+      background: var(--cream);
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      line-height: 1.5;
+      color: var(--ink);
+    }
+    .option-btn:hover:not(:disabled) { border-color: var(--terracotta); background: #fdf4f1; }
+    .option-btn.selected { border-color: var(--terracotta); background: #fdf4f1; box-shadow: 0 0 0 2px rgba(180,90,60,0.18); }
+    .option-btn.correct { border-color: var(--sage); background: #edf4ec; color: #2d4d2a; }
+    .option-btn.incorrect { border-color: var(--error); background: var(--error-bg); color: #6e1e15; }
+    .option-btn.reveal-correct { border-color: var(--sage); background: #edf4ec; color: #2d4d2a; }
+    .option-btn:disabled { cursor: default; }
+
+    /* ---------- Feedback box ---------- */
+    .feedback-box {
+      display: none;
+      margin-top: 8px;
+      margin-bottom: 24px;
+      padding: 20px 24px;
+      border-radius: 12px;
+      font-size: 18px;
+      line-height: 1.6;
+    }
+    .feedback-box.correct { background: #edf4ec; border-left: 5px solid var(--sage); color: #2d4d2a; }
+    .feedback-box.incorrect { background: var(--error-bg); border-left: 5px solid var(--error); color: #6e1e15; }
+    .feedback-label { font-family: "Fraunces", Georgia, serif; font-weight: 700; font-size: 20px; margin-bottom: 8px; }
+
+    /* ---------- Bonus prompt ---------- */
+    .bonus-prompt-btns { display: flex; gap: 16px; margin-top: 24px; flex-wrap: wrap; }
+
+    /* ---------- Results ---------- */
+    .score-banner {
+      background: var(--terracotta);
+      color: var(--cream);
+      border-radius: 16px;
+      padding: 32px 40px;
+      text-align: center;
+      margin-bottom: 40px;
+      border: 1.5px solid var(--terracotta-dark);
+    }
+    .score-number {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 3.2rem;
+      font-weight: 700;
+      display: block;
+      margin-bottom: 10px;
+      letter-spacing: -0.02em;
+    }
+    .score-msg { font-size: 19px; opacity: 0.93; }
+
+    .review-item { border: 1.5px solid var(--line); border-radius: 14px; padding: 24px 28px; margin-bottom: 22px; background: var(--cream); }
+    .review-q { font-family: "Fraunces", Georgia, serif; font-weight: 700; font-size: 19px; margin-bottom: 14px; color: var(--ink); }
+    .review-option { padding: 10px 16px; border-radius: 8px; margin-bottom: 7px; font-size: 17px; }
+    .review-option.user-correct { background: #edf4ec; border: 2px solid var(--sage); color: #2d4d2a; font-weight: 700; }
+    .review-option.user-incorrect { background: var(--error-bg); border: 2px solid var(--error); color: #6e1e15; font-weight: 700; }
+    .review-option.answer-correct { background: #edf4ec; border: 1.5px solid var(--sage); color: #2d4d2a; }
+    .review-option.plain { background: #fff; border: 1.5px solid var(--line); color: var(--ink-soft); }
+    .review-rationale { margin-top: 14px; font-size: 17px; color: var(--ink-soft); border-top: 1.5px dashed var(--line); padding-top: 14px; line-height: 1.6; }
+
+    /* ---------- CTA strip ---------- */
+    .cta-strip {
+      background: var(--terracotta);
+      color: #fff;
+      border-radius: 22px;
+      padding: 40px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 32px;
+      flex-wrap: wrap;
+      margin: 48px 0 0;
+    }
+    .cta-strip h2 { color: #fff; font-size: 28px; margin: 0 0 8px; }
+    .cta-strip p { margin: 0; font-size: 19px; opacity: 0.95; }
+    .btn-white { background: #fff; color: var(--ink); border-color: #fff; }
+    .btn-white:hover { background: var(--cream); color: var(--ink); }
+
+    /* ---------- Footer ---------- */
+    footer { margin-top: 96px; background: var(--cream-2); border-top: 1px solid var(--line); padding: 48px 0 36px; }
+    .footer-inner { max-width: 1120px; margin: 0 auto; padding: 0 24px; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; }
+    footer h4 { font-family: "Fraunces", serif; font-size: 20px; margin: 0 0 14px; color: var(--ink); }
+    footer ul { list-style: none; padding: 0; margin: 0; }
+    footer li { margin-bottom: 10px; font-size: 18px; }
+    footer a { color: var(--ink); text-decoration: none; border-bottom: 2px solid transparent; }
+    footer a:hover { border-bottom-color: var(--terracotta); }
+    .privacy-note { margin-top: 28px; padding: 18px; background: #fff; border-left: 4px solid var(--sage); border-radius: 6px; font-size: 17px; color: var(--ink-soft); }
+    .copyright { max-width: 1120px; margin: 32px auto 0; padding: 24px 24px 0; border-top: 1px solid var(--line); font-size: 16px; color: var(--ink-soft); text-align: center; }
+
+    /* ---------- Text size overrides ---------- */
+    html.text-large body { font-size: 23px; }
+    html.text-large .page-header h1 { font-size: 58px; }
+    html.text-xl body { font-size: 26px; }
+    html.text-xl .page-header h1 { font-size: 64px; }
+
+    /* ---------- Nav toggle button (mobile) ---------- */
+    .nav-toggle {
+      display: none;
+      background: transparent;
+      border: 1.5px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+      color: var(--ink);
+      font-family: inherit;
+    }
+    .nav-toggle:hover { border-color: var(--terracotta); background: var(--cream-2); }
+    .nav-toggle:focus { outline: 3px solid var(--terracotta); outline-offset: 2px; }
+
+    /* Hidden utility */
+    .hidden { display: none !important; }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 900px) {
+      .footer-inner { grid-template-columns: 1fr; }
+      nav.primary ul { gap: 2px; }
+      nav.primary a { padding: 8px 12px; font-size: 17px; }
+    }
+
+    @media (max-width: 640px) {
+      .nav-toggle { display: block; }
+      nav.primary { display: none; width: 100%; }
+      nav.primary.open { display: block; }
+      nav.primary ul { display: flex; flex-direction: column; gap: 4px; padding: 4px 0; }
+      nav.primary > ul > li { width: 100%; }
+      nav.primary a { font-size: 17px; padding: 12px 14px; border-radius: 10px; border: 1.5px solid var(--line); text-align: left; width: 100%; display: block; }
+      nav.primary .dropdown > a::after { display: none; }
+      nav.primary .dropdown-menu { display: flex !important; flex-direction: column; gap: 3px; position: static; box-shadow: none; border: none; padding: 4px 0 4px 16px; border-radius: 0; background: transparent; min-width: 0; }
+      nav.primary .dropdown-menu a { font-size: 16px; padding: 10px 14px; color: var(--ink-soft); }
+      .topbar-inner { flex-direction: column; align-items: flex-start; gap: 8px; padding: 10px 16px; }
+      header.main { padding: 14px 16px 8px; flex-direction: column; align-items: flex-start; gap: 12px; }
+      nav.primary { width: 100%; }
+      .page-header { padding: 36px 0 28px; }
+      .page-header h1 { font-size: 36px; }
+      .page-header p.lead { font-size: 19px; }
+      .quiz-card { padding: 28px 24px; }
+      .question-text { font-size: 22px; }
+      .option-btn { font-size: 17px; padding: 14px 18px; }
+      .cta-strip { padding: 28px 24px; flex-direction: column; align-items: flex-start; }
+      footer { margin-top: 56px; padding: 36px 0 24px; }
+      main { padding-bottom: 48px; }
+      .bonus-prompt-btns { flex-direction: column; }
+      .score-banner { padding: 24px 28px; }
+      .score-number { font-size: 2.4rem; }
+    }
+
+    @media (max-width: 400px) {
+      nav.primary ul { grid-template-columns: 1fr; }
+    }
+  </style>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+</head>
+<body>
+
+  <a href="#main" class="skip">Skip to main content</a>
+
+  <!-- Utility top bar -->
+  <div class="topbar" role="region" aria-label="Site utilities">
+    <div class="topbar-inner">
+      <div class="text-size" aria-label="Text size controls">
+        <span>Text size:</span>
+        <button type="button" aria-label="Normal text">A</button>
+        <button type="button" aria-label="Larger text">A+</button>
+        <button type="button" aria-label="Largest text">A++</button>
+      </div>
+      <a href="mailto:info@cincyseniors.org" style="font-weight:700;color:var(--ink);text-decoration:none;">✉ info@cincyseniors.org</a>
+    </div>
+  </div>
+
+  <!-- Main nav -->
+  <header class="main">
+    <a class="brand" href="/">
+      <span class="brand-mark" aria-hidden="true">C</span>
+      <span>
+        <span class="brand-name">CincySeniors.org</span>
+        <span class="brand-tag">A Cincy AI Catalyst (CAIC) guide to using AI</span>
+      </span>
+    </a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="primary-nav" aria-label="Open navigation">&#9776;</button>
+    <nav class="primary" id="primary-nav" aria-label="Primary">
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li class="dropdown">
+          <a href="/learn/" aria-haspopup="true">Learn</a>
+          <ul class="dropdown-menu" role="menu">
+            <li role="none"><a href="/learn/" role="menuitem">📖 Learn About AI</a></li>
+            <li role="none"><a href="/health/" role="menuitem">❤️ Health</a></li>
+            <li role="none"><a href="/wealth/" role="menuitem">💰 Wealth</a></li>
+            <li role="none"><a href="/self/" role="menuitem">✍️ Self</a></li>
+          </ul>
+        </li>
+        <li><a href="/news/">News</a></li>
+        <li class="dropdown">
+          <a href="/resources/" class="active" aria-current="page" aria-haspopup="true">Resources</a>
+          <ul class="dropdown-menu" role="menu">
+            <li role="none"><a href="/resources/" role="menuitem">📚 Resources</a></li>
+            <li role="none"><a href="/ai-quiz.html" class="active" role="menuitem">🧠 AI Quiz</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="/cindy/" aria-haspopup="true">Ask Cindy AI</a>
+          <ul class="dropdown-menu" role="menu">
+            <li role="none"><a href="/cindy/" role="menuitem">💬 Chat with Cindy</a></li>
+            <li role="none"><a href="/cindy/about/" role="menuitem">ℹ️ About Cindy</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="/signups/" aria-haspopup="true">Get Involved</a>
+          <ul class="dropdown-menu" role="menu">
+            <li role="none"><a href="/signups/newsletter.html" role="menuitem">📰 Newsletter</a></li>
+            <li role="none"><a href="/signups/volunteer.html" role="menuitem">🤝 Volunteer</a></li>
+            <li role="none"><a href="/signups/townhall.html" role="menuitem">🏛️ Town Hall Signup</a></li>
+            <li role="none"><a href="/signups/smallgroup.html" role="menuitem">👥 Small Group Signup</a></li>
+          </ul>
+        </li>
+        <!-- TEMP: Feedback link -->
+        <li><a href="/feedback/feedback.html">Feedback</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main">
+    <div class="container">
+
+      <!-- Page header -->
+      <div class="page-header">
+        <span class="eyebrow">Test Your Knowledge</span>
+        <h1>AI Fundamentals Quiz</h1>
+        <p class="lead">10 questions on what AI is, how it works, and how to use it safely — plus an optional bonus question.</p>
+      </div>
+
+      <!-- Quiz card -->
+      <div class="quiz-card">
+
+        <!-- WELCOME SCREEN -->
+        <section id="screen-welcome">
+          <h2 style="font-size:28px;margin-bottom:16px;">Ready to begin?</h2>
+          <p style="color:var(--ink-soft);margin-bottom:12px;">
+            This short quiz tests your knowledge of Artificial Intelligence basics — what it is,
+            how it works, and how to use it safely. There are <strong>10 questions</strong> plus one
+            optional bonus question. After each answer you will see an explanation of the correct answer.
+          </p>
+          <p style="color:var(--ink-soft);margin-bottom:28px;">Take your time and enjoy!</p>
+          <button class="btn btn-primary" onclick="startQuiz()">Start Quiz</button>
+        </section>
+
+        <!-- QUESTION SCREEN -->
+        <section id="screen-question" class="hidden">
+          <div class="progress-bar-wrap">
+            <div class="progress-bar-fill" id="progress-fill"></div>
+          </div>
+          <div class="progress-label" id="progress-label"></div>
+
+          <p class="question-text" id="question-text"></p>
+
+          <ul class="options-list" id="options-list"></ul>
+
+          <div class="feedback-box" id="feedback-box">
+            <div class="feedback-label" id="feedback-label"></div>
+            <div id="feedback-rationale"></div>
+          </div>
+
+          <div style="display:flex;gap:12px;flex-wrap:wrap;">
+            <button class="btn btn-primary" id="btn-submit" onclick="submitAnswer()" disabled>Submit Answer</button>
+            <button class="btn btn-primary hidden" id="btn-next" onclick="nextQuestion()">Next Question</button>
+          </div>
+        </section>
+
+        <!-- BONUS PROMPT SCREEN -->
+        <section id="screen-bonus-prompt" class="hidden">
+          <h2 style="font-size:28px;margin-bottom:16px;">Bonus Question</h2>
+          <p style="color:var(--ink-soft);margin-bottom:8px;">You have completed the 10 main questions. There is one bonus question available.</p>
+          <p style="color:var(--ink-soft);margin-bottom:0;">Would you like to answer it?</p>
+          <div class="bonus-prompt-btns">
+            <button class="btn btn-primary" onclick="goBonus()">Yes, answer the bonus question</button>
+            <button class="btn btn-secondary" onclick="showResults()">Skip — see my results</button>
+          </div>
+        </section>
+
+        <!-- RESULTS SCREEN -->
+        <section id="screen-results" class="hidden">
+          <h2 style="font-size:32px;margin-bottom:24px;">Your Results</h2>
+          <div class="score-banner">
+            <span class="score-number" id="score-number"></span>
+            <span class="score-msg" id="score-msg"></span>
+          </div>
+
+          <h3 style="font-size:24px;margin-bottom:20px;">Review</h3>
+          <div id="review-list"></div>
+
+          <button class="btn btn-primary" style="margin-top:28px;" onclick="restartQuiz()">Try Again</button>
+        </section>
+
+      </div><!-- /quiz-card -->
+
+      <!-- CTA strip -->
+      <div class="cta-strip">
+        <div>
+          <h2>Want to keep learning?</h2>
+          <p>Visit our Learn section for guides on using AI safely — for your health, finances, and personal interests.</p>
+        </div>
+        <a class="btn btn-white" href="/learn/">📖 Explore the Guide</a>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <h4>About CincySeniors.org</h4>
+        <p style="margin: 0; color: var(--ink-soft); font-size: 18px;">A local, community-run guide to using AI safely for older adults across Greater Cincinnati. Free. No ads. No sales.</p>
+        <div class="privacy-note"><strong>Our promise:</strong> We're a local, community-run site.</div>
+      </div>
+      <div>
+        <h4>Get Involved</h4>
+        <ul>
+          <li><a href="/signups/newsletter.html">Newsletter</a></li>
+          <li><a href="/signups/volunteer.html">Volunteer</a></li>
+          <li><a href="/signups/townhall.html">Town Hall Signup</a></li>
+          <li><a href="/signups/smallgroup.html">Small Group Signup</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Reach us</h4>
+        <ul>
+          <li><a href="mailto:info@cincyseniors.org">info@cincyseniors.org</a></li>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="copyright">© 2026 CincySeniors.org — Made in Cincinnati with care.</p>
+  </footer>
+
+<script>
+  const QUESTIONS = [
+    {
+      q: "1. LLMs are…",
+      options: [
+        "a. Large Linear Models",
+        "b. Large Language Models",
+        "c. Linear Language Models",
+        "d. Long Learning Machines"
+      ],
+      answer: 1,
+      rationale: "Large Language Models are a type of artificial intelligence trained to understand and generate human language. They are called \"large\" because they are trained on huge amounts of text and contain many internal settings, called parameters, that help them predict and produce useful responses."
+    },
+    {
+      q: "2. What is Artificial Intelligence, or AI?",
+      options: [
+        "a. A robot that always looks like a human",
+        "b. A computer system that can perform tasks that usually require human thinking",
+        "c. A type of internet cable",
+        "d. A replacement for electricity"
+      ],
+      answer: 1,
+      rationale: "AI refers to computer systems that can do things such as recognize speech, answer questions, find patterns, make predictions, or generate text and images. AI does not \"think\" exactly like a person, but it can imitate some thinking-related tasks very well."
+    },
+    {
+      q: "3. Which of these is an example of AI in everyday life?",
+      options: [
+        "a. A voice assistant like Siri or Alexa",
+        "b. A toaster with no computer inside",
+        "c. A paper calendar",
+        "d. A wooden pencil"
+      ],
+      answer: 0,
+      rationale: "Voice assistants use AI to understand spoken questions and provide helpful answers. Other everyday examples include spam filters, GPS traffic suggestions, photo organization, and streaming recommendations."
+    },
+    {
+      q: "4. When you ask ChatGPT a question, your question is often called a…",
+      options: [
+        "a. Prompt",
+        "b. Password",
+        "c. Plug",
+        "d. Program chip"
+      ],
+      answer: 0,
+      rationale: "A prompt is the instruction or question you give to an AI tool. A clear prompt usually leads to a better answer, just like giving clear directions to a person helps them understand what you need."
+    },
+    {
+      q: "5. Which prompt is likely to get the best answer from an AI tool?",
+      options: [
+        "a. \"Help.\"",
+        "b. \"Tell me stuff.\"",
+        "c. \"Explain how to spot email scams in simple terms for a beginner.\"",
+        "d. \"Do something useful.\""
+      ],
+      answer: 2,
+      rationale: "Good prompts are specific. They tell the AI what topic you want, how detailed the answer should be, and who the answer is for."
+    },
+    {
+      q: "6. What does it mean when an AI \"hallucinates\"?",
+      options: [
+        "a. It takes a nap",
+        "b. It makes up information that may sound true but is not",
+        "c. It catches a computer virus",
+        "d. It becomes emotional"
+      ],
+      answer: 1,
+      rationale: "An AI hallucination happens when the system gives an answer that sounds confident but is incorrect or unsupported. This is why it is important to double-check important information, especially about health, money, legal issues, or safety."
+    },
+    {
+      q: "7. Which is the safest thing to share with an AI chatbot?",
+      options: [
+        "a. Your Social Security number",
+        "b. Your bank password",
+        "c. A general question, such as \"What are tips for organizing family photos?\"",
+        "d. Your full credit card number"
+      ],
+      answer: 2,
+      rationale: "It is best not to share highly personal or sensitive information with AI tools unless you fully understand how the information will be used and protected. General questions are safer."
+    },
+    {
+      q: "8. What is one thing AI is especially good at?",
+      options: [
+        "a. Replacing all human judgment",
+        "b. Helping draft, summarize, organize, or explain information",
+        "c. Guaranteeing every answer is 100% correct",
+        "d. Knowing your intentions without being told"
+      ],
+      answer: 1,
+      rationale: "AI can be very helpful for writing letters, summarizing long documents, explaining confusing topics, brainstorming ideas, and creating checklists. But humans still need to review the results."
+    },
+    {
+      q: "9. What does \"training\" an AI model mean?",
+      options: [
+        "a. Teaching a computer system by exposing it to lots of examples and patterns",
+        "b. Taking a computer to the gym",
+        "c. Installing a bigger screen",
+        "d. Teaching it to drive a train"
+      ],
+      answer: 0,
+      rationale: "Training means the AI system learns patterns from large amounts of data. For a language model, that data may include books, articles, websites, and other text, allowing it to learn how words and ideas are commonly connected."
+    },
+    {
+      q: "10. What is a good rule when using AI for important decisions?",
+      options: [
+        "a. Trust the first answer completely",
+        "b. Never use AI for anything",
+        "c. Use AI as a helper, but verify important information",
+        "d. Only use AI if it gives a very long answer"
+      ],
+      answer: 2,
+      rationale: "AI can be a useful assistant, but it should not be the only source for major decisions. For medical, financial, legal, or safety-related questions, it is wise to check trusted sources or speak with a qualified professional."
+    },
+    {
+      q: "Bonus: AI is best thought of as…",
+      options: [
+        "a. A magic crystal ball",
+        "b. A helpful tool that still needs human guidance",
+        "c. A person living inside the computer",
+        "d. A machine that is always right"
+      ],
+      answer: 1,
+      rationale: "AI can be powerful and useful, but it works best when people ask thoughtful questions, review the answers, and apply common sense. Think of it as a very fast assistant, not an all-knowing expert."
+    }
+  ];
+
+  const MAIN_COUNT = 10;
+
+  let currentIndex = 0;
+  let selectedOption = null;
+  let answered = false;
+  let userAnswers = [];
+  let quizQuestions = [];
+
+  function show(id) { document.getElementById(id).classList.remove('hidden'); }
+  function hide(id) { document.getElementById(id).classList.add('hidden'); }
+
+  function startQuiz() {
+    currentIndex = 0;
+    selectedOption = null;
+    answered = false;
+    userAnswers = [];
+    quizQuestions = Array.from({length: MAIN_COUNT}, (_, i) => i);
+    hide('screen-welcome');
+    show('screen-question');
+    renderQuestion();
+  }
+
+  function renderQuestion() {
+    const qIdx = quizQuestions[currentIndex];
+    const q = QUESTIONS[qIdx];
+    const total = quizQuestions.length;
+
+    const pct = Math.round((currentIndex / total) * 100);
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('progress-label').textContent =
+      'Question ' + (currentIndex + 1) + ' of ' + total;
+
+    document.getElementById('question-text').textContent = q.q;
+
+    const list = document.getElementById('options-list');
+    list.innerHTML = '';
+    q.options.forEach((opt, i) => {
+      const li = document.createElement('li');
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      btn.textContent = opt;
+      btn.onclick = () => selectOption(i);
+      btn.id = 'opt-' + i;
+      li.appendChild(btn);
+      list.appendChild(li);
+    });
+
+    selectedOption = null;
+    answered = false;
+
+    const feedback = document.getElementById('feedback-box');
+    feedback.style.display = 'none';
+    feedback.className = 'feedback-box';
+
+    const btnSubmit = document.getElementById('btn-submit');
+    btnSubmit.disabled = true;
+    btnSubmit.classList.remove('hidden');
+
+    const btnNext = document.getElementById('btn-next');
+    btnNext.classList.add('hidden');
+    btnNext.textContent = currentIndex < quizQuestions.length - 1 ? 'Next Question' : 'See My Results';
+  }
+
+  function selectOption(i) {
+    if (answered) return;
+    selectedOption = i;
+    document.querySelectorAll('.option-btn').forEach((b, idx) => {
+      b.classList.toggle('selected', idx === i);
+    });
+    document.getElementById('btn-submit').disabled = false;
+  }
+
+  function submitAnswer() {
+    if (selectedOption === null || answered) return;
+    answered = true;
+
+    const qIdx = quizQuestions[currentIndex];
+    const q = QUESTIONS[qIdx];
+    const correct = selectedOption === q.answer;
+
+    userAnswers.push({ questionIndex: qIdx, selected: selectedOption });
+
+    document.querySelectorAll('.option-btn').forEach((btn, i) => {
+      btn.disabled = true;
+      btn.classList.remove('selected');
+      if (i === q.answer) {
+        btn.classList.add(i === selectedOption ? 'correct' : 'reveal-correct');
+      } else if (i === selectedOption) {
+        btn.classList.add('incorrect');
+      }
+    });
+
+    const box = document.getElementById('feedback-box');
+    const label = document.getElementById('feedback-label');
+    const rat = document.getElementById('feedback-rationale');
+
+    box.style.display = 'block';
+    if (correct) {
+      box.className = 'feedback-box correct';
+      label.textContent = 'Correct!';
+    } else {
+      box.className = 'feedback-box incorrect';
+      label.textContent = 'Not quite — the correct answer is: ' + q.options[q.answer];
+    }
+    rat.textContent = q.rationale;
+
+    document.getElementById('btn-submit').classList.add('hidden');
+    document.getElementById('btn-next').classList.remove('hidden');
+  }
+
+  function nextQuestion() {
+    currentIndex++;
+    if (currentIndex >= quizQuestions.length) {
+      if (quizQuestions.length === MAIN_COUNT) {
+        hide('screen-question');
+        show('screen-bonus-prompt');
+      } else {
+        hide('screen-question');
+        showResults();
+      }
+    } else {
+      renderQuestion();
+    }
+  }
+
+  function goBonus() {
+    quizQuestions.push(MAIN_COUNT);
+    hide('screen-bonus-prompt');
+    show('screen-question');
+    renderQuestion();
+  }
+
+  function showResults() {
+    hide('screen-bonus-prompt');
+    hide('screen-question');
+
+    let score = 0;
+    userAnswers.forEach(a => {
+      if (a.questionIndex < MAIN_COUNT && a.selected === QUESTIONS[a.questionIndex].answer) score++;
+    });
+
+    const bonusAnswer = userAnswers.find(a => a.questionIndex === MAIN_COUNT);
+    const bonusCorrect = bonusAnswer && bonusAnswer.selected === QUESTIONS[MAIN_COUNT].answer;
+
+    document.getElementById('score-number').textContent = score + ' out of ' + MAIN_COUNT;
+    let msg = '';
+    if (score === MAIN_COUNT) msg = 'Perfect score! Excellent work.';
+    else if (score >= 8) msg = 'Great job — you have a strong grasp of AI basics!';
+    else if (score >= 6) msg = 'Good effort! Review the explanations below to learn more.';
+    else msg = 'Keep exploring — the explanations below will help you build your knowledge.';
+
+    if (bonusAnswer) {
+      msg += bonusCorrect
+        ? ' And you got the bonus question right!'
+        : ' (The bonus question answer is shown in the review below.)';
+    }
+    document.getElementById('score-msg').textContent = msg;
+
+    const list = document.getElementById('review-list');
+    list.innerHTML = '';
+    userAnswers.forEach(a => {
+      const q = QUESTIONS[a.questionIndex];
+      const isBonus = a.questionIndex === MAIN_COUNT;
+
+      const item = document.createElement('div');
+      item.className = 'review-item';
+
+      const qLabel = document.createElement('div');
+      qLabel.className = 'review-q';
+      qLabel.textContent = (isBonus ? '[Bonus] ' : '') + q.q;
+      item.appendChild(qLabel);
+
+      q.options.forEach((opt, i) => {
+        const div = document.createElement('div');
+        div.className = 'review-option';
+        div.textContent = opt;
+
+        if (i === a.selected && i === q.answer) {
+          div.classList.add('user-correct');
+          div.textContent += '  ✓ Your answer (correct)';
+        } else if (i === a.selected) {
+          div.classList.add('user-incorrect');
+          div.textContent += '  ✗ Your answer';
+        } else if (i === q.answer) {
+          div.classList.add('answer-correct');
+          div.textContent += '  ✓ Correct answer';
+        } else {
+          div.classList.add('plain');
+        }
+
+        item.appendChild(div);
+      });
+
+      const rat = document.createElement('div');
+      rat.className = 'review-rationale';
+      rat.textContent = q.rationale;
+      item.appendChild(rat);
+
+      list.appendChild(item);
+    });
+
+    show('screen-results');
+  }
+
+  function restartQuiz() {
+    hide('screen-results');
+    show('screen-welcome');
+  }
+</script>
+
+<script>
+  // Text size controls
+  (function () {
+    var html = document.documentElement;
+    var btns = document.querySelectorAll('.text-size button');
+    var classes = ['', 'text-large', 'text-xl'];
+    var labels = ['Normal', 'Large', 'Largest'];
+    function applySize(idx) {
+      html.classList.remove('text-large', 'text-xl');
+      if (classes[idx]) html.classList.add(classes[idx]);
+      btns.forEach(function (btn, i) {
+        btn.classList.toggle('active', i === idx);
+        btn.setAttribute('aria-pressed', i === idx ? 'true' : 'false');
+      });
+      try { localStorage.setItem('csTextSize', idx); } catch (e) {}
+    }
+    btns.forEach(function (btn, i) {
+      btn.setAttribute('aria-pressed', 'false');
+      btn.title = labels[i] + ' text';
+      btn.addEventListener('click', function () { applySize(i); });
+    });
+    var saved = 0;
+    try { saved = parseInt(localStorage.getItem('csTextSize') || '0', 10); } catch (e) {}
+    applySize(isNaN(saved) ? 0 : Math.min(saved, 2));
+  })();
+
+  // Mobile nav hamburger toggle
+  (function () {
+    var toggle = document.querySelector('.nav-toggle');
+    var nav = document.querySelector('nav.primary');
+    if (!toggle || !nav) return;
+    toggle.addEventListener('click', function () {
+      var isOpen = nav.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      toggle.innerHTML = isOpen ? '&#x2715;' : '&#9776;';
+    });
+    nav.querySelectorAll('a').forEach(function (a) {
+      a.addEventListener('click', function () {
+        nav.classList.remove('open');
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.innerHTML = '&#9776;';
+      });
+    });
+  })();
+</script>
+
+<!-- Cookie consent banner -->
+<div id="cookie-banner" role="dialog" aria-live="polite" aria-label="Cookie notice" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#1F1B16;color:#FAF6EE;font-family:'Atkinson Hyperlegible',system-ui,sans-serif;font-size:17px;line-height:1.5;padding:16px 24px;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;box-shadow:0 -4px 20px rgba(0,0,0,0.25);">
+  <p style="margin:0;max-width:720px;">We use cookies to ensure you get the best experience on our website. If you continue to use this site we'll assume you are happy with this. <a href="/privacy.html" style="color:#E5A87C;font-weight:700;text-underline-offset:3px;">Privacy Policy</a></p>
+  <button id="cookie-ok" style="flex-shrink:0;background:#B45A3C;color:#FAF6EE;border:2px solid #8F4227;border-radius:10px;padding:10px 28px;font-family:inherit;font-size:17px;font-weight:700;cursor:pointer;white-space:nowrap;">OK</button>
+</div>
+<script>
+  (function () {
+    function getCookie(name) {
+      var match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+      return match ? decodeURIComponent(match[1]) : null;
+    }
+    if (!getCookie('cs_cookie_ok')) {
+      var banner = document.getElementById('cookie-banner');
+      if (banner) banner.style.display = 'flex';
+      var btn = document.getElementById('cookie-ok');
+      if (btn) btn.addEventListener('click', function () {
+        var exp = new Date();
+        exp.setFullYear(exp.getFullYear() + 1);
+        document.cookie = 'cs_cookie_ok=1;path=/;expires=' + exp.toUTCString();
+        banner.style.display = 'none';
+      });
+    }
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Learn About AI Safely — CincySeniors.org</title>
+  <meta name="description" content="Simple, trustworthy information to help older adults understand and use artificial intelligence with confidence." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --cream:           #FAF6EE;
+      --cream-2:         #F3ECDD;
+      --ink:             #1F1B16;
+      --ink-soft:        #4A4238;
+      --terracotta:      #B45A3C;
+      --terracotta-dark: #8F4227;
+      --sage:            #6E8B6A;
+      --amber:           #C98A2B;
+      --line:            #E5DCC7;
+    }
+
+    *,*::before,*::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: "Atkinson Hyperlegible", system-ui, sans-serif;
+      font-size: 20px;
+      line-height: 1.65;
+      color: var(--ink);
+      background-color: var(--cream);
+      background-image:
+        radial-gradient(circle at 20% 30%, rgba(180, 90, 60, 0.035) 0, transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(110, 139, 106, 0.035) 0, transparent 40%);
+    }
+
+    a { color: var(--terracotta-dark); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+    a:hover { color: var(--terracotta); }
+
+    h1, h2, h3 {
+      font-family: "Fraunces", Georgia, serif;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+    }
+
+    /* Skip link */
+    .skip {
+      position: absolute;
+      left: -1000px;
+      top: 0;
+      background: var(--ink);
+      color: var(--cream);
+      padding: 12px 18px;
+      border-radius: 0 0 12px 0;
+      z-index: 100;
+    }
+    .skip:focus { left: 0; }
+
+    /* ---------- Top Bar ---------- */
+    .topbar { background: var(--cream-2); border-bottom: 1px solid var(--line); font-size: 17px; }
+    .topbar-inner { max-width: 1120px; margin: 0 auto; padding: 10px 24px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .text-size { display: inline-flex; gap: 6px; align-items: center; color: var(--ink-soft); }
+    .text-size button { background: transparent; border: 1.5px solid var(--line); border-radius: 999px; padding: 4px 10px; font-family: inherit; cursor: pointer; color: var(--ink); }
+    .text-size button:hover { border-color: var(--terracotta); }
+    .text-size button.active { background: var(--terracotta); color: #fff; border-color: var(--terracotta-dark); }
+
+    /* ---------- Header / Nav ---------- */
+    header.main { max-width: 1120px; margin: 0 auto; padding: 22px 24px 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+    .brand { display: flex; align-items: center; gap: 14px; text-decoration: none; color: var(--ink); }
+    .brand-mark { width: 52px; height: 52px; border-radius: 50%; background: var(--terracotta); color: var(--cream); display: grid; place-items: center; font-family: "Fraunces", serif; font-weight: 700; font-size: 26px; flex-shrink: 0; }
+    .brand-name { font-family: "Fraunces", serif; font-weight: 700; font-size: 26px; line-height: 1.1; }
+    .brand-tag { display: block; font-family: "Atkinson Hyperlegible", sans-serif; font-weight: 400; color: var(--ink-soft); font-size: 15px; }
+
+    nav.primary ul { list-style: none; display: flex; gap: 8px; padding: 0; margin: 0; flex-wrap: wrap; }
+    nav.primary a { display: block; padding: 10px 16px; border-radius: 999px; text-decoration: none; color: var(--ink); font-weight: 700; font-size: 18px; }
+    nav.primary a:hover { background: var(--cream-2); }
+    nav.primary a.active { background: var(--cream-2); color: var(--terracotta-dark); }
+    nav.primary a:focus { outline: 3px solid var(--terracotta); outline-offset: 2px; }
+    nav.primary .dropdown { position: relative; }
+    nav.primary .dropdown > a::after { content: " ▾"; font-size: 0.75em; }
+    nav.primary .dropdown-menu { display: none; position: absolute; top: calc(100% + 4px); right: 0; background: var(--cream); border: 1.5px solid var(--line); border-radius: 14px; padding: 8px; min-width: 240px; box-shadow: 0 8px 24px rgba(31, 27, 22, 0.12); z-index: 200; }
+    nav.primary .dropdown:hover .dropdown-menu, nav.primary .dropdown:focus-within .dropdown-menu { display: flex; flex-direction: column; gap: 2px; }
+    nav.primary .dropdown-menu a { border-radius: 8px; font-size: 17px; padding: 10px 14px; }
+    nav.primary .dropdown-menu a.active { background: var(--cream-2); color: var(--terracotta-dark); }
+
+    /* ---------- Layout ---------- */
+    main { padding-bottom: 80px; }
+    .container { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+    /* ---------- Page header ---------- */
+    .page-header { padding: 56px 0 48px; text-align: center; }
+    .page-header .eyebrow { display: inline-block; font-size: 15px; font-weight: 700; color: var(--terracotta-dark); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 14px; }
+    .page-header h1 { font-size: 56px; margin: 0 0 18px; line-height: 1.05; }
+    .page-header p.lead { font-size: 22px; color: var(--ink-soft); margin: 0 auto; max-width: 58ch; }
+
+    /* ---------- Section heads ---------- */
+    .section-head { margin-bottom: 32px; }
+    .section-head .eyebrow { display: inline-block; font-size: 15px; font-weight: 700; color: var(--terracotta-dark); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 10px; }
+    .section-head h2 { font-size: 38px; margin: 0 0 10px; line-height: 1.1; }
+    .section-head p { font-size: 20px; color: var(--ink-soft); margin: 0; }
+
+    section { margin-top: 64px; }
+
+    /* ---------- What Is AI cards ---------- */
+    .cards-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .info-card {
+      background: #fff;
+      border: 1.5px solid var(--line);
+      border-radius: 22px;
+      padding: 32px;
+      box-shadow: 0 6px 18px rgba(31, 27, 22, 0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .info-card .icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 18px;
+      background: var(--cream-2);
+      display: grid;
+      place-items: center;
+      font-size: 30px;
+      margin-bottom: 6px;
+    }
+    .info-card h3 { font-size: 24px; margin: 0; }
+    .info-card p { margin: 0; color: var(--ink-soft); font-size: 18px; }
+
+    /* ---------- Safety tips ---------- */
+    .tip-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 8px;
+    }
+    .tip-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 18px;
+      background: #fff;
+      border: 1.5px solid var(--line);
+      border-radius: 16px;
+      padding: 22px 24px;
+      box-shadow: 0 4px 14px rgba(31, 27, 22, 0.05);
+    }
+    .tip-icon {
+      font-size: 28px;
+      line-height: 1;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .tip-item p { margin: 0; font-size: 19px; color: var(--ink-soft); }
+    .tip-item strong { color: var(--ink); }
+
+    /* ---------- Scam / Risk section ---------- */
+    .scam-wrap {
+      background: #FFF6E6;
+      border: 2px dashed var(--amber);
+      border-radius: 22px;
+      padding: 40px;
+    }
+    .scams {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 24px;
+    }
+    .scam {
+      background: #fff;
+      border-radius: 18px;
+      padding: 24px;
+      border: 1.5px solid #F3DDA6;
+    }
+    .scam .flag {
+      display: inline-block;
+      background: var(--amber);
+      color: #fff;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .scam h3 { margin: 0 0 8px; font-size: 22px; }
+    .scam p { margin: 0; color: var(--ink-soft); font-size: 18px; }
+
+    /* ---------- Resources ---------- */
+    .resource-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .resource-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: #fff;
+      border: 1.5px solid var(--line);
+      border-radius: 14px;
+      padding: 18px 22px;
+      text-decoration: none;
+      color: var(--ink);
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .resource-item:hover {
+      border-color: var(--terracotta);
+      box-shadow: 0 4px 14px rgba(31, 27, 22, 0.08);
+      color: var(--ink);
+    }
+    .resource-icon { font-size: 26px; flex-shrink: 0; line-height: 1; }
+    .resource-details { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+    .resource-title { font-family: "Fraunces", Georgia, serif; font-weight: 700; font-size: 19px; color: var(--ink); }
+    .resource-desc { font-size: 16px; color: var(--ink-soft); line-height: 1.45; }
+    .resource-cta { font-size: 15px; font-weight: 700; color: var(--terracotta-dark); flex-shrink: 0; white-space: nowrap; }
+    .resource-item:hover .resource-cta { color: var(--terracotta); }
+
+    /* ---------- Footer ---------- */
+    footer { margin-top: 96px; background: var(--cream-2); border-top: 1px solid var(--line); padding: 48px 0 36px; }
+    .footer-inner { max-width: 1120px; margin: 0 auto; padding: 0 24px; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; }
+    footer h4 { font-family: "Fraunces", serif; font-size: 20px; margin: 0 0 14px; color: var(--ink); }
+    footer ul { list-style: none; padding: 0; margin: 0; }
+    footer li { margin-bottom: 10px; font-size: 18px; }
+    footer a { color: var(--ink); text-decoration: none; border-bottom: 2px solid transparent; }
+    footer a:hover { border-bottom-color: var(--terracotta); }
+    .privacy-note { margin-top: 28px; padding: 18px; background: #fff; border-left: 4px solid var(--sage); border-radius: 6px; font-size: 17px; color: var(--ink-soft); }
+    .copyright { max-width: 1120px; margin: 32px auto 0; padding: 24px 24px 0; border-top: 1px solid var(--line); font-size: 16px; color: var(--ink-soft); text-align: center; }
+
+    /* ---------- Text size overrides ---------- */
+    html.text-large body { font-size: 23px; }
+    html.text-large .page-header h1 { font-size: 62px; }
+    html.text-large .section-head h2 { font-size: 44px; }
+    html.text-xl body { font-size: 26px; }
+    html.text-xl .page-header h1 { font-size: 68px; }
+    html.text-xl .section-head h2 { font-size: 50px; }
+
+
+    /* ---------- Nav toggle button (mobile) ---------- */
+    .nav-toggle {
+      display: none;
+      background: transparent;
+      border: 1.5px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+      color: var(--ink);
+      font-family: inherit;
+    }
+    .nav-toggle:hover { border-color: var(--terracotta); background: var(--cream-2); }
+    .nav-toggle:focus { outline: 3px solid var(--terracotta); outline-offset: 2px; }
+
+    /* ---------- Responsive: tablet ---------- */
+    @media (max-width: 900px) {
+      .cards-3 { grid-template-columns: 1fr; }
+      .scams { grid-template-columns: 1fr; }
+      .footer-inner { grid-template-columns: 1fr; }
+      nav.primary ul { gap: 2px; }
+      nav.primary a { padding: 8px 12px; font-size: 17px; }
+    }
+
+    /* ---------- Responsive: phone ---------- */
+    @media (max-width: 640px) {
+      /* Mobile nav */
+      .nav-toggle { display: block; }
+      nav.primary { display: none; width: 100%; }
+      nav.primary.open { display: block; }
+      nav.primary ul { display: flex; flex-direction: column; gap: 4px; padding: 4px 0; }
+      nav.primary > ul > li { width: 100%; }
+      nav.primary a { font-size: 17px; padding: 12px 14px; border-radius: 10px; border: 1.5px solid var(--line); text-align: left; width: 100%; display: block; }
+      nav.primary .dropdown > a::after { display: none; }
+      nav.primary .dropdown-menu { display: flex !important; flex-direction: column; gap: 3px; position: static; box-shadow: none; border: none; padding: 4px 0 4px 16px; border-radius: 0; background: transparent; min-width: 0; }
+      nav.primary .dropdown-menu a { font-size: 16px; padding: 10px 14px; color: var(--ink-soft); }
+      .topbar-inner { flex-direction: column; align-items: flex-start; gap: 8px; padding: 10px 16px; }
+      header.main { padding: 14px 16px 8px; flex-direction: column; align-items: flex-start; gap: 12px; }
+      nav.primary { width: 100%; }
+      nav.primary ul { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+      nav.primary a { font-size: 16px; padding: 10px 12px; text-align: center; border: 1.5px solid var(--line); border-radius: 10px; }
+      .container { padding: 0 16px; }
+      .page-header { padding: 36px 0 32px; }
+      .page-header h1 { font-size: 36px; }
+      .page-header p.lead { font-size: 19px; }
+      .section-head h2 { font-size: 28px; }
+      .info-card { padding: 24px; }
+      .scam-wrap { padding: 24px 18px; }
+      footer { margin-top: 56px; padding: 36px 0 24px; }
+      main { padding-bottom: 48px; }
+    }
+
+    @media (max-width: 400px) {
+      nav.primary ul { grid-template-columns: 1fr; }
+    }
+  </style>
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+</head>
+<body>
+
+  <a class="skip" href="#main-content">Skip to main content</a>
+
+  <!-- Top bar -->
+  <div class="topbar" role="region" aria-label="Site utilities">
+    <div class="topbar-inner">
+      <div class="text-size" aria-label="Text size controls">
+        <span>Text size:</span>
+        <button type="button" aria-label="Normal text">A</button>
+        <button type="button" aria-label="Larger text">A+</button>
+        <button type="button" aria-label="Largest text">A++</button>
+      </div>
+      <a href="mailto:info@cincyseniors.org" style="font-weight:700;color:var(--ink);text-decoration:none;">✉ info@cincyseniors.org</a>
+    </div>
+  </div>
+
+  <!-- Main nav -->
+  <header class="main">
+    <a class="brand" href="/">
+      <span class="brand-mark" aria-hidden="true">C</span>
+      <span>
+        <span class="brand-name">CincySeniors.org</span>
+        <span class="brand-tag">A Cincy AI Catalyst (CAIC) guide to using AI</span>
+      </span>
+    </a>
+    <button class="nav-toggle" aria-expanded="false" aria-label="Open navigation">&#9776;</button>
+    <nav class="primary" aria-label="Primary">
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li class="dropdown">
+          <a href="/learn/" class="active" aria-current="page" aria-haspopup="true">Learn</a>
+          <ul class="dropdown-menu" role="menu">
+            <li role="none"><a href="/learn/" class="active" role="menuitem">📖 Learn About AI</a></li>
+            <li role="none"><a href="/health/" role="menuitem">❤️ Health</a></li>
+            <li role="none"><a href="/wealth/" role="menuitem">💰 Wealth</a></li>
+            <li role="none"><a href="/self/" role="menuitem">✍️ Self</a></li>
+          </ul>
+        </li>
+        <li><a href="/news/">News</a></li>
+        <li class="dropdown">
+          <a href="/resources/" aria-haspopup="true">Resources</a>
+          <ul class="dropdown-menu" role="menu">
+            <li role="none"><a href="/resources/" role="menuitem">📚 Resources</a></li>
+            <li role="none"><a href="/ai-quiz.html" role="menuitem">🧠 AI Quiz</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="/cindy/" aria-haspopup="true">Ask Cindy AI</a>
+          <ul class="dropdown-menu" role="menu">
+            <li role="none"><a href="/cindy/" role="menuitem">💬 Chat with Cindy</a></li>
+            <li role="none"><a href="/cindy/about/" role="menuitem">ℹ️ About Cindy</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="/signups/" aria-haspopup="true">Get Involved</a>
+          <ul class="dropdown-menu" role="menu">
+            <li role="none"><a href="/signups/newsletter.html" role="menuitem">📰 Newsletter</a></li>
+            <li role="none"><a href="/signups/volunteer.html" role="menuitem">🤝 Volunteer</a></li>
+            <li role="none"><a href="/signups/townhall.html" role="menuitem">🏛️ Town Hall Signup</a></li>
+            <li role="none"><a href="/signups/smallgroup.html" role="menuitem">👥 Small Group Signup</a></li>
+          </ul>
+        </li>
+        <!-- TEMP: Feedback link -->
+        <li><a href="/feedback/feedback.html">Feedback</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <div class="container">
+
+      <!-- Page header -->
+      <div class="page-header">
+        <span class="eyebrow">AI Education</span>
+        <h1>Learning About AI Safely</h1>
+        <p class="lead">Simple, trustworthy information to help you use artificial intelligence with confidence — no tech experience needed.</p>
+      </div>
+
+      <!-- What Is AI -->
+      <section>
+        <div class="section-head">
+          <span class="eyebrow">Start Here</span>
+          <h2>What Is Artificial Intelligence?</h2>
+          <p>A plain-language introduction with no jargon.</p>
+        </div>
+        <div class="cards-3">
+          <div class="info-card">
+            <div class="icon">🧠</div>
+            <h3>A Computer That Learns</h3>
+            <p>AI is a type of computer program that learns from large amounts of information and responds in helpful ways — like answering questions, writing text, or describing images.</p>
+          </div>
+          <div class="info-card">
+            <div class="icon">🤖</div>
+            <h3>It Is Not a Person</h3>
+            <p>Even when AI sounds friendly or conversational, it is not a real person. It has no feelings, no memories between conversations, and no genuine opinions of its own.</p>
+          </div>
+          <div class="info-card">
+            <div class="icon">⚠️</div>
+            <h3>It Can Make Mistakes</h3>
+            <p>AI can give incorrect information with complete confidence. Always double-check important facts — especially about health, money, or legal matters — with a trusted source.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Safety tips -->
+      <section>
+        <div class="section-head">
+          <span class="eyebrow">Stay Safe</span>
+          <h2>Tips for Using AI Safely</h2>
+          <p>Five simple habits to protect yourself whenever you use AI tools.</p>
+        </div>
+        <div class="tip-list">
+          <div class="tip-item">
+            <div class="tip-icon">🔒</div>
+            <p><strong>Never share personal information</strong> like your Social Security number, bank account details, passwords, or Medicare number with any AI tool.</p>
+          </div>
+          <div class="tip-item">
+            <div class="tip-icon">✅</div>
+            <p><strong>Verify important information</strong> from a trusted source — your doctor, bank, or a reliable website — before acting on anything AI tells you.</p>
+          </div>
+          <div class="tip-item">
+            <div class="tip-icon">🧐</div>
+            <p><strong>Trust your instincts.</strong> If something an AI says feels off or too good to be true, it may be wrong or misleading. Pause before acting.</p>
+          </div>
+          <div class="tip-item">
+            <div class="tip-icon">📞</div>
+            <p><strong>It's always okay to call a real person.</strong> AI tools are helpful, but speaking with a human — a doctor, bank representative, or family member — is sometimes the better choice.</p>
+          </div>
+          <div class="tip-item">
+            <div class="tip-icon">🔄</div>
+            <p><strong>Keep your devices and apps updated.</strong> Outdated software can put your information at risk, even when you're using AI tools carefully.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Risks -->
+      <section>
+        <div class="scam-wrap">
+          <div class="section-head">
+            <span class="eyebrow" style="color:#8c5a12;">Watch Out</span>
+            <h2>Risks to Know About</h2>
+            <p>AI is also being used by bad actors. Here's what to watch for.</p>
+          </div>
+          <div class="scams">
+            <div class="scam">
+              <span class="flag">Voice &amp; Image Scams</span>
+              <h3>Fake Voices &amp; Faces</h3>
+              <p>Scammers now use AI to fake the voice or face of a family member or official. If you get an unexpected call asking for money or personal information, hang up and call that person back on a number you know.</p>
+            </div>
+            <div class="scam">
+              <span class="flag">Misinformation</span>
+              <h3>Fake News &amp; False Content</h3>
+              <p>AI can generate realistic-sounding articles, images, or videos that are completely false. Be cautious about sharing information online without verifying it from a trusted news source.</p>
+            </div>
+            <div class="scam">
+              <span class="flag">Phishing</span>
+              <h3>Convincing Scam Emails</h3>
+              <p>AI is helping scammers write more believable phishing emails. Look out for unexpected requests, urgency, or anything asking you to click a link or share your information.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Resources -->
+      <section>
+        <div class="section-head">
+          <span class="eyebrow">Go Deeper</span>
+          <h2>Helpful Resources</h2>
+          <p>Trusted organizations with free information on AI and online safety.</p>
+        </div>
+        <div class="resource-list">
+          <a class="resource-item" href="https://www.usa.gov/ai" target="_blank" rel="noopener">
+            <div class="resource-icon">🇺🇸</div>
+            <div class="resource-details">
+              <span class="resource-title">USA.gov — Artificial Intelligence for the Public</span>
+              <span class="resource-desc">Official U.S. government information on AI, written for everyday Americans.</span>
+            </div>
+            <span class="resource-cta">Visit ↗</span>
+          </a>
+          <a class="resource-item" href="https://www.consumer.ftc.gov/topics/online-security" target="_blank" rel="noopener">
+            <div class="resource-icon">🛡️</div>
+            <div class="resource-details">
+              <span class="resource-title">Federal Trade Commission — Online Security &amp; Scams</span>
+              <span class="resource-desc">How to recognize, avoid, and report scams, including those using AI.</span>
+            </div>
+            <span class="resource-cta">Visit ↗</span>
+          </a>
+          <a class="resource-item" href="https://www.aarp.org/money/scams-fraud/" target="_blank" rel="noopener">
+            <div class="resource-icon">👴</div>
+            <div class="resource-details">
+              <span class="resource-title">AARP Fraud Watch Network</span>
+              <span class="resource-desc">Scam alerts, fraud prevention tools, and a helpline specifically for older adults.</span>
+            </div>
+            <span class="resource-cta">Visit ↗</span>
+          </a>
+          <a class="resource-item" href="https://www.nia.nih.gov/health/technology" target="_blank" rel="noopener">
+            <div class="resource-icon">🏥</div>
+            <div class="resource-details">
+              <span class="resource-title">National Institute on Aging — Technology &amp; Health</span>
+              <span class="resource-desc">How technology and AI tools can support healthy aging, from the NIH.</span>
+            </div>
+            <span class="resource-cta">Visit ↗</span>
+          </a>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <h4>About CincySeniors.org</h4>
+        <p style="margin: 0; color: var(--ink-soft); font-size: 18px;">A local, community-run guide to using AI safely for older adults across Greater Cincinnati. Free. No ads. No sales.</p>
+        <div class="privacy-note"><strong>Our promise:</strong> We're a local, community-run site.</div>
+      </div>
+      <div>
+        <h4>Get Involved</h4>
+        <ul>
+          <li><a href="/signups/newsletter.html">Newsletter</a></li>
+          <li><a href="/signups/volunteer.html">Volunteer</a></li>
+          <li><a href="/signups/townhall.html">Town Hall Signup</a></li>
+          <li><a href="/signups/smallgroup.html">Small Group Signup</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Reach us</h4>
+        <ul>
+          <li><a href="mailto:info@cincyseniors.org">info@cincyseniors.org</a></li>
+          <li><a href="#">Accessibility</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="copyright">© 2026 CincySeniors.org — Made in Cincinnati with care.</p>
+  </footer>
+
+  <script>
+    (function () {
+      var html = document.documentElement;
+      var btns = document.querySelectorAll('.text-size button');
+      var classes = ['', 'text-large', 'text-xl'];
+      var labels = ['Normal', 'Large', 'Largest'];
+      function applySize(idx) {
+        html.classList.remove('text-large', 'text-xl');
+        if (classes[idx]) html.classList.add(classes[idx]);
+        btns.forEach(function (btn, i) {
+          btn.classList.toggle('active', i === idx);
+          btn.setAttribute('aria-pressed', i === idx ? 'true' : 'false');
+        });
+        try { localStorage.setItem('csTextSize', idx); } catch (e) {}
+      }
+      btns.forEach(function (btn, i) {
+        btn.setAttribute('aria-pressed', 'false');
+        btn.title = labels[i] + ' text';
+        btn.addEventListener('click', function () { applySize(i); });
+      });
+      var saved = 0;
+      try { saved = parseInt(localStorage.getItem('csTextSize') || '0', 10); } catch (e) {}
+      applySize(isNaN(saved) ? 0 : Math.min(saved, 2));
+    })();
+
+    // Mobile nav hamburger toggle
+    (function () {
+      var toggle = document.querySelector('.nav-toggle');
+      var nav = document.querySelector('nav.primary');
+      if (!toggle || !nav) return;
+      toggle.addEventListener('click', function () {
+        var isOpen = nav.classList.toggle('open');
+        toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        toggle.innerHTML = isOpen ? '&#x2715;' : '&#9776;';
+      });
+      // Close nav when a link is tapped
+      nav.querySelectorAll('a').forEach(function (a) {
+        a.addEventListener('click', function () {
+          nav.classList.remove('open');
+          toggle.setAttribute('aria-expanded', 'false');
+          toggle.innerHTML = '&#9776;';
+        });
+      });
+    })();
+    </script>
+
+</body>
+</html>

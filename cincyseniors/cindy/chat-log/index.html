@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cindy — Chat Log | CincySeniors.org</title>
+  <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
+  <style>
+    :root {
+      --bg: #f4f7f6;
+      --panel: #ffffff;
+      --muted: rgba(0,0,0,.55);
+      --text: rgba(0,0,0,.85);
+      --border: rgba(0,0,0,.10);
+      --primary: #2a7d6f;
+      --primary-light: rgba(42,125,111,.08);
+      --shadow: 0 4px 16px rgba(0,0,0,.07);
+      --chip: #f0f5f4;
+      --chip-border: #d4e5e2;
+      --danger: #c0392b;
+      --warning-bg: #fff8ec;
+      --warning-border: #f0c040;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Header ── */
+    .top-bar {
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      background: #fff;
+      flex-shrink: 0;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand-icon {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--primary); color: #fff;
+      font-size: 18px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .brand-text h1 { font-size: 17px; font-weight: 700; line-height: 1.2; }
+    .brand-text p  { font-size: 12px; color: var(--muted); }
+    .top-controls { display: flex; gap: 8px; align-items: center; }
+
+    /* ── Buttons ── */
+    .btn {
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: 8px;
+      padding: 7px 14px;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--text);
+      font-size: 13px;
+      transition: border-color 0.15s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn:hover { border-color: var(--primary); }
+    .btn.primary { background: var(--primary); border-color: var(--primary); color: #fff; }
+    .btn.primary:hover { background: #236158; border-color: #236158; }
+
+    /* ── Main content ── */
+    .content {
+      flex: 1;
+      max-width: 860px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px 16px 48px;
+    }
+
+    /* ── Controls bar ── */
+    .controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .controls h2 { font-size: 20px; font-weight: 700; }
+    .controls-right { display: flex; align-items: center; gap: 10px; }
+    .limit-select {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 13px;
+      background: #fff;
+      color: var(--text);
+      cursor: pointer;
+    }
+    .limit-select:focus { outline: none; border-color: var(--primary); }
+
+    /* ── Stats row ── */
+    .stats {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .stat-chip {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-size: 13px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .stat-chip .stat-label { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; }
+    .stat-chip .stat-value { font-weight: 700; font-size: 18px; }
+    .stat-chip.warn .stat-value { color: var(--danger); }
+
+    /* ── Entry cards ── */
+    .entries { display: flex; flex-direction: column; gap: 16px; }
+
+    .entry {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .entry.no-context {
+      border-color: var(--warning-border);
+      background: var(--warning-bg);
+    }
+
+    .entry-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .entry-meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .entry-id { font-size: 11px; color: var(--muted); font-weight: 600; }
+    .entry-time { font-size: 12px; color: var(--muted); }
+    .badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 9px; border-radius: 999px;
+      font-size: 11px; font-weight: 700;
+    }
+    .badge.ok   { background: rgba(42,125,111,.12); color: #1a5c51; border: 1px solid rgba(42,125,111,.25); }
+    .badge.warn { background: rgba(192,57,43,.10);  color: var(--danger); border: 1px solid rgba(192,57,43,.25); }
+    .badge.audio { background: rgba(46,92,126,.10); color: #1F4560; border: 1px solid rgba(46,92,126,.25); }
+    .docs-count { font-size: 12px; color: var(--muted); }
+
+    .entry-body { padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+
+    .turn { display: flex; flex-direction: column; gap: 4px; }
+    .turn-label {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--muted);
+    }
+    .turn-label.user  { color: var(--primary); }
+    .turn-label.cindy { color: #6b4f9e; }
+
+    .turn-text {
+      font-size: 14px; line-height: 1.65;
+      background: var(--chip);
+      border: 1px solid var(--chip-border);
+      border-radius: 8px;
+      padding: 10px 14px;
+    }
+    .turn-text p { margin: 0.4em 0; }
+    .turn-text p:first-child { margin-top: 0; }
+    .turn-text p:last-child  { margin-bottom: 0; }
+    .turn-text ul, .turn-text ol { margin: 0.4em 0; padding-left: 1.4em; }
+    .turn-text li { margin: 0.2em 0; }
+
+    /* sources */
+    .sources-row { display: flex; flex-wrap: wrap; gap: 6px; }
+    .source-chip {
+      background: var(--chip); border: 1px solid var(--chip-border);
+      border-radius: 6px; padding: 4px 10px;
+      font-size: 11px; color: var(--primary); font-weight: 600;
+      max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+
+    /* ── Empty / loading states ── */
+    .state-box {
+      text-align: center; padding: 60px 20px;
+      color: var(--muted); font-size: 15px;
+    }
+    .state-box .icon { font-size: 36px; margin-bottom: 12px; }
+
+    /* ── Footer nav ── */
+    .nav { text-align: center; padding: 12px 16px; font-size: 12px; color: var(--muted); }
+    .nav a { color: var(--primary); text-decoration: none; }
+    .nav a:hover { text-decoration: underline; }
+
+    /* ── Password gate ── */
+    #pw-gate {
+      position: fixed; inset: 0; z-index: 9999;
+      background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+    }
+    #pw-gate.hidden { display: none; }
+    .pw-box {
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: 16px; box-shadow: var(--shadow);
+      padding: 40px 36px; width: 100%; max-width: 360px; text-align: center;
+    }
+    .pw-icon {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: var(--primary); color: #fff;
+      font-size: 22px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px;
+    }
+    .pw-box h2 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+    .pw-box p  { font-size: 13px; color: var(--muted); margin-bottom: 22px; }
+    .pw-field {
+      width: 100%; padding: 10px 14px;
+      border: 1px solid var(--border); border-radius: 10px;
+      background: #fff; color: var(--text);
+      font-size: 15px; outline: none; margin-bottom: 12px;
+    }
+    .pw-field:focus { border-color: var(--primary); }
+    .pw-submit {
+      width: 100%; padding: 10px;
+      background: var(--primary); color: #fff;
+      border: none; border-radius: 10px;
+      font-size: 15px; font-weight: 600; cursor: pointer;
+    }
+    .pw-submit:hover { background: #236158; }
+    .pw-error { margin-top: 10px; font-size: 13px; color: var(--danger); display: none; }
+    .pw-error.visible { display: block; }
+
+    @media (max-width: 600px) {
+      .top-bar { flex-wrap: wrap; gap: 10px; }
+      .controls { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+  <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+</head>
+<body>
+
+<!-- Password gate (same hash as rag-admin) -->
+<div id="pw-gate">
+  <div class="pw-box">
+    <div class="pw-icon">C</div>
+    <h2>Admin Access</h2>
+    <p>Cindy — Chat Log Viewer<br>Enter your password to continue.</p>
+    <input class="pw-field" type="password" id="pw-input" placeholder="Password" autocomplete="current-password">
+    <button class="pw-submit" id="pw-submit">Unlock</button>
+    <div class="pw-error" id="pw-error">Incorrect password. Please try again.</div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const HASH = "d0cafc5533f05c610909887d74d9232650aaab2f3f4bb5dfba250cc08805071d";
+    const KEY  = "rag_admin_auth";
+
+    async function sha256(str) {
+      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
+    }
+
+    const gate   = document.getElementById("pw-gate");
+    const input  = document.getElementById("pw-input");
+    const btn    = document.getElementById("pw-submit");
+    const errMsg = document.getElementById("pw-error");
+
+    if (sessionStorage.getItem(KEY) === "1") { gate.classList.add("hidden"); return; }
+
+    async function attempt() {
+      const hash = await sha256(input.value);
+      if (hash === HASH) {
+        sessionStorage.setItem(KEY, "1");
+        gate.classList.add("hidden");
+      } else {
+        errMsg.classList.add("visible");
+        input.value = "";
+        input.focus();
+      }
+    }
+
+    btn.addEventListener("click", attempt);
+    input.addEventListener("keydown", e => { if (e.key === "Enter") attempt(); });
+    input.focus();
+  })();
+</script>
+
+<!-- Header -->
+<div class="top-bar">
+  <a class="brand" href="/cindy/admin/" title="Return to Admin Console" style="text-decoration:none;color:inherit;cursor:pointer;">
+    <div class="brand-icon">C</div>
+    <div class="brand-text">
+      <h1>Cindy — Chat Log</h1>
+      <p>CincySeniors.org &mdash; Review recent conversations</p>
+    </div>
+  </a>
+  <div class="top-controls">
+    <button class="btn" id="refresh-btn">&#8635; Refresh</button>
+    <a class="btn" href="/cindy/rag-admin/">RAG Admin</a>
+    <a class="btn primary" href="/cindy/">Open Cindy Chat</a>
+  </div>
+</div>
+
+<!-- Content -->
+<div class="content">
+
+  <div class="controls">
+    <h2>Recent Conversations</h2>
+    <div class="controls-right">
+      <label for="limit-select" style="font-size:13px;color:var(--muted);">Show last</label>
+      <select class="limit-select" id="limit-select">
+        <option value="10" selected>10</option>
+        <option value="25">25</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="stats" id="stats"></div>
+  <div class="entries" id="entries">
+    <div class="state-box"><div class="icon">⏳</div>Loading…</div>
+  </div>
+
+</div>
+
+<div class="nav">
+  <a href="https://www.cincyseniors.org">CincySeniors.org</a>
+  &nbsp;&middot;&nbsp;
+  <a href="/cindy/">Cindy Chat</a>
+  &nbsp;&middot;&nbsp;
+  <a href="/cindy/rag-admin/">RAG Admin</a>
+</div>
+
+<script>
+  const API_ENDPOINT = window.location.origin + "/cindy/chat-log";
+  const ADMIN_KEY    = "YOUR_ADMIN_API_KEY_HERE";
+  const ADMIN_HEADERS = { "X-Admin-Key": ADMIN_KEY };
+
+  function esc(s) {
+    const d = document.createElement("div");
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function renderMd(text) {
+    return typeof marked !== "undefined" ? marked.parse(text) : esc(text);
+  }
+
+  function formatTs(iso) {
+    try {
+      return new Date(iso).toLocaleString(undefined, {
+        month: "short", day: "numeric", year: "numeric",
+        hour: "numeric", minute: "2-digit",
+      });
+    } catch { return iso; }
+  }
+
+  async function load() {
+    const limit = document.getElementById("limit-select").value;
+    const entriesEl = document.getElementById("entries");
+    const statsEl   = document.getElementById("stats");
+    entriesEl.innerHTML = '<div class="state-box"><div class="icon">⏳</div>Loading…</div>';
+    statsEl.innerHTML = "";
+
+    let data;
+    try {
+      const res = await fetch(`${API_ENDPOINT}?limit=${limit}`, { headers: ADMIN_HEADERS });
+      if (!res.ok) throw new Error(`Server error (${res.status})`);
+      data = await res.json();
+    } catch (err) {
+      entriesEl.innerHTML = `<div class="state-box"><div class="icon">⚠️</div>${esc(err.message)}</div>`;
+      return;
+    }
+
+    const entries = data.entries || [];
+
+    if (entries.length === 0) {
+      entriesEl.innerHTML = '<div class="state-box"><div class="icon">💬</div>No conversations logged yet.</div>';
+      return;
+    }
+
+    // Stats
+    const noContext = entries.filter(e => !e.had_context).length;
+    statsEl.innerHTML = `
+      <div class="stat-chip">
+        <span class="stat-label">Showing</span>
+        <span class="stat-value">${entries.length}</span>
+      </div>
+      <div class="stat-chip">
+        <span class="stat-label">Avg Sources</span>
+        <span class="stat-value">${(entries.reduce((s,e) => s + e.num_docs, 0) / entries.length).toFixed(1)}</span>
+      </div>
+      <div class="stat-chip ${noContext > 0 ? "warn" : ""}">
+        <span class="stat-label">No Context Found</span>
+        <span class="stat-value">${noContext}</span>
+      </div>
+    `;
+
+    // Entries
+    entriesEl.innerHTML = entries.map(e => {
+      const sourcesHtml = e.sources.length
+        ? `<div class="turn">
+             <div class="turn-label">Sources Retrieved</div>
+             <div class="sources-row">${e.sources.map(s => `<span class="source-chip" title="${esc(s.title)}">${esc(s.title)}</span>`).join("")}</div>
+           </div>`
+        : "";
+
+      return `
+        <div class="entry ${!e.had_context ? "no-context" : ""}">
+          <div class="entry-header">
+            <div class="entry-meta">
+              <span class="entry-id">#${e.id}</span>
+              <span class="entry-time">${formatTs(e.timestamp)}</span>
+              <span class="badge ${e.had_context ? "ok" : "warn"}">
+                ${e.had_context ? "✓ Context found" : "⚠ No context"}
+              </span>
+              ${e.read_aloud_count > 0 ? `<span class="badge audio">🔊 Read Aloud ×${e.read_aloud_count}</span>` : ""}
+            </div>
+            <span class="docs-count">${e.num_docs} source${e.num_docs !== 1 ? "s" : ""}</span>
+          </div>
+          <div class="entry-body">
+            <div class="turn">
+              <div class="turn-label user">User</div>
+              <div class="turn-text">${esc(e.user_message)}</div>
+            </div>
+            <div class="turn">
+              <div class="turn-label cindy">Cindy</div>
+              <div class="turn-text">${renderMd(e.cindy_reply)}</div>
+            </div>
+            ${sourcesHtml}
+          </div>
+        </div>
+      `;
+    }).join("");
+  }
+
+  document.getElementById("refresh-btn").addEventListener("click", load);
+  document.getElementById("limit-select").addEventListener("change", load);
+
+  load();
+</script>
+
+</body>
+</html>

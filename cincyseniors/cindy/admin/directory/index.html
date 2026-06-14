@@ -1,0 +1,581 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Directory Admin — CincySeniors.org</title>
+  <style>
+    :root {
+      --bg: #f4f7f6;
+      --panel: #ffffff;
+      --muted: rgba(0,0,0,.55);
+      --text: rgba(0,0,0,.85);
+      --border: rgba(0,0,0,.10);
+      --primary: #2a7d6f;
+      --primary-hover: #21635a;
+      --primary-light: rgba(42,125,111,.08);
+      --shadow: 0 4px 16px rgba(0,0,0,.07);
+      --danger: #c0392b;
+      --success: #1e7d4a;
+      --warn: #b8860b;
+      --warn-bg: #fffbea;
+      --warn-border: #f0c040;
+      --complete-bg: #f0faf5;
+      --complete-border: #b2dfcc;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── Top bar ── */
+    .top-bar {
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      background: #fff;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand-icon {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--primary); color: #fff;
+      font-size: 18px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .brand-text h1 { font-size: 17px; font-weight: 700; line-height: 1.2; }
+    .brand-text p  { font-size: 12px; color: var(--muted); }
+
+    /* ── Stats bar ── */
+    .stats-bar {
+      display: flex; gap: 16px; flex-wrap: wrap;
+      padding: 14px 24px;
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+    .stat { display: flex; align-items: center; gap: 6px; }
+    .badge {
+      display: inline-flex; align-items: center;
+      padding: 2px 8px; border-radius: 12px;
+      font-size: 12px; font-weight: 600;
+    }
+    .badge.total   { background: var(--primary-light); color: var(--primary); }
+    .badge.missing { background: #fff3cd; color: #856404; }
+    .badge.done    { background: #d4edda; color: #155724; }
+
+    /* ── Filters ── */
+    .filter-bar {
+      padding: 12px 24px;
+      display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+    }
+    .filter-btn {
+      padding: 5px 14px; border-radius: 20px;
+      border: 1px solid var(--border); background: #fff;
+      font-size: 13px; cursor: pointer; transition: all .15s;
+    }
+    .filter-btn.active {
+      background: var(--primary); color: #fff; border-color: var(--primary);
+    }
+    .search-input {
+      padding: 5px 12px; border-radius: 20px;
+      border: 1px solid var(--border); background: #fff;
+      font-size: 13px; width: 220px; outline: none;
+    }
+    .search-input:focus { border-color: var(--primary); }
+
+    /* ── Main list ── */
+    .main { padding: 20px 24px; max-width: 960px; }
+
+    .entry-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 12px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transition: border-color .15s;
+    }
+    .entry-card.needs-data { border-left: 4px solid var(--warn); }
+    .entry-card.complete   { border-left: 4px solid var(--success); }
+
+    .card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 16px; cursor: pointer; user-select: none;
+      gap: 10px;
+    }
+    .card-header:hover { background: var(--primary-light); }
+    .card-title { font-weight: 600; font-size: 15px; flex: 1; }
+    .card-meta  { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .card-chips { display: flex; gap: 6px; flex-shrink: 0; flex-wrap: wrap; }
+
+    .chip {
+      display: inline-flex; align-items: center; gap: 3px;
+      padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600;
+    }
+    .chip.has   { background: #d4edda; color: #155724; }
+    .chip.miss  { background: #fff3cd; color: #856404; }
+    .chip.enr   { background: #cce5ff; color: #004085; }
+    .chevron { font-size: 11px; color: var(--muted); flex-shrink: 0; }
+
+    /* ── Edit form ── */
+    .card-body { display: none; padding: 16px; border-top: 1px solid var(--border); background: var(--bg); }
+    .card-body.open { display: block; }
+
+    .current-text {
+      font-family: monospace; font-size: 12px;
+      background: #f8f8f8; border: 1px solid var(--border);
+      border-radius: 6px; padding: 10px 12px;
+      white-space: pre-wrap; margin-bottom: 14px; color: var(--muted);
+    }
+
+    .form-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+      margin-bottom: 12px;
+    }
+    .form-group { display: flex; flex-direction: column; gap: 4px; }
+    .form-group.full { grid-column: 1 / -1; }
+    label { font-size: 12px; font-weight: 600; color: var(--muted); }
+    input[type=text] {
+      padding: 7px 10px; border-radius: 6px;
+      border: 1px solid var(--border); font-size: 14px;
+      outline: none; transition: border-color .15s;
+      background: #fff;
+    }
+    input[type=text]:focus { border-color: var(--primary); }
+
+    .form-actions { display: flex; gap: 8px; align-items: center; }
+    .btn-save {
+      padding: 8px 20px; border-radius: 7px;
+      background: var(--primary); color: #fff; border: none;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+      transition: background .15s;
+    }
+    .btn-save:hover { background: var(--primary-hover); }
+    .btn-save:disabled { opacity: .5; cursor: not-allowed; }
+    .save-msg { font-size: 13px; margin-left: 6px; }
+    .save-msg.ok  { color: var(--success); }
+    .save-msg.err { color: var(--danger); }
+
+    /* ── Add new panel ── */
+    .add-panel {
+      background: #fff;
+      border: 2px dashed var(--primary);
+      border-radius: 10px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .add-panel-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 16px; cursor: pointer; user-select: none;
+      background: var(--primary-light);
+      gap: 10px;
+    }
+    .add-panel-header:hover { background: rgba(42,125,111,.14); }
+    .add-panel-title { font-weight: 700; font-size: 15px; color: var(--primary); }
+    .add-panel-body { display: none; padding: 16px; border-top: 2px dashed var(--primary); background: var(--bg); }
+    .add-panel-body.open { display: block; }
+    .btn-add {
+      padding: 8px 20px; border-radius: 7px;
+      background: var(--primary); color: #fff; border: none;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+      transition: background .15s;
+    }
+    .btn-add:hover { background: var(--primary-hover); }
+    .btn-add:disabled { opacity: .5; cursor: not-allowed; }
+
+    /* ── Empty state ── */
+    .empty { text-align: center; padding: 48px 24px; color: var(--muted); font-size: 15px; }
+
+    @media (max-width: 600px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .top-bar { flex-wrap: wrap; gap: 8px; }
+      .main { padding: 12px; }
+    }
+  </style>
+  <link rel="icon" type="image/svg+xml" href="../../../favicon.svg">
+</head>
+<body>
+
+<div class="top-bar">
+  <a class="brand" href="/cindy/admin/" title="Return to Admin Console" style="text-decoration:none;color:inherit;cursor:pointer;">
+    <div class="brand-icon">C</div>
+    <div class="brand-text">
+      <h1>Directory Admin</h1>
+      <p>Cincinnati Senior Services — Enrich missing addresses &amp; websites</p>
+    </div>
+  </a>
+  <a href="/cindy/chat-log/" style="font-size:13px;color:var(--primary);text-decoration:none;">← Chat Log</a>
+</div>
+
+<div class="stats-bar" id="statsBar">
+  <div class="stat">Total entries: <span class="badge total" id="statTotal">—</span></div>
+  <div class="stat">Missing address: <span class="badge missing" id="statMissing">—</span></div>
+  <div class="stat">Complete: <span class="badge done" id="statDone">—</span></div>
+</div>
+
+<div class="filter-bar">
+  <button class="filter-btn active" data-filter="all" onclick="setFilter('all',this)">All</button>
+  <button class="filter-btn" data-filter="missing" onclick="setFilter('missing',this)">Needs Data</button>
+  <button class="filter-btn" data-filter="complete" onclick="setFilter('complete',this)">Complete</button>
+  <input class="search-input" id="searchInput" placeholder="Search organization…" oninput="renderList()" />
+</div>
+
+<div class="main">
+
+  <!-- ── Add New Entry panel ── -->
+  <div class="add-panel">
+    <div class="add-panel-header" onclick="toggleAddPanel()">
+      <span class="add-panel-title">＋ Add New Organization</span>
+      <span class="chevron" id="addChev">▼</span>
+    </div>
+    <div class="add-panel-body" id="addPanelBody">
+      <form onsubmit="addEntry(event)">
+        <div class="form-grid">
+          <div class="form-group full">
+            <label>Organization Name <span style="color:var(--danger)">*</span></label>
+            <input type="text" name="name" placeholder="e.g. Northside Senior Center" required />
+          </div>
+          <div class="form-group full">
+            <label>Street Address</label>
+            <input type="text" name="address" placeholder="e.g. 4218 Hamilton Avenue" />
+          </div>
+          <div class="form-group">
+            <label>City, State ZIP</label>
+            <input type="text" name="city_state_zip" placeholder="Cincinnati, OH 45223" />
+          </div>
+          <div class="form-group">
+            <label>County</label>
+            <input type="text" name="county" placeholder="Hamilton" />
+          </div>
+          <div class="form-group">
+            <label>Organization Type</label>
+            <input type="text" name="org_type" placeholder="e.g. SENIOR CENTER" />
+          </div>
+          <div class="form-group">
+            <label>Phone</label>
+            <input type="text" name="phone" placeholder="(513) 555-1234" />
+          </div>
+          <div class="form-group full">
+            <label>Website</label>
+            <input type="text" name="website" placeholder="https://example.org" />
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn-add" id="btnAdd">Add to Directory</button>
+          <span class="save-msg" id="addMsg"></span>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── Entry list ── -->
+  <div id="mainList">
+    <div class="empty">Loading directory entries…</div>
+  </div>
+
+</div>
+
+<script>
+const API_BASE    = 'https://cincyseniors.org';
+const ADMIN_KEY   = 'YOUR_ADMIN_API_KEY_HERE';
+const ADMIN_HDR   = { 'X-Admin-Key': ADMIN_KEY };
+let allEntries = [];
+let currentFilter = 'all';
+
+async function loadEntries() {
+  try {
+    const res = await fetch(`${API_BASE}/cindy/directory/entries`, { headers: ADMIN_HDR });
+    const data = await res.json();
+    allEntries = data.entries;
+    updateStats();
+    renderList();
+  } catch(e) {
+    document.getElementById('mainList').innerHTML =
+      `<div class="empty">Failed to load entries. Is the API running?<br><small>${e.message}</small></div>`;
+  }
+}
+
+function updateStats() {
+  const missing = allEntries.filter(e => !e.has_street).length;
+  document.getElementById('statTotal').textContent   = allEntries.length;
+  document.getElementById('statMissing').textContent = missing;
+  document.getElementById('statDone').textContent    = allEntries.length - missing;
+}
+
+function setFilter(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderList();
+}
+
+function getOrgName(content) {
+  return content.split('\n')[0].replace('Organization: ', '');
+}
+
+function getOrgType(content) {
+  const line = content.split('\n').find(l => l.startsWith('Type:'));
+  return line ? line.replace('Type: ', '') : '';
+}
+
+function parseField(content, prefix) {
+  const line = content.split('\n').find(l => l.startsWith(prefix + ':'));
+  return line ? line.slice(prefix.length + 2).trim() : '';
+}
+
+function renderList() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  let list = allEntries;
+
+  if (currentFilter === 'missing') list = list.filter(e => !e.has_street);
+  if (currentFilter === 'complete') list = list.filter(e => e.has_street);
+  if (q) list = list.filter(e => e.content.toLowerCase().includes(q));
+
+  if (!list.length) {
+    document.getElementById('mainList').innerHTML = '<div class="empty">No entries match.</div>';
+    return;
+  }
+
+  document.getElementById('mainList').innerHTML = list.map(entry => buildCard(entry)).join('');
+}
+
+function buildCard(entry) {
+  const fullName = getOrgName(entry.content);
+  const orgType  = getOrgType(entry.content);
+
+  // Parse existing fields from content
+  const existingPhone   = parseField(entry.content, 'Phone');
+  const existingWebsite = parseField(entry.content, 'Website');
+
+  // Extract name and location from the Organization line
+  // Format: "Organization: NAME LOCATION"
+  // We'll just show the full org line as-is, and pre-fill the form
+  const orgLine = entry.content.split('\n')[0].replace('Organization: ', '');
+
+  const chips = [];
+  if (entry.has_street)  chips.push(`<span class="chip has">✓ Address</span>`);
+  else                   chips.push(`<span class="chip miss">✗ Address</span>`);
+  if (entry.has_phone)   chips.push(`<span class="chip has">✓ Phone</span>`);
+  if (entry.has_website) chips.push(`<span class="chip has">✓ Website</span>`);
+  if (entry.is_enriched) chips.push(`<span class="chip enr">Enriched</span>`);
+
+  const cardClass = entry.has_street ? 'complete' : 'needs-data';
+
+  const safeId = entry.id.replace(/[^a-z0-9]/gi, '_');
+
+  return `
+<div class="entry-card ${cardClass}" id="card_${safeId}">
+  <div class="card-header" onclick="toggleCard('${safeId}')">
+    <div>
+      <div class="card-title">${escHtml(fullName)}</div>
+      <div class="card-meta">${escHtml(orgType)}</div>
+    </div>
+    <div class="card-chips">${chips.join('')}</div>
+    <span class="chevron" id="chev_${safeId}">▼</span>
+  </div>
+  <div class="card-body" id="body_${safeId}">
+    <div class="current-text">${escHtml(entry.content)}</div>
+    <form onsubmit="saveEntry(event, '${escHtml(entry.id)}', '${safeId}')">
+      <div class="form-grid">
+        <div class="form-group full">
+          <label>Street Address</label>
+          <input type="text" name="address" placeholder="e.g. 1234 Main Street"
+            value="${escHtml(entry.has_street ? extractStreet(entry.content) : '')}" />
+        </div>
+        <div class="form-group">
+          <label>City, State ZIP</label>
+          <input type="text" name="city_state_zip" placeholder="Cincinnati, OH 45202"
+            value="${escHtml(extractCityStateZip(entry.content))}" />
+        </div>
+        <div class="form-group">
+          <label>County</label>
+          <input type="text" name="county" placeholder="Hamilton"
+            value="${escHtml(extractCounty(entry.content))}" />
+        </div>
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="text" name="phone" placeholder="(513) 555-1234"
+            value="${escHtml(existingPhone)}" />
+        </div>
+        <div class="form-group">
+          <label>Website</label>
+          <input type="text" name="website" placeholder="https://example.org"
+            value="${escHtml(existingWebsite)}" />
+        </div>
+        <div class="form-group">
+          <label>Organization Type</label>
+          <input type="text" name="org_type" placeholder="e.g. SENIOR CENTER"
+            value="${escHtml(orgType)}" />
+        </div>
+      </div>
+      <input type="hidden" name="org_name" value="${escHtml(fullName)}" />
+      <div class="form-actions">
+        <button type="submit" class="btn-save" id="btn_${safeId}">Save Changes</button>
+        <span class="save-msg" id="msg_${safeId}"></span>
+      </div>
+    </form>
+  </div>
+</div>`;
+}
+
+function toggleCard(safeId) {
+  const body = document.getElementById(`body_${safeId}`);
+  const chev = document.getElementById(`chev_${safeId}`);
+  const open = body.classList.toggle('open');
+  chev.textContent = open ? '▲' : '▼';
+}
+
+async function saveEntry(e, docId, safeId) {
+  e.preventDefault();
+  const form = e.target;
+  const btn  = document.getElementById(`btn_${safeId}`);
+  const msg  = document.getElementById(`msg_${safeId}`);
+
+  const payload = {
+    doc_id:       docId,
+    name:         form.org_name.value,
+    address:      form.address.value.trim(),
+    city_state_zip: form.city_state_zip.value.trim(),
+    county:       form.county.value.trim(),
+    org_type:     form.org_type.value.trim(),
+    phone:        form.phone.value.trim(),
+    website:      form.website.value.trim(),
+  };
+
+  btn.disabled = true;
+  btn.textContent = 'Saving…';
+  msg.textContent = '';
+  msg.className = 'save-msg';
+
+  try {
+    const res = await fetch(`${API_BASE}/cindy/directory/enrich`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...ADMIN_HDR },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+
+    msg.textContent = '✓ Saved! Reloading…';
+    msg.className = 'save-msg ok';
+
+    // Reload entries to reflect change
+    setTimeout(() => loadEntries(), 1200);
+  } catch(err) {
+    msg.textContent = `✗ Error: ${err.message}`;
+    msg.className = 'save-msg err';
+    btn.disabled = false;
+    btn.textContent = 'Save Changes';
+  }
+}
+
+// ── Helpers to pre-fill form fields from existing content ──────────────────
+
+function extractStreet(content) {
+  // The org line format: "Organization: NAME STREET, CITY, STATE ZIP COUNTY"
+  // Street number pattern: starts with digits
+  const orgLine = content.split('\n')[0].replace('Organization: ', '');
+  // Find where a street number starts (2-5 digits followed by space and word)
+  const m = orgLine.match(/(\d{2,5}\s+[\w\s.]+?),\s*[A-Za-z]/);
+  return m ? m[1].trim() : '';
+}
+
+function extractCityStateZip(content) {
+  const orgLine = content.split('\n')[0].replace('Organization: ', '');
+  // Match "City, ST 12345" or "City, ST"
+  const m = orgLine.match(/,\s*([A-Za-z\s.]+,\s*[A-Z]{2}\s*\d{0,5})\s+\w+\s*$/);
+  if (m) return m[1].trim();
+  // fallback: grab everything after last comma before county
+  const parts = orgLine.split(',');
+  if (parts.length >= 2) return parts.slice(1, -1).join(',').trim();
+  return '';
+}
+
+function extractCounty(content) {
+  const orgLine = content.split('\n')[0].replace('Organization: ', '');
+  // County is the last word on the org line
+  const parts = orgLine.trim().split(/\s+/);
+  const last = parts[parts.length - 1];
+  // Common county names
+  const counties = ['Hamilton','Boone','Campbell','Kenton','Butler','Warren','Clermont','Multiple'];
+  return counties.includes(last) ? last : '';
+}
+
+function escHtml(s) {
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+// ── Add New Entry ──────────────────────────────────────────────────────────
+
+function toggleAddPanel() {
+  const body = document.getElementById('addPanelBody');
+  const chev = document.getElementById('addChev');
+  const open = body.classList.toggle('open');
+  chev.textContent = open ? '▲' : '▼';
+}
+
+async function addEntry(e) {
+  e.preventDefault();
+  const form = e.target;
+  const btn  = document.getElementById('btnAdd');
+  const msg  = document.getElementById('addMsg');
+
+  const payload = {
+    name:           form.name.value.trim(),
+    address:        form.address.value.trim(),
+    city_state_zip: form.city_state_zip.value.trim(),
+    county:         form.county.value.trim(),
+    org_type:       form.org_type.value.trim(),
+    phone:          form.phone.value.trim(),
+    website:        form.website.value.trim(),
+  };
+
+  if (!payload.name) { msg.textContent = 'Organization name is required.'; msg.className = 'save-msg err'; return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Adding…';
+  msg.textContent = '';
+  msg.className = 'save-msg';
+
+  try {
+    const res = await fetch(`${API_BASE}/cindy/directory/add`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...ADMIN_HDR },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    msg.textContent = `✓ "${payload.name}" added! Reloading…`;
+    msg.className = 'save-msg ok';
+    form.reset();
+
+    setTimeout(() => {
+      loadEntries();
+      // Close the add panel after success
+      document.getElementById('addPanelBody').classList.remove('open');
+      document.getElementById('addChev').textContent = '▼';
+      msg.textContent = '';
+    }, 1500);
+  } catch(err) {
+    msg.textContent = `✗ Error: ${err.message}`;
+    msg.className = 'save-msg err';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Add to Directory';
+  }
+}
+
+loadEntries();
+</script>
+</body>
+</html>

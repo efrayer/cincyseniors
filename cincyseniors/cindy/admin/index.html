@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Console — CincySeniors.org</title>
+  <style>
+    :root {
+      --bg: #f4f7f6;
+      --panel: #ffffff;
+      --text: rgba(0,0,0,.85);
+      --muted: rgba(0,0,0,.50);
+      --border: rgba(0,0,0,.09);
+      --primary: #2a7d6f;
+      --primary-dark: #1f5f54;
+      --primary-light: rgba(42,125,111,.08);
+      --primary-mid: rgba(42,125,111,.15);
+      --shadow: 0 4px 20px rgba(0,0,0,.08);
+      --shadow-hover: 0 8px 28px rgba(42,125,111,.18);
+      --radius: 12px;
+
+      /* card accent colours */
+      --c-teal:   #2a7d6f;
+      --c-violet: #6d4fc2;
+      --c-slate:  #3a6ea8;
+      --c-amber:  #b07d2a;
+
+      --danger: #c0392b;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Password gate ── */
+    #pw-gate {
+      position: fixed; inset: 0; z-index: 9999;
+      background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+    }
+    #pw-gate.hidden { display: none; }
+    .pw-box {
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: 16px; box-shadow: var(--shadow);
+      padding: 44px 40px; width: 100%; max-width: 380px; text-align: center;
+    }
+    .pw-logo {
+      width: 56px; height: 56px; border-radius: 14px;
+      background: var(--primary); color: #fff;
+      font-size: 20px; font-weight: 800; letter-spacing: -.5px;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px;
+    }
+    .pw-box h2 { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+    .pw-box p  { font-size: 13px; color: var(--muted); margin-bottom: 24px; line-height: 1.5; }
+    .pw-field {
+      width: 100%; padding: 11px 14px;
+      border: 1px solid var(--border); border-radius: 10px;
+      background: #fff; color: var(--text);
+      font-size: 15px; outline: none; margin-bottom: 12px;
+      transition: border-color .15s;
+    }
+    .pw-field:focus { border-color: var(--primary); }
+    .pw-submit {
+      width: 100%; padding: 11px;
+      background: var(--primary); color: #fff;
+      border: none; border-radius: 10px;
+      font-size: 15px; font-weight: 600; cursor: pointer;
+      transition: background .15s;
+    }
+    .pw-submit:hover { background: var(--primary-dark); }
+    .pw-error { margin-top: 12px; font-size: 13px; color: var(--danger); display: none; }
+    .pw-error.visible { display: block; }
+
+    /* ── Header ── */
+    header {
+      background: var(--primary);
+      color: #fff;
+      padding: 0 40px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(42,125,111,.3);
+      flex-shrink: 0;
+    }
+    .logo { display: flex; align-items: center; gap: 12px; }
+    .logo-mark {
+      width: 34px; height: 34px; border-radius: 9px;
+      background: rgba(255,255,255,.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 800; color: #fff; letter-spacing: -.5px;
+      flex-shrink: 0;
+    }
+    .logo-text  { font-size: 15px; font-weight: 700; }
+    .logo-sub   { font-size: 11px; opacity: .7; margin-top: 1px; }
+
+    .header-right { display: flex; align-items: center; gap: 14px; }
+    .status-pill {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; opacity: .85;
+    }
+    .dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: #7eecd4;
+      box-shadow: 0 0 6px #7eecd4;
+      animation: pulse 2.5s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+    .site-link {
+      font-size: 12px; color: rgba(255,255,255,.8);
+      text-decoration: none; padding: 5px 12px;
+      border-radius: 6px; border: 1px solid rgba(255,255,255,.25);
+      transition: all .15s;
+    }
+    .site-link:hover { background: rgba(255,255,255,.15); color: #fff; }
+
+    /* ── Main ── */
+    main {
+      flex: 1;
+      padding: 40px;
+      max-width: 960px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .page-intro {
+      margin-bottom: 36px;
+    }
+    .page-title {
+      font-size: 24px; font-weight: 700; letter-spacing: -.3px;
+      color: var(--text); margin-bottom: 4px;
+    }
+    .page-sub { font-size: 14px; color: var(--muted); }
+
+    /* ── Section label ── */
+    .section-label {
+      font-size: 10px; font-weight: 700; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--muted);
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── Card grid ── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+      margin-bottom: 36px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px 24px;
+      text-decoration: none;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: transform .2s, box-shadow .2s, border-color .2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-hover);
+      border-color: var(--primary);
+    }
+
+    /* coloured top accent line */
+    .card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      border-radius: var(--radius) var(--radius) 0 0;
+      background: var(--card-color, var(--primary));
+      opacity: 0;
+      transition: opacity .2s;
+    }
+    .card:hover::after { opacity: 1; }
+
+    .card.teal   { --card-color: var(--c-teal); }
+    .card.violet { --card-color: var(--c-violet); }
+    .card.slate  { --card-color: var(--c-slate); }
+    .card.amber  { --card-color: var(--c-amber); }
+
+    .card-icon {
+      width: 42px; height: 42px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; flex-shrink: 0;
+    }
+    .card.teal   .card-icon { background: rgba(42,125,111,.10); }
+    .card.violet .card-icon { background: rgba(109,79,194,.10); }
+    .card.slate  .card-icon { background: rgba(58,110,168,.10); }
+    .card.amber  .card-icon { background: rgba(176,125,42,.10); }
+
+    .card-title { font-size: 15px; font-weight: 700; }
+    .card-desc  { font-size: 13px; color: var(--muted); line-height: 1.55; flex: 1; }
+
+    .card-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      margin-top: 4px;
+    }
+    .lock-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 11px; font-weight: 600;
+      padding: 2px 8px; border-radius: 20px;
+      background: var(--primary-mid); color: var(--primary);
+    }
+    .card-arrow {
+      font-size: 15px; color: var(--muted);
+      transition: transform .2s, color .2s;
+    }
+    .card:hover .card-arrow { transform: translateX(5px); color: var(--primary); }
+
+    /* ── Info strip ── */
+    .info-strip {
+      background: var(--primary-light);
+      border: 1px solid rgba(42,125,111,.2);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      display: flex; align-items: center; gap: 12px;
+      font-size: 13px; color: var(--primary-dark);
+    }
+    .info-strip svg { flex-shrink: 0; color: var(--primary); }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 14px 40px;
+      font-size: 12px; color: var(--muted);
+      display: flex; justify-content: space-between; align-items: center;
+      background: var(--panel);
+    }
+
+    @media (max-width: 600px) {
+      header { padding: 0 20px; }
+      main   { padding: 24px 20px; }
+      footer { padding: 12px 20px; flex-direction: column; gap: 4px; text-align: center; }
+      .page-title { font-size: 20px; }
+      .header-right .site-link { display: none; }
+    }
+  </style>
+  <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+</head>
+<body>
+
+<!-- ── Password gate ── -->
+<div id="pw-gate">
+  <div class="pw-box">
+    <div class="pw-logo">CS</div>
+    <h2>Admin Console</h2>
+    <p>CincySeniors.org<br>Enter your password to continue.</p>
+    <input class="pw-field" type="password" id="pw-input" placeholder="Password" autocomplete="current-password" />
+    <button class="pw-submit" id="pw-submit">Unlock</button>
+    <div class="pw-error" id="pw-error">Incorrect password. Please try again.</div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const HASH = "d0cafc5533f05c610909887d74d9232650aaab2f3f4bb5dfba250cc08805071d";
+    const KEY  = "rag_admin_auth";
+
+    async function sha256(str) {
+      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,"0")).join("");
+    }
+
+    const gate   = document.getElementById("pw-gate");
+    const input  = document.getElementById("pw-input");
+    const btn    = document.getElementById("pw-submit");
+    const errMsg = document.getElementById("pw-error");
+
+    if (sessionStorage.getItem(KEY) === "1") { gate.classList.add("hidden"); return; }
+
+    async function attempt() {
+      const hash = await sha256(input.value);
+      if (hash === HASH) {
+        sessionStorage.setItem(KEY, "1");
+        gate.classList.add("hidden");
+      } else {
+        errMsg.classList.add("visible");
+        input.value = "";
+        input.focus();
+      }
+    }
+
+    btn.addEventListener("click", attempt);
+    input.addEventListener("keydown", e => { if (e.key === "Enter") attempt(); });
+  })();
+</script>
+
+<!-- ── Header ── -->
+<header>
+  <a class="logo" href="https://www.cincyseniors.org" title="Return to CincySeniors.org" style="text-decoration:none;color:inherit;">
+    <div class="logo-mark">CS</div>
+    <div>
+      <div class="logo-text">Admin Console</div>
+      <div class="logo-sub">cincyseniors.org</div>
+    </div>
+  </a>
+  <div class="header-right">
+    <div class="status-pill">
+      <div class="dot"></div>
+      Systems operational
+    </div>
+    <a href="https://cincyseniors.org" class="site-link" target="_blank">View site ↗</a>
+  </div>
+</header>
+
+<!-- ── Main ── -->
+<main>
+  <div class="page-intro">
+    <div class="page-title">Welcome back</div>
+    <div class="page-sub">Select a tool below to manage CincySeniors.org</div>
+  </div>
+
+  <div class="section-label">Analytics &amp; Monitoring</div>
+  <div class="card-grid">
+
+    <a href="/cindy/admin/traffic/" class="card slate">
+      <div class="card-icon">📊</div>
+      <div class="card-title">Site Traffic</div>
+      <div class="card-desc">Page views, visitor counts, top pages, referrers, and request logs with automatic bot filtering.</div>
+      <div class="card-footer">
+        <span class="lock-badge">🔒 Protected</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </a>
+
+    <a href="/cindy/chat-log/" class="card violet">
+      <div class="card-icon">💬</div>
+      <div class="card-title">Cindy AI Chat Log</div>
+      <div class="card-desc">Review every conversation — questions asked, responses given, and Read Aloud usage tracking.</div>
+      <div class="card-footer">
+        <span class="lock-badge">🔒 Protected</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="section-label">Content Management</div>
+  <div class="card-grid">
+
+    <a href="/cindy/admin/directory/" class="card teal">
+      <div class="card-icon">📋</div>
+      <div class="card-title">Senior Services Directory</div>
+      <div class="card-desc">Enrich directory entries with missing addresses, phone numbers, and websites. Add new organizations.</div>
+      <div class="card-footer">
+        <span class="lock-badge">🔒 Protected</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </a>
+
+    <a href="/cindy/rag-admin/" class="card amber">
+      <div class="card-icon">🗄️</div>
+      <div class="card-title">RAG Knowledge Base</div>
+      <div class="card-desc">Upload documents, ingest URLs, and manage the source data that powers Cindy AI responses.</div>
+      <div class="card-footer">
+        <span class="lock-badge">🔒 Protected</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="info-strip">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/>
+      <path d="M8 7v4.5M8 4.5v.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    All admin pages share a single password. Your session stays unlocked until you close the browser tab.
+  </div>
+</main>
+
+<!-- ── Footer ── -->
+<footer>
+  <span>CincySeniors.org Admin Console</span>
+  <span id="clock"></span>
+</footer>
+
+<script>
+  function tick() {
+    document.getElementById('clock').textContent = new Date().toLocaleString();
+  }
+  tick();
+  setInterval(tick, 1000);
+</script>
+
+</body>
+</html>

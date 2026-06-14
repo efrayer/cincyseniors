@@ -1,0 +1,845 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RAG Chat with Langchain</title>
+  <!-- Markdown parser -->
+  <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
+  <!-- Code syntax highlighting -->
+  <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+  <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" disabled>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <style>
+    /* Dark theme (default) — matches chat-advanced.html */
+    :root{
+      --bg:#0b0c10; --panel:rgba(255,255,255,.06); --muted:rgba(255,255,255,.65); --text:rgba(255,255,255,.92);
+      --border:rgba(255,255,255,.12); --primary:#4c6ef5; --shadow:0 10px 30px rgba(0,0,0,.35);
+      --chip:rgba(255,255,255,.06); --chip-border:rgba(255,255,255,.12);
+      --user-bub:rgba(76,110,245,.25); --user-bub-border:rgba(76,110,245,.38);
+      --bot-bub:rgba(255,255,255,.07); --bot-bub-border:rgba(255,255,255,.12);
+      --code-bg:rgba(0,0,0,.30); --inline-code-bg:rgba(0,0,0,.22);
+      --input-bg:rgba(255,255,255,.06);
+      --btn-bg:rgba(255,255,255,.10);
+      --link:#9ecbff;
+      --pageGlow1:rgba(76,110,245,.25); --pageGlow2:rgba(32,201,151,.15);
+      --mono:ui-monospace,Menlo,Monaco,Consolas,monospace;
+    }
+    /* Light theme */
+    html[data-theme="light"]{
+      --bg:#f6f7fb; --panel:#ffffff; --muted:rgba(0,0,0,.55); --text:rgba(0,0,0,.88);
+      --border:rgba(0,0,0,.10); --primary:#2563eb; --shadow:0 8px 20px rgba(0,0,0,.06);
+      --chip:#f8fafc; --chip-border:#e5e7eb;
+      --user-bub:#e6f7e7; --user-bub-border:#c3e6cb;
+      --bot-bub:#f2f4f7; --bot-bub-border:rgba(0,0,0,.10);
+      --code-bg:rgba(0,0,0,.04); --inline-code-bg:rgba(0,0,0,.06);
+      --input-bg:rgba(255,255,255,.75);
+      --btn-bg:#ffffff;
+      --link:#0b62ff;
+      --pageGlow1:rgba(76,110,245,.14); --pageGlow2:rgba(32,201,151,.10);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+      background:
+        radial-gradient(900px 500px at 10% 10%, var(--pageGlow1), transparent 60%),
+        radial-gradient(900px 500px at 90% 10%, var(--pageGlow2), transparent 60%),
+        var(--bg);
+      color:var(--text);
+      height:100vh;
+      display:flex;
+      flex-direction:column;
+    }
+
+    /* ── Header ───────────────────────────────────── */
+
+    .top-bar{
+      padding:16px 24px 0;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      flex-shrink:0;
+    }
+
+    .top-bar h1{font-size:24px;font-weight:600;text-align:center;margin:6px 0 4px}
+    .subtitle{text-align:center;color:var(--muted);font-size:13px;margin-bottom:12px}
+
+    .top-controls{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      width:100%;
+      max-width:960px;
+      justify-content:flex-end;
+      margin-bottom:12px;
+    }
+
+    /* ── Buttons (match webstack) ─────────────────── */
+
+    .btn{
+      border:1px solid var(--border);
+      background:var(--btn-bg);
+      border-radius:10px;
+      padding:8px 12px;
+      font-weight:600;
+      cursor:pointer;
+      color:var(--text);
+      font-size:13px;
+      transition:border-color 0.2s;
+    }
+    .btn:hover{border-color:var(--primary)}
+    .btn.primary{background:var(--primary);border-color:var(--primary);color:#fff}
+    .btn.ghost{background:transparent;color:var(--text)}
+    .btn:disabled{opacity:0.5;cursor:not-allowed}
+
+    .toggle{
+      display:flex;gap:8px;align-items:center;
+      padding:4px 8px;
+      border:1px solid var(--border);
+      border-radius:10px;
+      background:rgba(255,255,255,.04);
+    }
+    .toggle input{transform:scale(1.05);cursor:pointer}
+    .toggle .small{font-size:12px;color:var(--muted)}
+
+    /* ── Main layout ──────────────────────────────── */
+
+    .main-layout{
+      flex:1;
+      display:grid;
+      grid-template-columns:1fr 300px;
+      grid-template-rows:1fr;
+      gap:14px;
+      max-width:960px;
+      width:100%;
+      margin:0 auto;
+      padding:0 16px 16px;
+      overflow:hidden;
+      min-height:0;
+    }
+
+    /* ── Chat card ────────────────────────────────── */
+
+    .chat-card{
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:14px;
+      box-shadow:var(--shadow);
+      display:flex;
+      flex-direction:column;
+      overflow:hidden;
+      min-height:0;
+    }
+
+    .messages{
+      flex:1;
+      overflow-y:auto;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      padding:16px;
+    }
+
+    .msg{margin:0}
+    .msg.user{text-align:right}
+
+    .bub{
+      display:inline-block;
+      max-width:85%;
+      padding:12px;
+      border-radius:12px;
+      border:1px solid var(--bot-bub-border);
+      background:var(--bot-bub);
+      text-align:left;
+      font-size:14px;
+      line-height:1.6;
+      word-wrap:break-word;
+      overflow-x:auto;
+    }
+    /* Assistant bubbles fill the chat width */
+    .msg:not(.user) .bub{display:block;max-width:100%}
+    .user .bub{background:var(--user-bub);border-color:var(--user-bub-border)}
+
+    .bub.error{border-color:rgba(244,67,54,.4);color:#f44336}
+
+    /* ── Download button on assistant messages ─────── */
+
+    .msg-actions{display:flex;gap:6px;margin-top:6px}
+    .msg-actions .btn-dl{
+      display:inline-flex;align-items:center;gap:4px;
+      padding:4px 10px;
+      border:1px solid var(--border);
+      border-radius:8px;
+      background:var(--btn-bg);
+      color:var(--muted);
+      font-size:11px;
+      cursor:pointer;
+      transition:border-color 0.2s, color 0.2s;
+    }
+    .msg-actions .btn-dl:hover{border-color:var(--primary);color:var(--text)}
+    .msg-actions .btn-dl svg{width:12px;height:12px;fill:currentColor}
+
+    /* ── Markdown inside bubbles ──────────────────── */
+
+    .bub p{margin:0.5em 0}
+    .bub p:first-child{margin-top:0}
+    .bub p:last-child{margin-bottom:0}
+    .bub h1,.bub h2,.bub h3,.bub h4,.bub h5,.bub h6{margin:0.8em 0 0.4em;font-weight:600;line-height:1.3}
+    .bub h1{font-size:1.6em;border-bottom:2px solid var(--border);padding-bottom:0.3em}
+    .bub h2{font-size:1.4em;border-bottom:1px solid var(--border);padding-bottom:0.2em}
+    .bub h3{font-size:1.2em}
+    .bub ul,.bub ol{margin:0.5em 0;padding-left:1.5em}
+    .bub li{margin:0.25em 0}
+    .bub code{background:var(--inline-code-bg);padding:2px 6px;border-radius:4px;font-size:0.9em;font-family:var(--mono)}
+    .bub pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:12px;overflow-x:auto;margin:0.8em 0;white-space:pre-wrap}
+    .bub pre code{background:transparent;padding:0;border-radius:0;display:block}
+    .bub blockquote{border-left:4px solid var(--border);padding-left:1em;margin:0.8em 0;color:var(--muted);font-style:italic}
+    .bub a{color:var(--link);text-decoration:none}
+    .bub a:hover{text-decoration:underline}
+    .bub table{border-collapse:collapse;width:100%;margin:0.8em 0;table-layout:fixed;word-wrap:break-word}
+    .bub table th,.bub table td{border:1px solid var(--border);padding:8px;text-align:left}
+    .bub table th{background:var(--chip);font-weight:600}
+    .bub hr{border:none;border-top:1px solid var(--border);margin:1em 0}
+    .bub strong{font-weight:600}
+    .bub em{font-style:italic}
+
+    /* ── Thinking indicator ───────────────────────── */
+
+    .thinking-indicator{display:inline-flex;align-items:center;gap:4px;padding:12px}
+    .thinking-dot{
+      width:8px;height:8px;border-radius:50%;
+      background:var(--primary);
+      animation:thinking 1.4s infinite;
+    }
+    .thinking-dot:nth-child(2){animation-delay:0.2s}
+    .thinking-dot:nth-child(3){animation-delay:0.4s}
+    @keyframes thinking{0%,60%,100%{transform:scale(0.8);opacity:0.5}30%{transform:scale(1.2);opacity:1}}
+
+    /* ── Sources ──────────────────────────────────── */
+
+    .sources{
+      margin-top:10px;
+      padding-top:8px;
+      border-top:1px solid var(--border);
+      font-size:12px;
+      color:var(--muted);
+    }
+    .sources summary{cursor:pointer;font-weight:600;margin-bottom:6px;user-select:none;transition:color 0.2s}
+    .sources summary:hover{color:var(--primary)}
+
+    .source-card{
+      background:var(--chip);
+      border:1px solid var(--chip-border);
+      border-radius:10px;
+      padding:10px;
+      margin-top:6px;
+    }
+    .source-card .source-file{font-size:11px;color:var(--primary);font-weight:600;margin-bottom:4px}
+    .source-card .source-text{
+      white-space:pre-wrap;
+      font-family:var(--mono);
+      font-size:11px;
+      line-height:1.4;
+      color:var(--muted);
+    }
+
+    /* ── Cursor blink ─────────────────────────────── */
+
+    .cursor{
+      display:inline-block;
+      width:2px;height:1em;
+      background:var(--primary);
+      margin-left:1px;
+      vertical-align:text-bottom;
+      animation:blink 1s step-end infinite;
+    }
+    @keyframes blink{50%{opacity:0}}
+
+    /* ── Input bar ────────────────────────────────── */
+
+    .input-bar{
+      display:flex;
+      gap:8px;
+      flex-shrink:0;
+      padding:12px;
+      border-top:1px solid var(--border);
+    }
+
+    .input-bar input{
+      flex:1;
+      padding:10px 14px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:var(--input-bg);
+      color:var(--text);
+      font-size:14px;
+      outline:none;
+    }
+    .input-bar input:focus{border-color:var(--primary)}
+
+    /* ── Sidebar (Documents) ──────────────────────── */
+
+    .sidebar-card{
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:14px;
+      box-shadow:var(--shadow);
+      display:flex;
+      flex-direction:column;
+      overflow:hidden;
+      min-height:0;
+    }
+
+    .section{padding:14px;border-bottom:1px solid var(--border)}
+    .section:last-child{border-bottom:none}
+    .section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+    .section-header h2{font-size:16px;margin:0;font-weight:600}
+
+    .doc-list{
+      flex:1;
+      overflow-y:auto;
+      padding:0 14px;
+    }
+
+    .doc-item{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:12px;
+      border:1px solid var(--border);
+      border-radius:10px;
+      margin-bottom:8px;
+      background:var(--panel);
+      font-size:13px;
+      transition:border-color 0.2s;
+    }
+    .doc-item:hover{border-color:var(--primary)}
+
+    .doc-item .doc-name{
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      flex:1;
+      font-weight:600;
+    }
+
+    .doc-item .delete-btn{
+      background:none;
+      border:none;
+      color:var(--muted);
+      cursor:pointer;
+      font-size:16px;
+      padding:2px 6px;
+      border-radius:4px;
+      flex-shrink:0;
+      transition:color 0.15s;
+    }
+    .doc-item .delete-btn:hover{color:#f44336}
+
+    .no-docs{
+      padding:24px 16px;
+      text-align:center;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .badge{
+      display:inline-block;
+      background:var(--chip);
+      border:1px solid var(--chip-border);
+      border-radius:6px;
+      padding:2px 8px;
+      font-size:11px;
+      margin-left:8px;
+    }
+    .muted{color:var(--muted);font-size:12px}
+
+    /* ── Upload zone (match rag-admin.html) ────────── */
+
+    .upload-zone{
+      border:2px dashed var(--border);
+      border-radius:12px;
+      padding:24px 16px;
+      text-align:center;
+      cursor:pointer;
+      transition:border-color 0.2s, background 0.2s;
+    }
+    .upload-zone:hover,
+    .upload-zone.drag-over{
+      border-color:var(--primary);
+      background:rgba(76,110,245,.05);
+    }
+    .upload-icon{font-size:32px;margin-bottom:6px;opacity:0.6}
+    .upload-label{font-size:14px;margin-bottom:4px}
+    .upload-hint{font-size:12px;color:var(--muted)}
+
+    .status-msg{margin-top:10px;padding:10px;border-radius:10px;font-size:12px;display:none}
+    .status-msg.success{display:block;background:rgba(32,201,151,.1);border:1px solid rgba(32,201,151,.3);color:#20c997}
+    .status-msg.error{display:block;background:rgba(244,67,54,.1);border:1px solid rgba(244,67,54,.3);color:#f44336}
+    .status-msg.processing{display:block;background:rgba(76,110,245,.1);border:1px solid rgba(76,110,245,.3);color:var(--primary)}
+
+    /* ── Welcome message ──────────────────────────── */
+
+    .welcome{
+      flex:1;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:40px;
+    }
+    .welcome h2{font-size:20px;font-weight:600;margin-bottom:8px}
+    .welcome p{color:var(--muted);font-size:14px;max-width:360px}
+
+    /* ── Nav link ─────────────────────────────────── */
+
+    .nav{text-align:center;padding:0 16px 16px;font-size:13px}
+    .nav a{color:var(--primary);text-decoration:none}
+    .nav a:hover{text-decoration:underline}
+
+    /* ── Responsive ───────────────────────────────── */
+
+    @media (max-width:768px){
+      .main-layout{grid-template-columns:1fr}
+      .sidebar-card{max-height:300px}
+      .bub{max-width:95%}
+    }
+  </style>
+</head>
+<body>
+
+<div class="top-bar">
+  <h1>RAG Chat with Langchain</h1>
+  <p class="subtitle">Upload PDFs and ask questions about their content</p>
+  <div class="top-controls">
+    <button class="btn ghost" id="new-chat-btn" title="Start a new conversation">New Chat</button>
+    <div class="toggle" title="Theme">
+      <label class="small" style="display:flex;gap:6px;align-items:center;margin:0;cursor:pointer">
+        <input id="themeToggle" type="checkbox" />
+        <span id="themeLabel">Dark</span>
+      </label>
+    </div>
+  </div>
+</div>
+
+<div class="main-layout">
+
+  <!-- Chat -->
+  <div class="chat-card">
+    <div class="messages" id="messages">
+      <div class="welcome" id="welcome">
+        <div>
+          <h2>Ask your documents anything</h2>
+          <p>Upload PDFs using the panel on the right, then ask questions about their content.</p>
+        </div>
+      </div>
+    </div>
+    <div class="input-bar">
+      <input type="text" id="question" placeholder="Ask a question about your documents..." autocomplete="off">
+      <button class="btn primary" id="send-btn">Send</button>
+    </div>
+  </div>
+
+  <!-- Sidebar: Documents -->
+  <div class="sidebar-card">
+    <div class="section">
+      <div class="section-header">
+        <h2>Documents</h2>
+        <span class="badge" id="doc-count">0</span>
+      </div>
+      <div class="upload-zone" id="upload-zone">
+        <input type="file" id="file-input" accept=".pdf" style="display:none" multiple>
+        <div class="upload-icon">&#128196;</div>
+        <div class="upload-label">Drop PDFs here or click</div>
+        <div class="upload-hint">PDF files only</div>
+      </div>
+      <div class="status-msg" id="upload-status"></div>
+    </div>
+
+    <div class="doc-list" id="doc-list"></div>
+  </div>
+
+</div>
+
+<div class="nav">
+  <a href="https://www.thinkdashboards.com">ThinkDashboards.com</a>
+</div>
+
+<script>
+  // ── Base path ─────────────────────────────────────
+  const BASE = "/ragchat";
+
+  // ── DOM refs ──────────────────────────────────────
+  const $ = id => document.getElementById(id);
+  const messagesEl   = $("messages");
+  const welcomeEl    = $("welcome");
+  const questionEl   = $("question");
+  const sendBtn      = $("send-btn");
+  const uploadZone   = $("upload-zone");
+  const fileInput    = $("file-input");
+  const uploadStatus = $("upload-status");
+  const docCount     = $("doc-count");
+  const docList      = $("doc-list");
+  const newChatBtn   = $("new-chat-btn");
+
+  // ── Theme (shared with webstack via localStorage) ─
+  const THEME_KEY = "thinkdashboards_theme";
+  const themeToggle = $("themeToggle");
+  const themeLabel = $("themeLabel");
+  const hljsLight = document.getElementById("hljs-light");
+  const hljsDark = document.getElementById("hljs-dark");
+
+  function applyTheme(theme) {
+    const t = (theme === "light") ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", t);
+    localStorage.setItem(THEME_KEY, t);
+    themeToggle.checked = (t === "light");
+    themeLabel.textContent = (t === "light") ? "Light" : "Dark";
+    // Toggle highlight.js stylesheets
+    if (hljsLight && hljsDark) {
+      hljsLight.disabled = (t === "dark");
+      hljsDark.disabled = (t === "light");
+    }
+  }
+
+  function initTheme() {
+    const saved = localStorage.getItem(THEME_KEY);
+    if (saved) { applyTheme(saved); return; }
+    if (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) {
+      applyTheme("light");
+    } else {
+      applyTheme("dark");
+    }
+  }
+
+  themeToggle.addEventListener("change", () => {
+    applyTheme(themeToggle.checked ? "light" : "dark");
+  });
+
+  initTheme();
+
+  // ── Markdown config ───────────────────────────────
+  if (typeof marked !== "undefined") {
+    marked.setOptions({
+      breaks: true,
+      gfm: true,
+      highlight: function(code, lang) {
+        if (typeof hljs !== "undefined" && lang && hljs.getLanguage(lang)) {
+          return hljs.highlight(code, { language: lang }).value;
+        }
+        return code;
+      }
+    });
+  }
+
+  // ── New Chat ──────────────────────────────────────
+  newChatBtn.addEventListener("click", () => {
+    messagesEl.innerHTML = "";
+    messagesEl.appendChild(welcomeEl);
+    welcomeEl.style.display = "flex";
+  });
+
+  // ── Document list ─────────────────────────────────
+  async function refreshDocs() {
+    try {
+      const res = await fetch(`${BASE}/api/documents`);
+      const data = await res.json();
+      const docs = data.documents;
+      docCount.textContent = docs.length;
+
+      docList.innerHTML = "";
+      if (docs.length === 0) {
+        docList.innerHTML = '<div class="no-docs">No documents yet.<br>Upload PDFs to get started.</div>';
+        return;
+      }
+      docs.forEach(name => {
+        const item = document.createElement("div");
+        item.className = "doc-item";
+        item.innerHTML = `
+          <span class="doc-name" title="${esc(name)}">${esc(name)}</span>
+          <button class="delete-btn" title="Remove document" data-name="${esc(name)}">&times;</button>
+        `;
+        docList.appendChild(item);
+      });
+    } catch {
+      docCount.textContent = "?";
+    }
+  }
+
+  // Delegate delete clicks
+  docList.addEventListener("click", async (e) => {
+    const btn = e.target.closest(".delete-btn");
+    if (!btn) return;
+    const name = btn.dataset.name;
+    if (!confirm(`Delete "${name}" and its vectors from the store?`)) return;
+
+    btn.textContent = "...";
+    btn.disabled = true;
+    try {
+      await fetch(`${BASE}/api/documents/${encodeURIComponent(name)}`, { method: "DELETE" });
+      refreshDocs();
+    } catch (err) {
+      alert(`Error deleting: ${err.message}`);
+    }
+  });
+
+  refreshDocs();
+
+  // ── File upload ───────────────────────────────────
+  uploadZone.addEventListener("click", () => fileInput.click());
+
+  uploadZone.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    uploadZone.classList.add("drag-over");
+  });
+  uploadZone.addEventListener("dragleave", () => uploadZone.classList.remove("drag-over"));
+
+  uploadZone.addEventListener("drop", (e) => {
+    e.preventDefault();
+    uploadZone.classList.remove("drag-over");
+    handleFiles(e.dataTransfer.files);
+  });
+
+  fileInput.addEventListener("change", () => {
+    handleFiles(fileInput.files);
+    fileInput.value = "";
+  });
+
+  function showStatus(msg, type) {
+    uploadStatus.textContent = msg;
+    uploadStatus.className = "status-msg " + type;
+  }
+
+  async function handleFiles(files) {
+    if (files.length === 0) return;
+
+    const pdfs = Array.from(files).filter(f => f.name.toLowerCase().endsWith(".pdf"));
+    if (pdfs.length === 0) {
+      showStatus("PDF files only.", "error");
+      return;
+    }
+
+    showStatus(`Ingesting ${pdfs.length} file${pdfs.length > 1 ? "s" : ""}...`, "processing");
+
+    const formData = new FormData();
+    pdfs.forEach(f => formData.append("files", f));
+
+    try {
+      const res = await fetch(`${BASE}/api/ingest`, { method: "POST", body: formData });
+      const data = await res.json();
+      const summary = data.results
+        .map(r => `${r.filename}: ${r.pages} pages, ${r.chunks} chunks`)
+        .join("; ");
+      showStatus(summary, "success");
+      refreshDocs();
+    } catch (err) {
+      showStatus(`Error: ${err.message}`, "error");
+    }
+  }
+
+  // ── Chat helpers ──────────────────────────────────
+  function esc(s) {
+    const d = document.createElement("div");
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function renderMarkdown(text) {
+    if (typeof marked !== "undefined") {
+      return marked.parse(text);
+    }
+    return esc(text);
+  }
+
+  function makeDownloadBtn(markdown) {
+    const wrap = document.createElement("div");
+    wrap.className = "msg-actions";
+    const btn = document.createElement("button");
+    btn.className = "btn-dl";
+    btn.title = "Download as Markdown";
+    btn.innerHTML = '<svg viewBox="0 0 16 16"><path d="M8 12l-4-4h2.5V2h3v6H12L8 12zm-6 2h12v1.5H2V14z"/></svg> .md';
+    btn.addEventListener("click", () => {
+      const blob = new Blob([markdown], { type: "text/markdown" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "rag-response-" + new Date().toISOString().slice(0,19).replace(/:/g,"-") + ".md";
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+    wrap.appendChild(btn);
+    return wrap;
+  }
+
+  function addMessage(role, content, sources) {
+    if (welcomeEl) welcomeEl.style.display = "none";
+
+    const div = document.createElement("div");
+    div.className = `msg ${role}`;
+
+    const bub = document.createElement("div");
+    bub.className = "bub";
+
+    if (role === "assistant") {
+      bub.innerHTML = renderMarkdown(content);
+      // Highlight code blocks
+      bub.querySelectorAll("pre code").forEach(el => {
+        if (typeof hljs !== "undefined") hljs.highlightElement(el);
+      });
+      if (sources && sources.length > 0) {
+        bub.innerHTML += buildSourcesHtml(sources);
+      }
+    } else {
+      bub.textContent = content;
+    }
+
+    div.appendChild(bub);
+    if (role === "assistant") div.appendChild(makeDownloadBtn(content));
+    messagesEl.appendChild(div);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+    return div;
+  }
+
+  function buildSourcesHtml(sources) {
+    let html = `<div class="sources"><details><summary>Sources (${sources.length} chunks)</summary>`;
+    sources.forEach(s => {
+      const meta = s.metadata || {};
+      const label = meta.source ? meta.source.split("/").pop() : "unknown";
+      const page = meta.page != null ? ` &mdash; page ${meta.page + 1}` : "";
+      html += `<div class="source-card">`;
+      html += `<div class="source-file">${esc(label)}${page}</div>`;
+      html += `<div class="source-text">${esc(s.content)}</div>`;
+      html += `</div>`;
+    });
+    html += `</details></div>`;
+    return html;
+  }
+
+  // ── Streaming query ───────────────────────────────
+  async function sendQuestion() {
+    const question = questionEl.value.trim();
+    if (!question) return;
+
+    addMessage("user", question);
+    questionEl.value = "";
+    sendBtn.disabled = true;
+    questionEl.disabled = true;
+
+    // Create streaming assistant message with thinking dots
+    const msgDiv = document.createElement("div");
+    msgDiv.className = "msg";
+    const bub = document.createElement("div");
+    bub.className = "bub";
+
+    // Thinking indicator
+    const thinkingEl = document.createElement("div");
+    thinkingEl.className = "thinking-indicator";
+    thinkingEl.innerHTML = '<span class="thinking-dot"></span><span class="thinking-dot"></span><span class="thinking-dot"></span>';
+    bub.appendChild(thinkingEl);
+    msgDiv.appendChild(bub);
+
+    if (welcomeEl) welcomeEl.style.display = "none";
+    messagesEl.appendChild(msgDiv);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+
+    let fullAnswer = "";
+    let sources = [];
+
+    try {
+      const res = await fetch(`${BASE}/api/query/stream`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question }),
+      });
+
+      if (!res.ok) {
+        throw new Error(`Server error: ${res.status}`);
+      }
+
+      // Replace thinking dots with cursor once streaming starts
+      let streamStarted = false;
+      const cursor = document.createElement("span");
+      cursor.className = "cursor";
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop();
+
+        for (const line of lines) {
+          if (!line.startsWith("data: ")) continue;
+          const payload = JSON.parse(line.slice(6));
+
+          if (payload.type === "sources") {
+            sources = payload.sources;
+          } else if (payload.type === "token") {
+            if (!streamStarted) {
+              streamStarted = true;
+              thinkingEl.remove();
+              bub.textContent = "";
+              bub.appendChild(cursor);
+            }
+            fullAnswer += payload.token;
+            // Update text before cursor
+            bub.textContent = fullAnswer;
+            bub.appendChild(cursor);
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+          } else if (payload.type === "done") {
+            // Final cleanup
+          }
+        }
+      }
+
+      // Remove cursor and render final markdown
+      cursor.remove();
+      thinkingEl.remove();
+      bub.innerHTML = renderMarkdown(fullAnswer);
+      bub.querySelectorAll("pre code").forEach(el => {
+        if (typeof hljs !== "undefined") hljs.highlightElement(el);
+      });
+
+      // Append sources
+      if (sources.length > 0) {
+        const sourcesDiv = document.createElement("div");
+        sourcesDiv.innerHTML = buildSourcesHtml(sources);
+        bub.appendChild(sourcesDiv.firstElementChild);
+      }
+
+      // Download button
+      msgDiv.appendChild(makeDownloadBtn(fullAnswer));
+
+    } catch (err) {
+      thinkingEl.remove();
+      if (!fullAnswer) {
+        bub.className = "bub error";
+        bub.textContent = `Error: ${err.message}`;
+      }
+    } finally {
+      sendBtn.disabled = false;
+      questionEl.disabled = false;
+      questionEl.focus();
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+  }
+
+  sendBtn.addEventListener("click", sendQuestion);
+  questionEl.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendQuestion();
+    }
+  });
+
+  // Focus input on load
+  questionEl.focus();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Share Your Feedback — CincySeniors.org</title>
+  <meta name="description" content="Share your thoughts about CincySeniors.org and help us improve our resources for older adults in Greater Cincinnati." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --cream:      #FAF6EE;
+      --cream-2:    #F3ECDD;
+      --ink:        #1F1B16;
+      --ink-soft:   #4A4238;
+      --terracotta: #B45A3C;
+      --terracotta-dark: #8F4227;
+      --sage:       #6E8B6A;
+      --amber:      #C98A2B;
+      --line:       #E5DCC7;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: "Atkinson Hyperlegible", system-ui, sans-serif;
+      font-size: 20px;
+      line-height: 1.65;
+      color: var(--ink);
+      background-color: var(--cream);
+      background-image:
+        radial-gradient(circle at 20% 30%, rgba(180, 90, 60, 0.035) 0, transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(110, 139, 106, 0.035) 0, transparent 40%);
+    }
+
+    a { color: var(--terracotta-dark); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+    a:hover { color: var(--terracotta); }
+
+    h1, h2, h3 {
+      font-family: "Fraunces", Georgia, serif;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+    }
+
+    /* Skip link */
+    .skip {
+      position: absolute;
+      left: -1000px;
+      top: 0;
+      background: var(--ink);
+      color: var(--cream);
+      padding: 12px 18px;
+      border-radius: 0 0 12px 0;
+      z-index: 100;
+    }
+    .skip:focus { left: 0; }
+
+    /* ---------- Top Bar ---------- */
+    .topbar {
+      background: var(--cream-2);
+      border-bottom: 1px solid var(--line);
+      font-size: 17px;
+    }
+    .topbar-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 10px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .text-size {
+      display: inline-flex;
+      gap: 6px;
+      align-items: center;
+      color: var(--ink-soft);
+    }
+    .text-size button {
+      background: transparent;
+      border: 1.5px solid var(--line);
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-family: inherit;
+      cursor: pointer;
+      color: var(--ink);
+    }
+    .text-size button:hover { border-color: var(--terracotta); }
+    .phone {
+      font-weight: 700;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    /* ---------- Header / Nav ---------- */
+    header.main {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 22px 24px 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+      color: var(--ink);
+    }
+    .brand-mark {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--terracotta);
+      color: var(--cream);
+      display: grid;
+      place-items: center;
+      font-family: "Fraunces", serif;
+      font-weight: 700;
+      font-size: 26px;
+      flex-shrink: 0;
+    }
+    .brand-name {
+      font-family: "Fraunces", serif;
+      font-weight: 700;
+      font-size: 26px;
+      line-height: 1.1;
+    }
+    .brand-tag {
+      display: block;
+      font-family: "Atkinson Hyperlegible", sans-serif;
+      font-weight: 400;
+      color: var(--ink-soft);
+      font-size: 15px;
+    }
+
+    nav.primary ul {
+      list-style: none;
+      display: flex;
+      gap: 8px;
+      padding: 0;
+      margin: 0;
+      flex-wrap: wrap;
+    }
+    nav.primary a {
+      display: block;
+      padding: 10px 16px;
+      border-radius: 999px;
+      text-decoration: none;
+      color: var(--ink);
+      font-weight: 700;
+      font-size: 18px;
+    }
+    nav.primary a:hover { background: var(--cream-2); }
+    nav.primary a.active { background: var(--cream-2); color: var(--terracotta-dark); }
+    nav.primary a:focus { outline: 3px solid var(--terracotta); outline-offset: 2px; }
+
+    .dropdown { position: relative; }
+    nav.primary .dropdown > a::after { content: " ▾"; font-size: 0.75em; }
+    nav.primary .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      right: 0;
+      background: var(--cream);
+      border: 1.5px solid var(--line);
+      border-radius: 14px;
+      padding: 8px;
+      min-width: 220px;
+      box-shadow: 0 8px 24px rgba(31, 27, 22, 0.12);
+      z-index: 200;
+    }
+    nav.primary .dropdown:hover .dropdown-menu,
+    nav.primary .dropdown:focus-within .dropdown-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    nav.primary .dropdown-menu a {
+      border-radius: 8px;
+      font-size: 17px;
+      padding: 10px 14px;
+    }
+
+    .nav-toggle {
+      display: none;
+      background: transparent;
+      border: 1.5px solid var(--line);
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-size: 22px;
+      cursor: pointer;
+      color: var(--ink);
+    }
+
+    /* ---------- Layout ---------- */
+    main { padding-bottom: 64px; }
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ---------- Page Header ---------- */
+    .page-header {
+      padding: 48px 0 32px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 48px;
+    }
+    .eyebrow {
+      display: inline-block;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--terracotta-dark);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .page-header h1 {
+      font-size: 44px;
+      line-height: 1.1;
+      margin: 0 0 16px;
+    }
+    .page-header p {
+      font-size: 20px;
+      color: var(--ink-soft);
+      margin: 0;
+      max-width: 56ch;
+    }
+
+    /* ---------- Form ---------- */
+    .feedback-form {
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    .question-block {
+      background: var(--cream-2);
+      border: 1.5px solid var(--line);
+      border-radius: 18px;
+      padding: 32px;
+      /* Reset fieldset browser defaults */
+      margin: 0;
+      min-width: 0;
+    }
+
+    /* Normalize fieldset so it aligns with div cards */
+    fieldset.question-block {
+      border: 1.5px solid var(--line);
+    }
+
+    .question-block legend {
+      font-family: "Fraunces", Georgia, serif;
+      font-weight: 700;
+      font-size: 22px;
+      color: var(--ink);
+      padding: 0;
+      margin-bottom: 8px;
+      /* Pull legend inline with card padding */
+      float: left;
+      width: 100%;
+    }
+    /* Clear float so hint sits below legend */
+    .question-block legend + .hint {
+      clear: both;
+    }
+
+    .question-block label {
+      font-family: "Fraunces", Georgia, serif;
+      font-weight: 700;
+      font-size: 22px;
+      color: var(--ink);
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .question-block .hint {
+      font-size: 17px;
+      color: var(--ink-soft);
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    /* Rating scale */
+    .rating-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: nowrap;
+    }
+    .rating-row .scale-label {
+      font-size: 15px;
+      color: var(--ink-soft);
+      font-style: italic;
+      white-space: nowrap;
+    }
+    .rating-buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .rating-btn {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      border: 2px solid var(--line);
+      background: var(--cream);
+      font-family: "Atkinson Hyperlegible", sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--ink);
+      cursor: pointer;
+      transition: background 0.1s, border-color 0.1s, color 0.1s;
+    }
+    .rating-btn:hover {
+      border-color: var(--terracotta);
+      background: #fde8e1;
+    }
+    .rating-btn.selected {
+      background: var(--terracotta);
+      border-color: var(--terracotta-dark);
+      color: var(--cream);
+    }
+    .rating-btn:focus {
+      outline: 3px solid var(--sage);
+      outline-offset: 2px;
+    }
+
+    /* Hidden radio inputs backing each rating button */
+    .rating-radio { position: absolute; opacity: 0; pointer-events: none; }
+
+    /* Text area */
+    .feedback-textarea {
+      width: 100%;
+      min-height: 160px;
+      padding: 16px 18px;
+      border: 2px solid var(--line);
+      border-radius: 14px;
+      background: var(--cream);
+      font-family: "Atkinson Hyperlegible", sans-serif;
+      font-size: 20px;
+      color: var(--ink);
+      resize: vertical;
+      transition: border-color 0.15s;
+    }
+    .feedback-textarea:focus {
+      border-color: var(--terracotta);
+      outline: 3px solid rgba(180, 90, 60, 0.25);
+      outline-offset: 0;
+    }
+    .feedback-textarea::placeholder { color: var(--ink-soft); opacity: 0.7; }
+
+    /* Submit row */
+    .submit-row {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 16px 32px;
+      border-radius: 14px;
+      font-family: inherit;
+      font-size: 20px;
+      font-weight: 700;
+      text-decoration: none;
+      border: 2.5px solid transparent;
+      min-height: 60px;
+      cursor: pointer;
+      transition: transform 0.1s ease;
+    }
+    .btn:active { transform: translateY(1px); }
+    .btn-primary {
+      background: var(--terracotta);
+      color: var(--cream);
+      border-color: var(--terracotta-dark);
+    }
+    .btn-primary:hover { background: var(--terracotta-dark); }
+    .btn:focus { outline: 3px solid var(--sage); outline-offset: 3px; }
+
+    /* Success message */
+    .success-banner {
+      display: none;
+      background: #edf6ec;
+      border: 2px solid var(--sage);
+      border-radius: 16px;
+      padding: 28px 32px;
+      font-size: 20px;
+      color: #2d5a2a;
+    }
+    .success-banner h2 {
+      color: #2d5a2a;
+      margin: 0 0 8px;
+      font-size: 26px;
+    }
+    .success-banner p { margin: 0; }
+
+    /* ---------- Footer ---------- */
+    footer {
+      background: var(--cream-2);
+      border-top: 1px solid var(--line);
+      padding: 48px 0 28px;
+      margin-top: 80px;
+    }
+    .footer-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 48px;
+    }
+    footer h4 {
+      font-family: "Fraunces", serif;
+      font-size: 20px;
+      margin: 0 0 16px;
+    }
+    footer ul { list-style: none; padding: 0; margin: 0; }
+    footer li { margin-bottom: 10px; font-size: 18px; }
+    footer a { color: var(--ink); text-decoration: none; border-bottom: 2px solid transparent; }
+    footer a:hover { border-bottom-color: var(--terracotta); }
+    .privacy-note {
+      margin-top: 16px;
+      padding: 14px 18px;
+      background: var(--cream);
+      border-radius: 10px;
+      font-size: 16px;
+      color: var(--ink-soft);
+    }
+    .copyright {
+      max-width: 1120px;
+      margin: 32px auto 0;
+      padding: 16px 24px 0;
+      border-top: 1px solid var(--line);
+      font-size: 16px;
+      color: var(--ink-soft);
+    }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 768px) {
+      .page-header h1 { font-size: 34px; }
+      .question-block { padding: 24px 20px; }
+      .footer-inner { grid-template-columns: 1fr; gap: 32px; }
+      .nav-toggle { display: block; }
+      nav.primary { display: none; width: 100%; }
+      nav.primary.open { display: block; }
+      nav.primary ul { flex-direction: column; }
+      nav.primary .dropdown-menu { position: static; box-shadow: none; border: none; padding: 0 0 0 16px; }
+      nav.primary .dropdown:hover .dropdown-menu,
+      nav.primary .dropdown:focus-within .dropdown-menu { display: flex; }
+      /* Allow rating row to wrap on small screens */
+      .rating-row { flex-wrap: wrap; }
+      .rating-row .scale-label { white-space: normal; }
+    }
+  </style>
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+</head>
+<body>
+
+  <a class="skip" href="#main">Skip to main content</a>
+
+  <!-- Top bar -->
+  <div class="topbar">
+    <div class="topbar-inner">
+      <span class="text-size" aria-label="Adjust text size">
+        Text size:
+        <button id="sz-sm" aria-label="Small text">A</button>
+        <button id="sz-md" aria-label="Medium text" style="font-size:1.1em;">A</button>
+        <button id="sz-lg" aria-label="Large text" style="font-size:1.3em;">A</button>
+      </span>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="main">
+    <a class="brand" href="/">
+      <span class="brand-mark" aria-hidden="true">C</span>
+      <span>
+        <span class="brand-name">CincySeniors.org</span>
+        <span class="brand-tag">A Cincy AI Catalyst (CAIC) guide to using AI</span>
+      </span>
+    </a>
+    <button class="nav-toggle" aria-expanded="false" aria-label="Open navigation">&#9776;</button>
+    <nav class="primary" aria-label="Primary">
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li class="dropdown">
+          <a href="/learn/" aria-haspopup="true">Learn</a>
+          <ul class="dropdown-menu" role="menu">
+            <li role="none"><a href="/learn/" role="menuitem">📖 Learn About AI</a></li>
+            <li role="none"><a href="/health/" role="menuitem">❤️ Health</a></li>
+            <li role="none"><a href="/wealth/" role="menuitem">💰 Wealth</a></li>
+            <li role="none"><a href="/self/" role="menuitem">✍️ Self</a></li>
+          </ul>
+        </li>
+        <li><a href="/news/">News</a></li>
+        <li class="dropdown">
+          <a href="/resources/" aria-haspopup="true">Resources</a>
+          <ul class="dropdown-menu" role="menu">
+            <li role="none"><a href="/resources/" role="menuitem">📚 Resources</a></li>
+            <li role="none"><a href="/ai-quiz.html" role="menuitem">🧠 AI Quiz</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="/cindy/" aria-haspopup="true">Ask Cindy AI</a>
+          <ul class="dropdown-menu" role="menu">
+            <li role="none"><a href="/cindy/" role="menuitem">💬 Chat with Cindy</a></li>
+            <li role="none"><a href="/cindy/about/" role="menuitem">ℹ️ About Cindy</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="/signups/" aria-haspopup="true">Get Involved</a>
+          <ul class="dropdown-menu" role="menu">
+            <li role="none"><a href="/signups/newsletter.html" role="menuitem">📰 Newsletter</a></li>
+            <li role="none"><a href="/signups/volunteer.html" role="menuitem">🤝 Volunteer</a></li>
+            <li role="none"><a href="/signups/townhall.html" role="menuitem">🏛️ Town Hall Signup</a></li>
+            <li role="none"><a href="/signups/smallgroup.html" role="menuitem">👥 Small Group Signup</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main">
+    <div class="container">
+
+      <div class="page-header">
+        <span class="eyebrow">Your Voice Matters</span>
+        <h1>Share Your Feedback</h1>
+        <p>Help us make CincySeniors.org more useful for you and your neighbors. This short survey takes just a few minutes and makes a real difference.</p>
+      </div>
+
+      <!-- Success banner (shown after submit) -->
+      <div class="success-banner" id="success-banner" role="alert" aria-live="polite">
+        <h2>Thank you for your feedback!</h2>
+        <p>Your responses have been received. We read every submission and use your input to improve our site.</p>
+      </div>
+
+      <form class="feedback-form" id="feedback-form" novalidate>
+
+        <!-- Question 1: Content Helpfulness -->
+        <fieldset class="question-block">
+          <legend>How helpful is the content on this site?</legend>
+          <span class="hint">Rate on a scale from 1 (not helpful) to 5 (very helpful).</span>
+          <div class="rating-row">
+            <span class="scale-label">Not helpful</span>
+            <div class="rating-buttons" role="group" aria-label="Helpfulness rating">
+              <input type="radio" name="q_helpful" id="q_helpful_1" value="1" class="rating-radio" required />
+              <button type="button" class="rating-btn" data-group="q_helpful" data-value="1" aria-label="1 — Not helpful">1</button>
+              <input type="radio" name="q_helpful" id="q_helpful_2" value="2" class="rating-radio" />
+              <button type="button" class="rating-btn" data-group="q_helpful" data-value="2" aria-label="2">2</button>
+              <input type="radio" name="q_helpful" id="q_helpful_3" value="3" class="rating-radio" />
+              <button type="button" class="rating-btn" data-group="q_helpful" data-value="3" aria-label="3 — Neutral">3</button>
+              <input type="radio" name="q_helpful" id="q_helpful_4" value="4" class="rating-radio" />
+              <button type="button" class="rating-btn" data-group="q_helpful" data-value="4" aria-label="4">4</button>
+              <input type="radio" name="q_helpful" id="q_helpful_5" value="5" class="rating-radio" />
+              <button type="button" class="rating-btn" data-group="q_helpful" data-value="5" aria-label="5 — Very helpful">5</button>
+            </div>
+            <span class="scale-label">Very helpful</span>
+          </div>
+        </fieldset>
+
+        <!-- Question 2: Ease of Understanding -->
+        <fieldset class="question-block">
+          <legend>How easy is the site to understand?</legend>
+          <span class="hint">Rate on a scale from 1 (hard to understand) to 5 (very easy to understand).</span>
+          <div class="rating-row">
+            <span class="scale-label">Hard to understand</span>
+            <div class="rating-buttons" role="group" aria-label="Ease of understanding rating">
+              <input type="radio" name="q_ease" id="q_ease_1" value="1" class="rating-radio" required />
+              <button type="button" class="rating-btn" data-group="q_ease" data-value="1" aria-label="1 — Hard to understand">1</button>
+              <input type="radio" name="q_ease" id="q_ease_2" value="2" class="rating-radio" />
+              <button type="button" class="rating-btn" data-group="q_ease" data-value="2" aria-label="2">2</button>
+              <input type="radio" name="q_ease" id="q_ease_3" value="3" class="rating-radio" />
+              <button type="button" class="rating-btn" data-group="q_ease" data-value="3" aria-label="3 — Neutral">3</button>
+              <input type="radio" name="q_ease" id="q_ease_4" value="4" class="rating-radio" />
+              <button type="button" class="rating-btn" data-group="q_ease" data-value="4" aria-label="4">4</button>
+              <input type="radio" name="q_ease" id="q_ease_5" value="5" class="rating-radio" />
+              <button type="button" class="rating-btn" data-group="q_ease" data-value="5" aria-label="5 — Very easy to understand">5</button>
+            </div>
+            <span class="scale-label">Very easy</span>
+          </div>
+        </fieldset>
+
+        <!-- Question 3: Likelihood to Recommend -->
+        <fieldset class="question-block">
+          <legend>How likely are you to recommend this site to a friend or family member?</legend>
+          <span class="hint">Rate on a scale from 1 (not likely) to 5 (very likely).</span>
+          <div class="rating-row">
+            <span class="scale-label">Not likely</span>
+            <div class="rating-buttons" role="group" aria-label="Likelihood to recommend rating">
+              <input type="radio" name="q_recommend" id="q_recommend_1" value="1" class="rating-radio" required />
+              <button type="button" class="rating-btn" data-group="q_recommend" data-value="1" aria-label="1 — Not likely">1</button>
+              <input type="radio" name="q_recommend" id="q_recommend_2" value="2" class="rating-radio" />
+              <button type="button" class="rating-btn" data-group="q_recommend" data-value="2" aria-label="2">2</button>
+              <input type="radio" name="q_recommend" id="q_recommend_3" value="3" class="rating-radio" />
+              <button type="button" class="rating-btn" data-group="q_recommend" data-value="3" aria-label="3 — Neutral">3</button>
+              <input type="radio" name="q_recommend" id="q_recommend_4" value="4" class="rating-radio" />
+              <button type="button" class="rating-btn" data-group="q_recommend" data-value="4" aria-label="4">4</button>
+              <input type="radio" name="q_recommend" id="q_recommend_5" value="5" class="rating-radio" />
+              <button type="button" class="rating-btn" data-group="q_recommend" data-value="5" aria-label="5 — Very likely">5</button>
+            </div>
+            <span class="scale-label">Very likely</span>
+          </div>
+        </fieldset>
+
+        <!-- Open comment -->
+        <div class="question-block">
+          <label for="q_comments">Any other thoughts or suggestions?</label>
+          <span class="hint">Tell us what's working well, what could be better, or topics you'd like to see covered. (Optional)</span>
+          <textarea
+            id="q_comments"
+            name="q_comments"
+            class="feedback-textarea"
+            placeholder="Share anything on your mind — we read every response."
+            aria-describedby="comments-hint"
+            maxlength="2000"
+          ></textarea>
+        </div>
+
+        <div class="submit-row">
+          <button type="submit" class="btn btn-primary">Submit Feedback</button>
+        </div>
+
+      </form>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <h4>About CincySeniors.org</h4>
+        <p style="margin: 0; color: var(--ink-soft); font-size: 18px;">A local, community-run guide to using AI safely for older adults across Greater Cincinnati. Free. No ads. No sales.</p>
+        <div class="privacy-note">
+          <strong>Our promise:</strong> We're a local, community-run site.
+        </div>
+      </div>
+      <div>
+        <h4>Pages</h4>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/learn/">Learn</a></li>
+          <li><a href="/news/">News</a></li>
+          <li><a href="/cindy/">Ask Cindy AI</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Reach us</h4>
+        <ul>
+          <li><a href="mailto:info@cincyseniors.com">info@cincyseniors.com</a></li>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="copyright">© 2026 CincySeniors.org — Made in Cincinnati with care.</p>
+  </footer>
+
+  <script>
+    (function () {
+      // Text size
+      var html = document.documentElement;
+      var sizes = { 'sz-sm': '17px', 'sz-md': '20px', 'sz-lg': '24px' };
+      Object.keys(sizes).forEach(function (id) {
+        var btn = document.getElementById(id);
+        if (btn) btn.addEventListener('click', function () { html.style.fontSize = sizes[id]; });
+      });
+
+      // Mobile nav toggle
+      var toggle = document.querySelector('.nav-toggle');
+      var nav = document.querySelector('nav.primary');
+      if (toggle && nav) {
+        toggle.addEventListener('click', function () {
+          var open = nav.classList.toggle('open');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+      }
+
+      // Rating buttons — toggle selected state and sync hidden radio inputs
+      document.querySelectorAll('.rating-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var group = btn.dataset.group;
+          var value = btn.dataset.value;
+          // Deselect all buttons in this group
+          document.querySelectorAll('.rating-btn[data-group="' + group + '"]').forEach(function (b) {
+            b.classList.remove('selected');
+          });
+          // Select clicked button
+          btn.classList.add('selected');
+          // Sync radio input
+          var radio = document.getElementById(group + '_' + value);
+          if (radio) radio.checked = true;
+        });
+      });
+
+      // Form submission
+      var form = document.getElementById('feedback-form');
+      var successBanner = document.getElementById('success-banner');
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var data = {
+          q_helpful:   form.querySelector('input[name="q_helpful"]:checked')   ? form.querySelector('input[name="q_helpful"]:checked').value   : null,
+          q_ease:      form.querySelector('input[name="q_ease"]:checked')      ? form.querySelector('input[name="q_ease"]:checked').value      : null,
+          q_recommend: form.querySelector('input[name="q_recommend"]:checked') ? form.querySelector('input[name="q_recommend"]:checked').value : null,
+          q_comments:  form.querySelector('#q_comments').value.trim(),
+        };
+        fetch('/api/feedback', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        })
+        .finally(function () {
+          form.style.display = 'none';
+          successBanner.style.display = 'block';
+          successBanner.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      });
+    })();
+  </script>
+
+</body>
+</html>
