@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Our Team — CincySeniors.org</title>
+  <meta name="description" content="Meet the volunteers and community leaders behind CincySeniors.org." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <style>
+    :root {
+      --cream:           #FAF6EE;
+      --cream-2:         #F3ECDD;
+      --ink:             #1F1B16;
+      --ink-soft:        #4A4238;
+      --terracotta:      #B45A3C;
+      --terracotta-dark: #8F4227;
+      --sage:            #6E8B6A;
+      --amber:           #C98A2B;
+      --line:            #E5DCC7;
+    }
+
+    *,*::before,*::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: "Atkinson Hyperlegible", system-ui, sans-serif;
+      font-size: 20px;
+      line-height: 1.65;
+      color: var(--ink);
+      background-color: var(--cream);
+      background-image:
+        radial-gradient(circle at 20% 30%, rgba(180,90,60,0.035) 0, transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(110,139,106,0.035) 0, transparent 40%);
+    }
+
+    a { color: var(--terracotta-dark); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+    a:hover { color: var(--terracotta); }
+
+    h1, h2, h3 {
+      font-family: "Fraunces", Georgia, serif;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+    }
+
+    /* ── Skip link ── */
+    .skip {
+      position: absolute; left: -1000px; top: 0;
+      background: var(--ink); color: var(--cream);
+      padding: 12px 18px; border-radius: 0 0 12px 0; z-index: 100;
+    }
+    .skip:focus { left: 0; }
+
+    /* ── Top bar ── */
+    .topbar { background: var(--cream-2); border-bottom: 1px solid var(--line); font-size: 17px; }
+    .topbar-inner {
+      max-width: 1120px; margin: 0 auto; padding: 10px 24px;
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 16px; flex-wrap: wrap;
+    }
+    .text-size { display: flex; align-items: center; gap: 8px; font-size: 17px; }
+    .text-size button {
+      font-family: inherit; font-size: 15px; font-weight: 700;
+      background: none; border: 2px solid var(--line);
+      border-radius: 6px; padding: 3px 10px; cursor: pointer; color: var(--ink);
+    }
+    .text-size button:hover { border-color: var(--terracotta); }
+
+    /* ── Header / Nav ── */
+    header.main {
+      max-width: 100%; padding: 14px 24px 10px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 20px; flex-wrap: wrap;
+      border-bottom: 1px solid var(--line); background: var(--cream);
+    }
+    .brand { display: flex; align-items: center; gap: 14px; text-decoration: none; color: inherit; }
+    .brand-mark {
+      width: 44px; height: 44px; border-radius: 12px;
+      background: var(--terracotta); color: var(--cream);
+      font-family: "Fraunces", serif; font-size: 22px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .brand-name { display: block; font-family: "Fraunces", serif; font-size: 22px; font-weight: 700; line-height: 1.1; }
+    .brand-tag  { display: block; font-size: 13px; color: var(--ink-soft); }
+
+    nav.primary ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px; }
+    nav.primary a {
+      display: block; padding: 8px 14px; border-radius: 8px;
+      text-decoration: none; font-size: 17px; font-weight: 700; color: var(--ink);
+    }
+    nav.primary a:hover { background: var(--cream-2); }
+    nav.primary a.active { background: var(--cream-2); color: var(--terracotta-dark); }
+
+    .dropdown { position: relative; }
+    .dropdown > a::after { content: " ▾"; font-size: 0.75em; }
+    .dropdown-menu {
+      display: none; position: absolute; top: 100%; left: 0; z-index: 200;
+      background: var(--cream); border: 1px solid var(--line);
+      border-radius: 10px; min-width: 210px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1); padding: 6px;
+      flex-direction: column; gap: 2px;
+    }
+    .dropdown:hover .dropdown-menu,
+    .dropdown:focus-within .dropdown-menu { display: flex; }
+    .dropdown-menu a { font-size: 16px; padding: 10px 14px; color: var(--ink-soft); }
+
+    .nav-toggle {
+      display: none; background: none; border: 2px solid var(--line);
+      border-radius: 8px; padding: 8px 12px; cursor: pointer; font-size: 20px; color: var(--ink);
+    }
+
+    /* ── Page content ── */
+    .container { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+    .page-hero {
+      padding: 56px 0 40px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 56px;
+    }
+    .page-hero h1 { font-size: clamp(32px, 5vw, 52px); margin: 0 0 16px; }
+    .page-hero p  { font-size: 20px; color: var(--ink-soft); max-width: 640px; margin: 0; }
+
+    /* ── Team grid ── */
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+      margin-bottom: 72px;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .card:hover {
+      box-shadow: 0 8px 28px rgba(180,90,60,0.12);
+      transform: translateY(-2px);
+    }
+
+    .card-avatar {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: var(--terracotta);
+      color: #fff;
+      font-family: "Fraunces", serif;
+      font-size: 22px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-bottom: 4px;
+    }
+    /* Alternate avatar colours */
+    .card:nth-child(3n+2) .card-avatar { background: var(--sage); }
+    .card:nth-child(3n+3) .card-avatar { background: var(--amber); }
+
+    .card-name {
+      font-family: "Fraunces", serif;
+      font-size: 20px; font-weight: 700;
+      color: var(--ink); margin: 0;
+    }
+
+    .card-links {
+      display: flex; flex-direction: column; gap: 6px;
+      margin-top: 4px;
+    }
+    .card-links a {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-size: 16px; font-weight: 700;
+      text-decoration: none; color: var(--terracotta-dark);
+    }
+    .card-links a:hover { color: var(--terracotta); text-decoration: underline; }
+    .card-links .icon {
+      width: 20px; height: 20px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--cream-2);
+      border-top: 1px solid var(--line);
+      margin-top: 32px;
+      padding: 48px 0 28px;
+      font-size: 18px;
+    }
+    .footer-inner {
+      max-width: 1120px; margin: 0 auto; padding: 0 24px;
+      display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px;
+    }
+    footer h4 { font-family: "Fraunces", serif; font-size: 18px; margin: 0 0 14px; }
+    footer ul { list-style: none; margin: 0; padding: 0; }
+    footer li { margin-bottom: 10px; font-size: 18px; }
+    footer a { color: var(--ink); text-decoration: none; border-bottom: 2px solid transparent; }
+    footer a:hover { border-bottom-color: var(--terracotta); }
+    .footer-copy {
+      max-width: 1120px; margin: 32px auto 0; padding: 20px 24px 0;
+      border-top: 1px solid var(--line);
+      font-size: 15px; color: var(--ink-soft);
+      display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      nav.primary { display: none; width: 100%; }
+      nav.primary.open { display: block; }
+      nav.primary ul { flex-direction: column; gap: 0; }
+      nav.primary a { padding: 12px 16px; border-radius: 0; border-bottom: 1px solid var(--line); }
+      .dropdown-menu { position: static; box-shadow: none; border: none; padding: 0 0 0 16px; }
+      .dropdown:hover .dropdown-menu,
+      .dropdown:focus-within .dropdown-menu { display: flex; }
+      .nav-toggle { display: block; }
+      .footer-inner { grid-template-columns: 1fr; gap: 28px; }
+      .topbar-inner { flex-direction: column; align-items: flex-start; gap: 8px; padding: 10px 16px; }
+      header.main { padding: 14px 16px 8px; flex-direction: column; align-items: flex-start; gap: 12px; }
+      .container { padding: 0 16px; }
+      .page-hero { padding: 36px 0 28px; margin-bottom: 36px; }
+    }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip">Skip to main content</a>
+
+  <!-- Utility top bar -->
+  <div class="topbar" role="region" aria-label="Site utilities">
+    <div class="topbar-inner">
+      <div class="text-size" aria-label="Text size controls">
+        <span>Text size:</span>
+        <button type="button" aria-label="Normal text">A</button>
+        <button type="button" aria-label="Larger text">A+</button>
+        <button type="button" aria-label="Largest text">A++</button>
+      </div>
+      <a href="mailto:info@cincyseniors.com" style="font-weight:700;color:var(--ink);text-decoration:none;">✉ info@cincyseniors.com</a>
+    </div>
+  </div>
+
+  <!-- Main nav -->
+  <header class="main">
+    <a class="brand" href="/">
+      <span class="brand-mark" aria-hidden="true">C</span>
+      <span>
+        <span class="brand-name">CincySeniors.org</span>
+        <span class="brand-tag">A Cincy AI Catalyst (CAIC) guide to using AI</span>
+      </span>
+    </a>
+    <button class="nav-toggle" aria-expanded="false" aria-label="Open navigation">&#9776;</button>
+    <nav class="primary" aria-label="Primary">
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li class="dropdown">
+          <a href="/learn/" aria-haspopup="true">Learn</a>
+          <ul class="dropdown-menu" role="menu">
+            <li role="none"><a href="/learn/" role="menuitem">📖 Learn About AI</a></li>
+            <li role="none"><a href="/health/" role="menuitem">❤️ Health</a></li>
+            <li role="none"><a href="/wealth/" role="menuitem">💰 Wealth</a></li>
+            <li role="none"><a href="/self/" role="menuitem">✍️ Self</a></li>
+          </ul>
+        </li>
+        <li><a href="/news/">News</a></li>
+        <li class="dropdown">
+          <a href="/resources/" aria-haspopup="true">Resources</a>
+          <ul class="dropdown-menu" role="menu">
+            <li role="none"><a href="/resources/" role="menuitem">📚 Resources</a></li>
+            <li role="none"><a href="/ai-quiz.html" role="menuitem">🧠 AI Quiz</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="/cindy/" aria-haspopup="true">Ask Cindy AI</a>
+          <ul class="dropdown-menu" role="menu">
+            <li role="none"><a href="/cindy/" role="menuitem">💬 Chat with Cindy</a></li>
+            <li role="none"><a href="/cindy/about/" role="menuitem">ℹ️ About Cindy</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="/signups/" aria-haspopup="true">Get Involved</a>
+          <ul class="dropdown-menu" role="menu">
+            <li role="none"><a href="/signups/newsletter.html" role="menuitem">📰 Newsletter</a></li>
+            <li role="none"><a href="/signups/volunteer.html" role="menuitem">🤝 Volunteer</a></li>
+            <li role="none"><a href="/signups/townhall.html" role="menuitem">🏛️ Town Hall Signup</a></li>
+            <li role="none"><a href="/signups/smallgroup.html" role="menuitem">👥 Small Group Signup</a></li>
+          </ul>
+        </li>
+        <li><a href="/team/" class="active">Our Team</a></li>
+        <li><a href="/feedback/feedback.html">Feedback</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main">
+    <div class="container">
+
+      <div class="page-hero">
+        <h1>Meet Our Team</h1>
+        <p>CincySeniors.org is built by a volunteer community of Cincinnati neighbors, educators, and technologists — united by a belief that AI should work for everyone.</p>
+      </div>
+
+      <div class="team-grid">
+
+        <!-- Keti Bakiri -->
+        <div class="card">
+          <div class="card-avatar" aria-hidden="true">KB</div>
+          <p class="card-name">Keti Bakiri</p>
+          <div class="card-links">
+            <a href="mailto:bakiri_keti@mac.com">
+              <span class="icon">
+                <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="2" y="4" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M2 7l8 5 8-5" stroke="currentColor" stroke-width="1.6"/></svg>
+              </span>
+              bakiri_keti@mac.com
+            </a>
+            <a href="https://linkedin.com/in/keti-bakiri" target="_blank" rel="noopener">
+              <span class="icon">
+                <svg viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M4.5 6.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM3 8h3v9H3V8Zm5 0h2.8v1.3h.04C11.4 8.5 12.6 8 14 8c3 0 3.5 2 3.5 4.5V17h-3v-4c0-1 0-2.3-1.4-2.3-1.4 0-1.6 1.1-1.6 2.2V17H8V8Z"/></svg>
+              </span>
+              LinkedIn
+            </a>
+          </div>
+        </div>
+
+        <!-- Michelle Beckham-Corbin -->
+        <div class="card">
+          <div class="card-avatar" aria-hidden="true">MB</div>
+          <p class="card-name">Michelle Beckham-Corbin</p>
+          <div class="card-links">
+            <a href="mailto:mbeckhamcorbin@gmail.com">
+              <span class="icon"><svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="2" y="4" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M2 7l8 5 8-5" stroke="currentColor" stroke-width="1.6"/></svg></span>
+              mbeckhamcorbin@gmail.com
+            </a>
+            <a href="https://www.linkedin.com/in/michellebeckhamcorbin/" target="_blank" rel="noopener">
+              <span class="icon"><svg viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M4.5 6.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM3 8h3v9H3V8Zm5 0h2.8v1.3h.04C11.4 8.5 12.6 8 14 8c3 0 3.5 2 3.5 4.5V17h-3v-4c0-1 0-2.3-1.4-2.3-1.4 0-1.6 1.1-1.6 2.2V17H8V8Z"/></svg></span>
+              LinkedIn
+            </a>
+          </div>
+        </div>
+
+        <!-- Mark Blackham -->
+        <div class="card">
+          <div class="card-avatar" aria-hidden="true">MB</div>
+          <p class="card-name">Mark Blackham</p>
+          <div class="card-links">
+            <a href="mailto:mblackham@hotmail.com">
+              <span class="icon"><svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="2" y="4" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M2 7l8 5 8-5" stroke="currentColor" stroke-width="1.6"/></svg></span>
+              mblackham@hotmail.com
+            </a>
+            <a href="https://www.linkedin.com/in/mblackham" target="_blank" rel="noopener">
+              <span class="icon"><svg viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M4.5 6.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM3 8h3v9H3V8Zm5 0h2.8v1.3h.04C11.4 8.5 12.6 8 14 8c3 0 3.5 2 3.5 4.5V17h-3v-4c0-1 0-2.3-1.4-2.3-1.4 0-1.6 1.1-1.6 2.2V17H8V8Z"/></svg></span>
+              LinkedIn
+            </a>
+          </div>
+        </div>
+
+        <!-- Eric Frayer -->
+        <div class="card">
+          <div class="card-avatar" aria-hidden="true">EF</div>
+          <p class="card-name">Eric Frayer</p>
+          <div class="card-links">
+            <a href="mailto:info@ericfrayer.com">
+              <span class="icon"><svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="2" y="4" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M2 7l8 5 8-5" stroke="currentColor" stroke-width="1.6"/></svg></span>
+              info@ericfrayer.com
+            </a>
+            <a href="https://www.linkedin.com/in/ericfrayer/" target="_blank" rel="noopener">
+              <span class="icon"><svg viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M4.5 6.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM3 8h3v9H3V8Zm5 0h2.8v1.3h.04C11.4 8.5 12.6 8 14 8c3 0 3.5 2 3.5 4.5V17h-3v-4c0-1 0-2.3-1.4-2.3-1.4 0-1.6 1.1-1.6 2.2V17H8V8Z"/></svg></span>
+              LinkedIn
+            </a>
+          </div>
+        </div>
+
+        <!-- Tara French -->
+        <div class="card">
+          <div class="card-avatar" aria-hidden="true">TF</div>
+          <p class="card-name">Tara French</p>
+          <div class="card-links">
+            <a href="mailto:tara@tarajfrench.com">
+              <span class="icon"><svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="2" y="4" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M2 7l8 5 8-5" stroke="currentColor" stroke-width="1.6"/></svg></span>
+              tara@tarajfrench.com
+            </a>
+            <a href="https://www.linkedin.com/in/tarajfrench/" target="_blank" rel="noopener">
+              <span class="icon"><svg viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M4.5 6.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM3 8h3v9H3V8Zm5 0h2.8v1.3h.04C11.4 8.5 12.6 8 14 8c3 0 3.5 2 3.5 4.5V17h-3v-4c0-1 0-2.3-1.4-2.3-1.4 0-1.6 1.1-1.6 2.2V17H8V8Z"/></svg></span>
+              LinkedIn
+            </a>
+          </div>
+        </div>
+
+        <!-- Jeff Gunderson -->
+        <div class="card">
+          <div class="card-avatar" aria-hidden="true">JG</div>
+          <p class="card-name">Jeff Gunderson</p>
+          <div class="card-links">
+            <a href="mailto:jeff@bidiscover.com">
+              <span class="icon"><svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="2" y="4" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M2 7l8 5 8-5" stroke="currentColor" stroke-width="1.6"/></svg></span>
+              jeff@bidiscover.com
+            </a>
+            <a href="https://www.linkedin.com/in/jeffgunderson/" target="_blank" rel="noopener">
+              <span class="icon"><svg viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M4.5 6.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM3 8h3v9H3V8Zm5 0h2.8v1.3h.04C11.4 8.5 12.6 8 14 8c3 0 3.5 2 3.5 4.5V17h-3v-4c0-1 0-2.3-1.4-2.3-1.4 0-1.6 1.1-1.6 2.2V17H8V8Z"/></svg></span>
+              LinkedIn
+            </a>
+          </div>
+        </div>
+
+        <!-- Greg Goshorn -->
+        <div class="card">
+          <div class="card-avatar" aria-hidden="true">GG</div>
+          <p class="card-name">Greg Goshorn</p>
+          <div class="card-links">
+            <a href="mailto:greg@mappingyourmarketing.com">
+              <span class="icon"><svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="2" y="4" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M2 7l8 5 8-5" stroke="currentColor" stroke-width="1.6"/></svg></span>
+              greg@mappingyourmarketing.com
+            </a>
+            <a href="https://www.linkedin.com/in/greggoshorn" target="_blank" rel="noopener">
+              <span class="icon"><svg viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M4.5 6.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM3 8h3v9H3V8Zm5 0h2.8v1.3h.04C11.4 8.5 12.6 8 14 8c3 0 3.5 2 3.5 4.5V17h-3v-4c0-1 0-2.3-1.4-2.3-1.4 0-1.6 1.1-1.6 2.2V17H8V8Z"/></svg></span>
+              LinkedIn
+            </a>
+          </div>
+        </div>
+
+        <!-- Crystal Kendrick -->
+        <div class="card">
+          <div class="card-avatar" aria-hidden="true">CK</div>
+          <p class="card-name">Crystal Kendrick</p>
+          <div class="card-links">
+            <a href="mailto:crystal@thevoiceofyourcustomer.com">
+              <span class="icon"><svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="2" y="4" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M2 7l8 5 8-5" stroke="currentColor" stroke-width="1.6"/></svg></span>
+              crystal@thevoiceofyourcustomer.com
+            </a>
+            <a href="https://www.linkedin.com/in/crystallkendrick/" target="_blank" rel="noopener">
+              <span class="icon"><svg viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M4.5 6.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM3 8h3v9H3V8Zm5 0h2.8v1.3h.04C11.4 8.5 12.6 8 14 8c3 0 3.5 2 3.5 4.5V17h-3v-4c0-1 0-2.3-1.4-2.3-1.4 0-1.6 1.1-1.6 2.2V17H8V8Z"/></svg></span>
+              LinkedIn
+            </a>
+          </div>
+        </div>
+
+        <!-- Jodi Koehler -->
+        <div class="card">
+          <div class="card-avatar" aria-hidden="true">JK</div>
+          <p class="card-name">Jodi Koehler</p>
+          <div class="card-links">
+            <a href="mailto:koehlerjodi@gmail.com">
+              <span class="icon"><svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="2" y="4" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M2 7l8 5 8-5" stroke="currentColor" stroke-width="1.6"/></svg></span>
+              koehlerjodi@gmail.com
+            </a>
+            <a href="https://www.linkedin.com/in/jodikoehler" target="_blank" rel="noopener">
+              <span class="icon"><svg viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M4.5 6.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM3 8h3v9H3V8Zm5 0h2.8v1.3h.04C11.4 8.5 12.6 8 14 8c3 0 3.5 2 3.5 4.5V17h-3v-4c0-1 0-2.3-1.4-2.3-1.4 0-1.6 1.1-1.6 2.2V17H8V8Z"/></svg></span>
+              LinkedIn
+            </a>
+          </div>
+        </div>
+
+        <!-- Larry McCullough -->
+        <div class="card">
+          <div class="card-avatar" aria-hidden="true">LM</div>
+          <p class="card-name">Larry McCullough</p>
+          <div class="card-links">
+            <a href="mailto:lawrence.mccullough@gmail.com">
+              <span class="icon"><svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="2" y="4" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M2 7l8 5 8-5" stroke="currentColor" stroke-width="1.6"/></svg></span>
+              lawrence.mccullough@gmail.com
+            </a>
+            <a href="https://www.linkedin.com/in/lmcculloughandassociates/" target="_blank" rel="noopener">
+              <span class="icon"><svg viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M4.5 6.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM3 8h3v9H3V8Zm5 0h2.8v1.3h.04C11.4 8.5 12.6 8 14 8c3 0 3.5 2 3.5 4.5V17h-3v-4c0-1 0-2.3-1.4-2.3-1.4 0-1.6 1.1-1.6 2.2V17H8V8Z"/></svg></span>
+              LinkedIn
+            </a>
+          </div>
+        </div>
+
+        <!-- David Raffenberg -->
+        <div class="card">
+          <div class="card-avatar" aria-hidden="true">DR</div>
+          <p class="card-name">David Raffenberg</p>
+          <div class="card-links">
+            <a href="mailto:david.raffenberg@gmail.com">
+              <span class="icon"><svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="2" y="4" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M2 7l8 5 8-5" stroke="currentColor" stroke-width="1.6"/></svg></span>
+              david.raffenberg@gmail.com
+            </a>
+            <a href="https://www.linkedin.com/in/davidraffenberg/" target="_blank" rel="noopener">
+              <span class="icon"><svg viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M4.5 6.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM3 8h3v9H3V8Zm5 0h2.8v1.3h.04C11.4 8.5 12.6 8 14 8c3 0 3.5 2 3.5 4.5V17h-3v-4c0-1 0-2.3-1.4-2.3-1.4 0-1.6 1.1-1.6 2.2V17H8V8Z"/></svg></span>
+              LinkedIn
+            </a>
+          </div>
+        </div>
+
+        <!-- Darcy Strong -->
+        <div class="card">
+          <div class="card-avatar" aria-hidden="true">DS</div>
+          <p class="card-name">Darcy Strong</p>
+          <div class="card-links">
+            <a href="mailto:darcy.strong1@gmail.com">
+              <span class="icon"><svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="2" y="4" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M2 7l8 5 8-5" stroke="currentColor" stroke-width="1.6"/></svg></span>
+              darcy.strong1@gmail.com
+            </a>
+            <a href="https://www.linkedin.com/in/darcy-strong/" target="_blank" rel="noopener">
+              <span class="icon"><svg viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M4.5 6.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM3 8h3v9H3V8Zm5 0h2.8v1.3h.04C11.4 8.5 12.6 8 14 8c3 0 3.5 2 3.5 4.5V17h-3v-4c0-1 0-2.3-1.4-2.3-1.4 0-1.6 1.1-1.6 2.2V17H8V8Z"/></svg></span>
+              LinkedIn
+            </a>
+          </div>
+        </div>
+
+        <!-- Scott Sutherland -->
+        <div class="card">
+          <div class="card-avatar" aria-hidden="true">SS</div>
+          <p class="card-name">Scott Sutherland</p>
+          <div class="card-links">
+            <a href="mailto:scott@scottsutherland.com">
+              <span class="icon"><svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="2" y="4" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M2 7l8 5 8-5" stroke="currentColor" stroke-width="1.6"/></svg></span>
+              scott@scottsutherland.com
+            </a>
+            <a href="https://www.linkedin.com/in/sutherland-data-science/" target="_blank" rel="noopener">
+              <span class="icon"><svg viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M4.5 6.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM3 8h3v9H3V8Zm5 0h2.8v1.3h.04C11.4 8.5 12.6 8 14 8c3 0 3.5 2 3.5 4.5V17h-3v-4c0-1 0-2.3-1.4-2.3-1.4 0-1.6 1.1-1.6 2.2V17H8V8Z"/></svg></span>
+              LinkedIn
+            </a>
+          </div>
+        </div>
+
+        <!-- Paul Szydlowski -->
+        <div class="card">
+          <div class="card-avatar" aria-hidden="true">PS</div>
+          <p class="card-name">Paul Szydlowski</p>
+          <div class="card-links">
+            <a href="mailto:paulszyd@gmail.com">
+              <span class="icon"><svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="2" y="4" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M2 7l8 5 8-5" stroke="currentColor" stroke-width="1.6"/></svg></span>
+              paulszyd@gmail.com
+            </a>
+            <a href="https://www.linkedin.com/in/paulszydlowski/" target="_blank" rel="noopener">
+              <span class="icon"><svg viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M4.5 6.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM3 8h3v9H3V8Zm5 0h2.8v1.3h.04C11.4 8.5 12.6 8 14 8c3 0 3.5 2 3.5 4.5V17h-3v-4c0-1 0-2.3-1.4-2.3-1.4 0-1.6 1.1-1.6 2.2V17H8V8Z"/></svg></span>
+              LinkedIn
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <h4>About CincySeniors.org</h4>
+        <p style="margin:0;color:var(--ink-soft);font-size:18px;">A local, community-run guide to using AI safely for older adults across Greater Cincinnati. Free. No ads. No sales.</p>
+      </div>
+      <div>
+        <h4>Pages</h4>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/learn/">Learn</a></li>
+          <li><a href="/news/">News</a></li>
+          <li><a href="/cindy/">Ask Cindy AI</a></li>
+          <li><a href="/team/">Our Team</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Reach us</h4>
+        <ul>
+          <li><a href="mailto:info@cincyseniors.com">info@cincyseniors.com</a></li>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-copy">
+      <span>© 2026 CincySeniors.org — Community built, freely shared.</span>
+      <span><a href="/privacy.html">Privacy</a></span>
+    </div>
+  </footer>
+
+  <script>
+    // Text size controls
+    (function () {
+      var btns = document.querySelectorAll('.text-size button');
+      var labels = ['Normal', 'Large', 'X-Large'];
+      var classes = ['', 'text-large', 'text-xl'];
+      function applySize(idx) {
+        classes.forEach(function (c) { if (c) document.documentElement.classList.remove(c); });
+        if (classes[idx]) document.documentElement.classList.add(classes[idx]);
+        btns.forEach(function (btn, i) {
+          btn.classList.toggle('active', i === idx);
+          btn.setAttribute('aria-pressed', i === idx ? 'true' : 'false');
+        });
+        try { localStorage.setItem('csTextSize', idx); } catch (e) {}
+      }
+      btns.forEach(function (btn, i) {
+        btn.setAttribute('aria-pressed', 'false');
+        btn.title = labels[i] + ' text';
+        btn.addEventListener('click', function () { applySize(i); });
+      });
+      var saved = 0;
+      try { saved = parseInt(localStorage.getItem('csTextSize') || '0', 10); } catch (e) {}
+      applySize(isNaN(saved) ? 0 : Math.min(saved, 2));
+    })();
+
+    // Mobile nav toggle
+    (function () {
+      var toggle = document.querySelector('.nav-toggle');
+      var nav = document.querySelector('nav.primary');
+      if (!toggle || !nav) return;
+      toggle.addEventListener('click', function () {
+        var isOpen = nav.classList.toggle('open');
+        toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        toggle.innerHTML = isOpen ? '&#x2715;' : '&#9776;';
+      });
+      nav.querySelectorAll('a').forEach(function (a) {
+        a.addEventListener('click', function () {
+          nav.classList.remove('open');
+          toggle.setAttribute('aria-expanded', 'false');
+          toggle.innerHTML = '&#9776;';
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
