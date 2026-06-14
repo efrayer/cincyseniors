@@ -41,3 +41,12 @@ Thumbs.db
 
 # ── Archive folders ─────────────────────────────────────────────────────────
 cincyseniors/archive/
+
+# ── Node.js runtime data ────────────────────────────────────────────────────
+app/node_modules/
+app/feedback.json
+app/notes.json
+app/signups.json
+app/server.js_bak*
+app/server.js.bak*
+app/chromadb/
