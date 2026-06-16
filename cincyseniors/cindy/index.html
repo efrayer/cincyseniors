@@ -766,6 +766,27 @@ Guidelines:
     }
   }
 
+  // ── Normalize markdown from local LLM (may collapse newlines) ────────────
+  function fixMd(raw) {
+    // Restore newlines before bullet/numbered list items run together on one line
+    // e.g. "...text - **Next item**" → "...text\n- **Next item**"
+    var s = raw;
+
+    // Blank line before first list item if preceded by a sentence
+    s = s.replace(/([.!?:]) ([-*\d][\.\)]? )/g, '$1\n\n$2');
+
+    // Newline before each subsequent list item (space-dash or space-asterisk before a word/bold)
+    s = s.replace(/ ([-*] (?:\*\*|\w))/g, '\n$1');
+
+    // Restore newlines before markdown headings (## or ###) if collapsed
+    s = s.replace(/([^\n])(#{1,3} )/g, '$1\n\n$2');
+
+    // Collapse 3+ blank lines to 2
+    s = s.replace(/\n{3,}/g, '\n\n');
+
+    return s;
+  }
+
   // ── Append a message bubble ────────────────────────────────────────────────
   function appendMessage(role, text, sources, logId) {
     const div = document.createElement("div");
@@ -777,7 +798,7 @@ Guidelines:
     if (role === "user") {
       bub.textContent = text;
     } else {
-      bub.innerHTML = typeof marked !== "undefined" ? marked.parse(text) : esc(text);
+      bub.innerHTML = typeof marked !== "undefined" ? marked.parse(fixMd(text)) : esc(text);
       // Wrap tables in a scrollable container for mobile
       bub.querySelectorAll("table").forEach(function (table) {
         var wrap = document.createElement("div");
