@@ -273,13 +273,13 @@
     .bub {
       display: inline-block;
       max-width: 85%;
-      padding: 10px 14px;
-      border-radius: 12px;
+      padding: 14px 18px;
+      border-radius: 14px;
       border: 1.5px solid var(--bot-bub-border);
       background: var(--bot-bub);
       text-align: left;
-      font-size: 14px;
-      line-height: 1.65;
+      font-size: 17px;
+      line-height: 1.75;
       word-wrap: break-word;
       overflow-wrap: break-word;
       word-break: break-word;
@@ -291,14 +291,17 @@
     }
     .user .bub { background: var(--user-bub); border-color: var(--user-bub-border); color: var(--cream); }
     .bub.error { border-color: var(--red); color: var(--red-dk); background: #fdf0ef; }
-    .bub p  { margin: 0.45em 0; }
+    .bub p  { margin: 0.65em 0; }
     .bub p:first-child { margin-top: 0; }
     .bub p:last-child  { margin-bottom: 0; }
-    .bub ul, .bub ol { margin: 0.4em 0; padding-left: 1.4em; }
-    .bub li { margin: 0.2em 0; }
-    .bub strong { font-weight: 600; }
+    .bub ul, .bub ol { margin: 0.6em 0; padding-left: 1.6em; }
+    .bub li { margin: 0.4em 0; line-height: 1.7; }
+    .bub strong { font-weight: 700; color: var(--ink); }
     .bub a { color: var(--link); }
-    .bub h1, .bub h2, .bub h3 { font-size: 14px; font-weight: 700; margin: 0.6em 0 0.2em; }
+    .bub h1 { font-size: 20px; font-weight: 700; margin: 1em 0 0.4em; border-bottom: 2px solid var(--border); padding-bottom: 4px; }
+    .bub h2 { font-size: 18px; font-weight: 700; margin: 0.9em 0 0.35em; }
+    .bub h3 { font-size: 17px; font-weight: 700; margin: 0.8em 0 0.3em; color: var(--ink-soft); }
+    .bub hr  { border: none; border-top: 1px solid var(--border); margin: 0.8em 0; }
 
     /* ── Tables inside responses ── */
     .table-wrap {
@@ -465,7 +468,7 @@
 
     /* ── Text size overrides ── */
     /* ── Text-large overrides ── */
-    html.text-large .bub                  { font-size: 17px; }
+    html.text-large .bub                  { font-size: 19px; }
     html.text-large .input-bar input      { font-size: 17px; }
     html.text-large .primary-nav a        { font-size: 16px; }
     html.text-large .primary-nav .dropdown-menu a { font-size: 15px; }
@@ -480,7 +483,7 @@
     html.text-large .info-note            { font-size: 14px; }
 
     /* ── Text-xl overrides ── */
-    html.text-xl .bub                     { font-size: 20px; }
+    html.text-xl .bub                     { font-size: 22px; }
     html.text-xl .input-bar input         { font-size: 20px; }
     html.text-xl .primary-nav a           { font-size: 18px; }
     html.text-xl .primary-nav .dropdown-menu a { font-size: 17px; }
@@ -507,7 +510,7 @@
 
       .messages { padding: 10px; gap: 10px; }
 
-      .bub { font-size: 15px; padding: 10px 12px; }
+      .bub { font-size: 16px; padding: 10px 12px; }
       .bub table { font-size: 12px; }
       .bub table th,
       .bub table td { padding: 5px 7px; }
