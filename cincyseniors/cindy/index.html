@@ -415,14 +415,30 @@
       padding-top: 12px;
       border-top: 1.5px solid var(--border);
     }
-    .sources-label {
+    .sources-toggle {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      font-family: inherit;
       font-size: 12px;
       font-weight: 700;
       color: var(--muted);
       text-transform: uppercase;
       letter-spacing: 0.06em;
-      margin-bottom: 8px;
     }
+    .sources-toggle:hover { color: var(--primary); }
+    .sources-toggle .toggle-arrow {
+      font-size: 10px;
+      transition: transform 0.2s;
+      display: inline-block;
+    }
+    .sources-toggle.open .toggle-arrow { transform: rotate(90deg); }
+    .sources-cards { display: none; margin-top: 8px; }
+    .sources-cards.open { display: block; }
     .source-card {
       display: flex;
       align-items: flex-start;
@@ -846,7 +862,7 @@ Guidelines:
       });
       const isNoInfo = /don.t have enough information/i.test(text) || /not enough information/i.test(text) || /don.t have (the|enough)/i.test(text);
       if (sources && sources.length > 0 && !isNoInfo) {
-        bub.innerHTML += buildSourcesHtml(sources);
+        bub.appendChild(buildSourcesEl(sources));
       }
       // Add read-aloud button
       const readBtn = document.createElement("button");
@@ -867,33 +883,69 @@ Guidelines:
     scrollBottom();
   }
 
-  // ── Sources HTML ───────────────────────────────────────────────────────────
-  function buildSourcesHtml(sources) {
-    let html = `<div class="sources"><div class="sources-label">Sources</div>`;
+  // ── Sources element (collapsible, default closed) ──────────────────────────
+  function buildSourcesEl(sources) {
+    const wrapper = document.createElement("div");
+    wrapper.className = "sources";
+
+    // Toggle button
+    const btn = document.createElement("button");
+    btn.className = "sources-toggle";
+    btn.innerHTML = `<span class="toggle-arrow">&#9658;</span> Sources (${sources.length})`;
+    wrapper.appendChild(btn);
+
+    // Cards container (hidden by default)
+    const cards = document.createElement("div");
+    cards.className = "sources-cards";
+
     sources.forEach(s => {
       const rawTitle = s.title || (s.metadata && s.metadata.source
         ? s.metadata.source.split("/").pop() : "CincySeniors Resource");
-      // Clean up filename-style titles: remove extension, replace underscores/dashes
       const title = rawTitle
         .replace(/\.(pdf|txt|md|html)$/i, "")
         .replace(/[_-]+/g, " ")
         .trim();
       const snippet = (s.snippet || s.content || "").slice(0, 160).trim();
-      const url     = s.url && s.url !== "#" ? s.url : null;
-      const isUrl   = url && /^https?:\/\//.test(url);
-      const icon    = isUrl ? "🌐" : "📄";
-      const tag     = url ? "a" : "div";
-      const attrs   = url ? `href="${esc(url)}" target="_blank" rel="noopener"` : "";
-      html += `<${tag} class="source-card" ${attrs}>
-        <span class="source-icon">${icon}</span>
-        <div class="source-body">
-          <div class="source-title">${esc(title)}</div>
-          ${snippet ? `<div class="source-snippet">${esc(snippet)}</div>` : ""}
-        </div>
-      </${tag}>`;
+      const url   = s.url && s.url !== "#" ? s.url : null;
+      const isUrl = url && /^https?:\/\//.test(url);
+      const icon  = isUrl ? "🌐" : "📄";
+
+      const card = url ? document.createElement("a") : document.createElement("div");
+      card.className = "source-card";
+      if (url) { card.href = url; card.target = "_blank"; card.rel = "noopener"; }
+
+      const iconEl = document.createElement("span");
+      iconEl.className = "source-icon";
+      iconEl.textContent = icon;
+
+      const body = document.createElement("div");
+      body.className = "source-body";
+
+      const titleEl = document.createElement("div");
+      titleEl.className = "source-title";
+      titleEl.textContent = title;
+      body.appendChild(titleEl);
+
+      if (snippet) {
+        const snipEl = document.createElement("div");
+        snipEl.className = "source-snippet";
+        snipEl.textContent = snippet;
+        body.appendChild(snipEl);
+      }
+
+      card.appendChild(iconEl);
+      card.appendChild(body);
+      cards.appendChild(card);
     });
-    html += `</div>`;
-    return html;
+
+    wrapper.appendChild(cards);
+
+    btn.addEventListener("click", function () {
+      const isOpen = cards.classList.toggle("open");
+      btn.classList.toggle("open", isOpen);
+    });
+
+    return wrapper;
   }
 
   // ── Thinking indicator ─────────────────────────────────────────────────────
