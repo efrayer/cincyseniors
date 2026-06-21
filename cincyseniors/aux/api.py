@@ -160,28 +160,21 @@ async def remove_document(filename: str):
 CINDY_SYSTEM_PROMPT = """You are Cindy, a warm and helpful guide for CincySeniors.org — \
 a community resource website for older adults and caregivers in the Greater Cincinnati area.
 
-YOUR ROLE:
-You help older adults and caregivers in the Greater Cincinnati area by answering questions, \
-writing summaries, and explaining topics related to aging, technology, senior services, and \
-community resources. You draw primarily from your CincySeniors knowledge base, but you may \
-also use your general knowledge to help with writing tasks, explanations, and educational \
-content — especially on topics like AI, technology, health and wellness, and senior living.
-
-GUARDRAILS — always follow these:
-- For specific local details (phone numbers, addresses, hours, program eligibility, costs), \
-only state what is in the provided context. Never invent specific facts.
-- Never provide medical diagnoses or legal advice.
-- If asked something completely outside your scope (e.g. unrelated to seniors, caregiving, \
-technology, or community resources), politely redirect.
-- When context from the knowledge base is provided, prioritize it and cite it where helpful.
+IMPORTANT — YOUR ONLY SOURCE OF INFORMATION:
+You must answer questions ONLY using the context provided from the CincySeniors knowledge base \
+below. Do not use any outside knowledge, general facts, or information from your training data. \
+If the provided context does not contain enough information to answer the question, respond with \
+something like: "I'm sorry, I don't have enough information in my knowledge base to fully answer \
+that. I'd recommend contacting a local senior resource center or visiting CincySeniors.org for \
+more help." Never guess, infer beyond the context, or fill in gaps with general knowledge.
 
 Guidelines:
 - Be warm, patient, and clear. Use plain language — avoid jargon.
-- For writing tasks (essays, summaries, lists, explanations), use your knowledge base context \
-as source material and supplement with general knowledge where appropriate.
+- Base every answer strictly on the provided context. If it's not in the context, say so.
 - When the context supports it, provide names, descriptions, and suggest users call or visit \
 the organization to confirm current details.
 - Keep responses concise but complete.
+- Never provide medical diagnoses or legal advice.
 - Never make up phone numbers, addresses, hours, or program details not found in the context.
 
 FORMATTING — follow these rules every time:
@@ -235,17 +228,7 @@ async def cindy_chat(request: Request, req: CindyChatRequest):
         collection_name=CINDY_COLLECTION,
         embedding_function=embeddings,
     )
-    # For writing/essay prompts, extract the core topic for better retrieval
-    import re as _re
-    rag_query = last_user
-    writing_match = _re.search(
-        r'(?:write|create|draft|give me|compose)\b.{0,40}?\babout\b\s+(.+)',
-        last_user, _re.IGNORECASE
-    )
-    if writing_match:
-        rag_query = writing_match.group(1).strip()
-
-    docs = cindy_store.similarity_search(rag_query, k=4)
+    docs = cindy_store.similarity_search(last_user, k=4)
 
     # Keyword boost: only run for directory/org lookups, not general questions.
     # Triggered when the query contains org-specific terms like "senior center",
@@ -276,12 +259,8 @@ async def cindy_chat(request: Request, req: CindyChatRequest):
     # Build context string
     context = "\n\n---\n\n".join(doc.page_content for doc in docs)
 
-    # If no relevant context was retrieved, only hard-stop for factual lookups.
-    # Writing/general questions can proceed with an empty context and Cindy's own knowledge.
-    is_writing_task = bool(writing_match) or any(
-        w in last_user.lower() for w in ["write", "essay", "explain", "describe", "summarize", "list", "give me tips"]
-    )
-    if not context.strip() and not is_writing_task:
+    # If no relevant context was retrieved, return a fallback immediately
+    if not context.strip():
         fallback = (
             "I'm sorry, I don't have enough information in my knowledge base to answer that. "
             "I'd recommend reaching out to a local senior resource center or visiting "
