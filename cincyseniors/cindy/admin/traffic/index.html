@@ -88,62 +88,79 @@
     .card-head small { font-weight: 400; font-size: 12px; color: var(--muted); }
 
     /* ── Bar chart ── */
-    .chart-wrap { padding: 20px 20px 8px; overflow-x: auto; }
+    .chart-wrap { padding: 20px 24px 0; overflow-x: auto; }
     .chart-inner { min-width: 400px; }
+    .chart-outer { display: flex; gap: 0; align-items: stretch; }
 
-    /* Y-axis grid */
+    /* Y-axis labels column */
+    .y-axis {
+      display: flex; flex-direction: column-reverse;
+      justify-content: space-between;
+      padding-bottom: 1px;
+      width: 36px; flex-shrink: 0;
+    }
+    .y-label {
+      font-size: 11px; color: var(--muted);
+      text-align: right; padding-right: 6px;
+      line-height: 1;
+    }
+
+    /* Grid + bars area */
     .chart-grid {
+      flex: 1;
       position: relative;
       height: 180px;
       border-left: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
-      margin-bottom: 0;
     }
     .grid-line {
       position: absolute; left: 0; right: 0;
       border-top: 1px dashed var(--border);
-    }
-    .grid-label {
-      position: absolute; left: -38px;
-      font-size: 11px; color: var(--muted);
-      transform: translateY(-50%);
-      width: 34px; text-align: right;
-    }
-
-    /* Bars */
-    .bar-chart {
-      position: absolute; bottom: 0; left: 0; right: 0; top: 0;
-      display: flex; align-items: flex-end;
-      gap: 3px; padding: 0 4px;
-    }
-    .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; min-width: 6px; }
-    .bar {
-      width: 100%;
-      background: var(--primary-light);
-      border-radius: 4px 4px 0 0;
-      transition: background .15s;
-      cursor: default;
-      position: relative;
-    }
-    .bar:hover { background: var(--primary); }
-    .bar-val {
-      position: absolute; top: -18px; left: 50%;
-      transform: translateX(-50%);
-      font-size: 10px; font-weight: 700; color: var(--primary);
-      white-space: nowrap; opacity: 0; transition: opacity .15s;
       pointer-events: none;
     }
-    .bar:hover .bar-val { opacity: 1; }
+
+    /* Bars sit in a flex row anchored to the bottom */
+    .bar-chart {
+      position: absolute; inset: 0;
+      display: flex; align-items: flex-end;
+      gap: 3px; padding: 0 6px;
+    }
+    .bar-col {
+      flex: 1; height: 100%;
+      display: flex; align-items: flex-end;
+      min-width: 8px; position: relative;
+    }
+    .bar {
+      width: 100%;
+      background: var(--primary);
+      border-radius: 4px 4px 0 0;
+      transition: background .15s, opacity .15s;
+      cursor: default;
+      opacity: 0.75;
+    }
+    .bar-col:hover .bar { opacity: 1; background: #1a5f53; }
+
+    /* Count tooltip on hover */
+    .bar-tip {
+      position: absolute; bottom: calc(100% + 4px); left: 50%;
+      transform: translateX(-50%);
+      background: #1a3d38; color: #fff;
+      font-size: 11px; font-weight: 700;
+      padding: 3px 7px; border-radius: 5px;
+      white-space: nowrap; pointer-events: none;
+      opacity: 0; transition: opacity .15s;
+    }
+    .bar-col:hover .bar-tip { opacity: 1; }
 
     /* X-axis labels */
     .x-axis {
       display: flex; gap: 3px;
-      padding: 6px 4px 12px;
-      margin-left: 0;
+      padding: 5px 6px 12px;
+      margin-left: 36px;
     }
     .x-label {
       flex: 1; font-size: 10px; color: var(--muted);
-      text-align: center; min-width: 6px;
+      text-align: center; min-width: 8px;
       overflow: hidden; white-space: nowrap;
     }
 
@@ -408,43 +425,50 @@ function statusSummary(counts) {
 function buildChart(series) {
   const max = Math.max(...series.map(d => d.count), 1);
 
-  // Nice round Y-axis max
-  const yMax = Math.ceil(max / 5) * 5 || 5;
-  const gridSteps = [0.25, 0.5, 0.75, 1.0];
-  const gridLines = gridSteps.map(f => {
-    const val = Math.round(yMax * f);
-    const pct = (f * 100).toFixed(0);
-    return `<div class="grid-line" style="bottom:${pct}%">
-              <span class="grid-label">${val}</span>
-            </div>`;
-  }).join('');
+  // Nice round Y-axis max and grid steps
+  const rawMax = Math.ceil(max * 1.1);
+  const magnitude = Math.pow(10, Math.floor(Math.log10(rawMax)));
+  const yMax = Math.ceil(rawMax / magnitude) * magnitude || 10;
+  const gridSteps = [0, 0.25, 0.5, 0.75, 1.0];
+
+  // Y-axis labels (bottom to top)
+  const yLabels = gridSteps.map(f =>
+    `<div class="y-label">${f === 0 ? '0' : Math.round(yMax * f)}</div>`
+  ).join('');
+
+  // Grid lines
+  const gridLines = gridSteps.filter(f => f > 0).map(f =>
+    `<div class="grid-line" style="bottom:${(f*100).toFixed(0)}%"></div>`
+  ).join('');
 
   // Bars
   const bars = series.map(d => {
-    const pct = Math.max((d.count / yMax * 100), d.count > 0 ? 2 : 0).toFixed(1);
+    const pct = d.count > 0 ? Math.max((d.count / yMax * 100), 1.5).toFixed(1) : '0';
+    const dateLabel = d.date.slice(5).replace('-', '/');
     return `<div class="bar-col">
-      <div class="bar" style="height:${pct}%" title="${d.date}: ${d.count} requests">
-        ${d.count > 0 ? `<span class="bar-val">${d.count}</span>` : ''}
-      </div>
+      ${d.count > 0 ? `<div class="bar-tip">${d.count}</div>` : ''}
+      <div class="bar" style="height:${pct}%" title="${d.date}: ${d.count} requests"></div>
     </div>`;
   }).join('');
 
-  // X labels — show every Nth to avoid crowding
+  // X labels — show every Nth + always last
   const step = Math.max(1, Math.round(series.length / 10));
   const labels = series.map((d, i) => {
     const show = i % step === 0 || i === series.length - 1;
-    const label = show ? d.date.slice(5).replace('-', '/') : '';
-    return `<div class="x-label">${label}</div>`;
+    return `<div class="x-label">${show ? d.date.slice(5).replace('-', '/') : ''}</div>`;
   }).join('');
 
   return `
     <div class="chart-wrap">
       <div class="chart-inner">
-        <div class="chart-grid" style="margin-left:42px">
-          ${gridLines}
-          <div class="bar-chart">${bars}</div>
+        <div class="chart-outer">
+          <div class="y-axis">${yLabels}</div>
+          <div class="chart-grid">
+            ${gridLines}
+            <div class="bar-chart">${bars}</div>
+          </div>
         </div>
-        <div class="x-axis" style="margin-left:42px">${labels}</div>
+        <div class="x-axis">${labels}</div>
       </div>
     </div>`;
 }
