@@ -87,22 +87,65 @@
     }
     .card-head small { font-weight: 400; font-size: 12px; color: var(--muted); }
 
-    /* ── Sparkline chart ── */
-    .chart-wrap { padding: 16px; overflow-x: auto; }
-    .bar-chart { display: flex; align-items: flex-end; gap: 3px;
-                 height: 80px; width: 100%; }
+    /* ── Bar chart ── */
+    .chart-wrap { padding: 20px 20px 8px; overflow-x: auto; }
+    .chart-inner { min-width: 400px; }
+
+    /* Y-axis grid */
+    .chart-grid {
+      position: relative;
+      height: 180px;
+      border-left: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 0;
+    }
+    .grid-line {
+      position: absolute; left: 0; right: 0;
+      border-top: 1px dashed var(--border);
+    }
+    .grid-label {
+      position: absolute; left: -38px;
+      font-size: 11px; color: var(--muted);
+      transform: translateY(-50%);
+      width: 34px; text-align: right;
+    }
+
+    /* Bars */
+    .bar-chart {
+      position: absolute; bottom: 0; left: 0; right: 0; top: 0;
+      display: flex; align-items: flex-end;
+      gap: 3px; padding: 0 4px;
+    }
+    .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; min-width: 6px; }
     .bar {
-      flex: 1; background: var(--primary-light);
-      border-radius: 3px 3px 0 0; min-width: 4px;
-      transition: background .15s; position: relative; cursor: default;
+      width: 100%;
+      background: var(--primary-light);
+      border-radius: 4px 4px 0 0;
+      transition: background .15s;
+      cursor: default;
+      position: relative;
     }
     .bar:hover { background: var(--primary); }
-    .bar-label { font-size: 9px; color: var(--muted); text-align: center;
-                 margin-top: 4px; writing-mode: vertical-rl;
-                 transform: rotate(180deg); height: 28px; overflow: hidden; }
-    .x-axis { display: flex; gap: 3px; padding: 0 16px 10px; }
-    .x-label { flex: 1; font-size: 9px; color: var(--muted); text-align: center;
-               min-width: 4px; overflow: hidden; }
+    .bar-val {
+      position: absolute; top: -18px; left: 50%;
+      transform: translateX(-50%);
+      font-size: 10px; font-weight: 700; color: var(--primary);
+      white-space: nowrap; opacity: 0; transition: opacity .15s;
+      pointer-events: none;
+    }
+    .bar:hover .bar-val { opacity: 1; }
+
+    /* X-axis labels */
+    .x-axis {
+      display: flex; gap: 3px;
+      padding: 6px 4px 12px;
+      margin-left: 0;
+    }
+    .x-label {
+      flex: 1; font-size: 10px; color: var(--muted);
+      text-align: center; min-width: 6px;
+      overflow: hidden; white-space: nowrap;
+    }
 
     /* ── Tables ── */
     table { width: 100%; border-collapse: collapse; font-size: 13px; }
@@ -364,19 +407,46 @@ function statusSummary(counts) {
 
 function buildChart(series) {
   const max = Math.max(...series.map(d => d.count), 1);
-  const bars = series.map(d => {
-    const pct = Math.max(Math.round(d.count / max * 100), d.count > 0 ? 4 : 1);
-    return `<div class="bar" style="height:${pct}%" title="${d.date}: ${d.count} requests"></div>`;
+
+  // Nice round Y-axis max
+  const yMax = Math.ceil(max / 5) * 5 || 5;
+  const gridSteps = [0.25, 0.5, 0.75, 1.0];
+  const gridLines = gridSteps.map(f => {
+    const val = Math.round(yMax * f);
+    const pct = (f * 100).toFixed(0);
+    return `<div class="grid-line" style="bottom:${pct}%">
+              <span class="grid-label">${val}</span>
+            </div>`;
   }).join('');
 
-  // Only show every ~7th date label to avoid crowding
-  const step = Math.max(1, Math.round(series.length / 8));
-  const labels = series.map((d, i) =>
-    `<div class="x-label">${i % step === 0 ? d.date.slice(5) : ''}</div>`
-  ).join('');
+  // Bars
+  const bars = series.map(d => {
+    const pct = Math.max((d.count / yMax * 100), d.count > 0 ? 2 : 0).toFixed(1);
+    return `<div class="bar-col">
+      <div class="bar" style="height:${pct}%" title="${d.date}: ${d.count} requests">
+        ${d.count > 0 ? `<span class="bar-val">${d.count}</span>` : ''}
+      </div>
+    </div>`;
+  }).join('');
 
-  return `<div class="chart-wrap"><div class="bar-chart">${bars}</div></div>
-          <div class="x-axis">${labels}</div>`;
+  // X labels — show every Nth to avoid crowding
+  const step = Math.max(1, Math.round(series.length / 10));
+  const labels = series.map((d, i) => {
+    const show = i % step === 0 || i === series.length - 1;
+    const label = show ? d.date.slice(5).replace('-', '/') : '';
+    return `<div class="x-label">${label}</div>`;
+  }).join('');
+
+  return `
+    <div class="chart-wrap">
+      <div class="chart-inner">
+        <div class="chart-grid" style="margin-left:42px">
+          ${gridLines}
+          <div class="bar-chart">${bars}</div>
+        </div>
+        <div class="x-axis" style="margin-left:42px">${labels}</div>
+      </div>
+    </div>`;
 }
 
 function buildTopPages(pages) {
