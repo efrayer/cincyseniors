@@ -23,6 +23,11 @@ www.thinkdashboards.com:80 {
     reverse_proxy host.docker.internal:8000
   }
 
+  # Eric's Second Brain
+  handle /erics-second-brain* {
+    reverse_proxy erics-second-brain:3111
+  }
+
   # Everything else is static landing page
   handle {
     root * /srv
@@ -117,10 +122,14 @@ www.cincyseniors.org:80, cincyseniors.org:80 {
 
 # Chat subdomain (direct to app)
 chat.thinkdashboards.com:80 {
-  reverse_proxy app:3000
+  handle {
+    reverse_proxy app:3000
+  }
 }
 
 # Admin / LLM subdomain
 llm.thinkdashboards.com:80 {
-  reverse_proxy app:3000
+  handle {
+    reverse_proxy app:3000
+  }
 }

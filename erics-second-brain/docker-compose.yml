@@ -13,6 +13,8 @@ services:
     environment:
       DATA_DIR: /data
       PORT: "3111"
+      AUTH_PASSWORD_HASH: "scrypt$$db7c7717bc415a5856fc71fbc22fb254$$eabc34f3d109335889d04d434d27a03abb5e0ecc08cb3579d8694e864cef9a546d1f9909f01e82c8c728689cc1d9ce17ff92282b0e8594dd91ba0bfbe04b0eb9"
+      COOKIE_SECURE: "false"
     volumes:
       - esb_data:/data
     networks:
