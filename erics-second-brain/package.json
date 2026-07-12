@@ -1,0 +1,17 @@
+{
+  "name": "erics-second-brain",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w server & npm run dev -w client",
+    "build": "npm run build -w client",
+    "start": "npm start -w server",
+    "hash-password": "node server/scripts/hash-password.js",
+    "backup": "node server/scripts/backup.js"
+  }
+}

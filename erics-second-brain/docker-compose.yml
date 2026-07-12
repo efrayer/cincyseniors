@@ -1,0 +1,29 @@
+# Joins your EXISTING Caddy network — no ingress is scaffolded here.
+# Caddy reaches the app by service name; port 3111 is never published
+# to the host.
+services:
+  erics-second-brain:
+    build:
+      context: .
+      args:
+        BASE_PATH: ${BASE_PATH:-/erics_second_brain}
+    container_name: erics-second-brain
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATA_DIR: /data
+      PORT: "3111"
+    volumes:
+      - esb_data:/data
+    networks:
+      - caddy
+
+volumes:
+  esb_data:
+
+networks:
+  caddy:
+    external: true
+    # ↓ the Docker network your Caddy container is on
+    #   (find it with: docker network ls)
+    name: webstack_webnet
