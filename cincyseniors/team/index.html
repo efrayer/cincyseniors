@@ -98,11 +98,13 @@
     .dropdown { position: relative; }
     .dropdown > a::after { content: " ▾"; font-size: 0.75em; }
     .dropdown-menu {
-      display: none !important; position: absolute; top: 100%; left: 0; z-index: 200;
+      opacity: 0; visibility: hidden; pointer-events: none;
+      position: absolute; top: 100%; left: 0; z-index: 200;
       background: var(--cream); border: 1px solid var(--line);
       border-radius: 10px; min-width: 210px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.1); padding: 6px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1); padding: 10px 6px 6px;
       flex-direction: column; gap: 2px;
+      transition: opacity 0.15s ease, visibility 0s linear 0.35s;
     }
     .dropdown:hover .dropdown-menu { display: flex !important; }
     .dropdown-menu a { font-size: 16px; padding: 10px 14px; color: var(--ink-soft); }

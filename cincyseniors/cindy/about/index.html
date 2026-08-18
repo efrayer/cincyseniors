@@ -176,9 +176,9 @@
     }
     nav.primary .dropdown:hover .dropdown-menu,
     nav.primary .dropdown:focus-within .dropdown-menu {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
+      opacity: 1; visibility: visible; pointer-events: auto;
+      display: flex; flex-direction: column; gap: 2px;
+      transition: opacity 0.15s ease, visibility 0s;
     }
     nav.primary .dropdown-menu a {
       border-radius: 8px;
