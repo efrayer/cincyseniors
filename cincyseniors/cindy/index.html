@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=640, initial-scale=1" />
   <title>Ask Cindy AI — CincySeniors.org</title>
   <meta name="description" content="Chat with Cindy AI, your CincySeniors.org guide to local resources, programs, and support for seniors in the Cincinnati area." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -40,6 +40,8 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
+    html { overflow-x: auto; }
+
     body {
       font-family: "Source Sans 3", -apple-system, system-ui, sans-serif;
       background: var(--bg);
@@ -48,6 +50,7 @@
       height: 100dvh; /* fixes mobile Safari address-bar clipping */
       display: flex;
       flex-direction: column;
+      min-width: 600px;
     }
 
     /* ── Top bar ── */
@@ -556,33 +559,10 @@
     html.text-xl .sources                 { font-size: 16px; }
     html.text-xl .info-note               { font-size: 16px; }
 
-    @media (max-width: 600px) {
-      .top-bar { padding: 8px 12px 0; }
-      .brand-text h1 { font-size: 15px; }
-      .brand-text p  { display: none; } /* hide subtitle on small screens */
-      .brand-icon { width: 35px; height: 30px; }
-      .text-size span { display: none; } /* hide "Text size:" label on mobile */
-
-      .main-layout { padding: 8px; gap: 8px; }
-
-      .chat-header { padding: 10px 12px; font-size: 12px; }
-
-      .messages { padding: 10px; gap: 10px; }
-
-      .bub { font-size: 16px; padding: 10px 12px; }
-      .bub table { font-size: 12px; }
-      .bub table th,
-      .bub table td { padding: 5px 7px; }
-
-      .input-bar { padding: 8px 10px; gap: 6px; }
-      .input-bar textarea {
-        font-size: 16px; /* prevents iOS zoom-on-focus */
-        padding: 10px 12px;
-        min-height: 72px;
-      }
-      .btn { padding: 10px 14px; font-size: 14px; min-height: 44px; }
-
-      .info-note { font-size: 11px; }
+    /* Mobile layout — page renders at min 600px, users scroll horizontally on narrow screens */
+    @media (max-width: 640px) {
+      .input-bar textarea { font-size: 16px; } /* prevents iOS zoom-on-focus */
+      .btn { min-height: 44px; }
     }
   </style>
   <link rel="icon" type="image/svg+xml" href="../favicon.svg">
