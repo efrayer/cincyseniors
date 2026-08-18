@@ -40,17 +40,18 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    html { overflow-x: auto; }
+    html { overflow-x: auto; overflow-y: auto; }
 
     body {
       font-family: "Source Sans 3", -apple-system, system-ui, sans-serif;
       background: var(--bg);
       color: var(--text);
-      height: 100vh;
-      height: 100dvh; /* fixes mobile Safari address-bar clipping */
+      min-height: 100vh;
+      min-height: 100dvh;
       display: flex;
       flex-direction: column;
       min-width: 600px;
+      overflow-y: auto;
     }
 
     /* ── Top bar ── */
@@ -213,14 +214,14 @@
       margin: 0 auto;
       padding: 16px;
       gap: 12px;
-      overflow: hidden;
-      min-height: 0;
+      /* Allow the chat card to fill remaining viewport height, page scrolls to show footer */
+      min-height: calc(100dvh - 140px);
     }
 
     /* ── Chat card ── */
     .chat-card {
       flex: 1;
-      min-height: 0;
+      min-height: 400px;
       background: var(--panel);
       border: 2px solid var(--ink);
       border-radius: 12px;
