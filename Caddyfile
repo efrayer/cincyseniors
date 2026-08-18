@@ -68,7 +68,7 @@ www.cincyseniors.org:80, cincyseniors.org:80 {
   @cindy_api {
     path /cindy/chat /cindy/ingest /cindy/ingest-text /cindy/ingest-url
     path /cindy/documents* /cindy/chat-log /cindy/tts /cindy/tts-config
-    path /cindy/log-read-aloud /cindy/directory* /cindy/traffic
+    path /cindy/log-read-aloud /cindy/directory* /cindy/traffic /cindy/rsvp
   }
   handle @cindy_api {
     reverse_proxy host.docker.internal:8000
