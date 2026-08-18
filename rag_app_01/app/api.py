@@ -1037,6 +1037,50 @@ async def cindy_traffic(days: int = 30, _: None = Depends(require_admin_key)):
     }
 
 
+# ── Team RSVP ──────────────────────────────────────────────────────────────────
+RSVP_PATH = Path(__file__).parent.parent / "rsvp_data.json"
+
+def _load_rsvp_data() -> dict:
+    if RSVP_PATH.exists():
+        try:
+            import json as _j
+            return _j.loads(RSVP_PATH.read_text())
+        except Exception:
+            pass
+    return {}
+
+def _save_rsvp_data(data: dict):
+    import json as _j
+    RSVP_PATH.write_text(_j.dumps(data, indent=2))
+
+
+@app.get("/cindy/rsvp")
+async def get_rsvp(event: str = ""):
+    """Return current RSVPs for an event (no auth — obscurity only)."""
+    data = _load_rsvp_data()
+    return {"event": event, "rsvps": data.get(event, {})}
+
+
+class RsvpRequest(BaseModel):
+    event: str
+    name: str
+    response: str  # "yes" or "no"
+
+@app.post("/cindy/rsvp")
+async def post_rsvp(req: RsvpRequest):
+    """Record a team member RSVP."""
+    if req.response not in ("yes", "no"):
+        raise HTTPException(status_code=400, detail="response must be 'yes' or 'no'")
+    if not req.name.strip() or not req.event.strip():
+        raise HTTPException(status_code=400, detail="name and event are required")
+    data = _load_rsvp_data()
+    if req.event not in data:
+        data[req.event] = {}
+    data[req.event][req.name] = req.response
+    _save_rsvp_data(data)
+    return {"event": req.event, "rsvps": data[req.event]}
+
+
 if __name__ == "__main__":
     import os
     import uvicorn

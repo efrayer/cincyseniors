@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Team RSVP — CincySeniors.org</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+  <style>
+    :root {
+      --cream:      #FAF6EE;
+      --cream-2:    #F3ECDD;
+      --ink:        #1F1B16;
+      --ink-soft:   #4A4238;
+      --terracotta: #B45A3C;
+      --terracotta-dk: #8F4227;
+      --sage:       #6E8B6A;
+      --line:       #E5DCC7;
+      --yes:        #1e7d4a;
+      --yes-light:  #d4edda;
+      --no:         #A8322A;
+      --no-light:   #f8d7da;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: "Atkinson Hyperlegible", system-ui, sans-serif;
+      font-size: 18px;
+      line-height: 1.6;
+      color: var(--ink);
+      background: var(--cream);
+      min-height: 100vh;
+      padding-bottom: 64px;
+    }
+
+    /* ── Header ── */
+    .page-header {
+      background: var(--cream-2);
+      border-bottom: 1px solid var(--line);
+      padding: 28px 24px 24px;
+      text-align: center;
+    }
+    .logo-row {
+      display: flex; align-items: center; justify-content: center;
+      gap: 12px; margin-bottom: 20px;
+    }
+    .logo-mark {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--terracotta); color: var(--cream);
+      font-family: "Fraunces", serif; font-weight: 700; font-size: 22px;
+      display: grid; place-items: center; flex-shrink: 0;
+    }
+    .logo-text {
+      font-family: "Fraunces", serif; font-weight: 700;
+      font-size: 22px; color: var(--ink);
+      text-decoration: none;
+    }
+
+    /* ── Meeting card ── */
+    .meeting-card {
+      max-width: 640px; margin: 32px auto 0;
+      background: #fff; border: 1.5px solid var(--line);
+      border-radius: 18px; padding: 32px 36px;
+      box-shadow: 0 4px 20px rgba(31,27,22,.07);
+    }
+    .meeting-eyebrow {
+      font-size: 13px; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--terracotta-dk);
+      margin-bottom: 10px;
+    }
+    .meeting-title {
+      font-family: "Fraunces", serif; font-size: 30px;
+      font-weight: 700; line-height: 1.15; margin-bottom: 20px;
+    }
+    .meeting-details {
+      display: flex; flex-direction: column; gap: 10px;
+      padding: 18px 20px; background: var(--cream);
+      border-radius: 12px; border: 1px solid var(--line);
+      margin-bottom: 24px;
+    }
+    .detail-row {
+      display: flex; align-items: flex-start; gap: 12px;
+    }
+    .detail-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+    .detail-text { font-size: 17px; color: var(--ink-soft); }
+    .detail-text strong { color: var(--ink); }
+    .detail-text a { color: var(--terracotta-dk); font-weight: 700; text-underline-offset: 3px; }
+
+    /* ── RSVP form ── */
+    .rsvp-section { max-width: 640px; margin: 28px auto 0; }
+    .rsvp-section h2 {
+      font-family: "Fraunces", serif; font-size: 22px;
+      font-weight: 700; margin-bottom: 16px;
+    }
+
+    .member-list { display: flex; flex-direction: column; gap: 10px; }
+
+    .member-row {
+      display: flex; align-items: center; justify-content: space-between;
+      background: #fff; border: 1.5px solid var(--line);
+      border-radius: 12px; padding: 14px 18px;
+      gap: 16px; flex-wrap: wrap;
+      transition: border-color .15s;
+    }
+    .member-row.responded-yes  { border-color: var(--yes); background: var(--yes-light); }
+    .member-row.responded-no   { border-color: var(--no);  background: var(--no-light); }
+
+    .member-name {
+      font-weight: 700; font-size: 17px; flex: 1; min-width: 160px;
+    }
+    .member-status {
+      font-size: 15px; color: var(--ink-soft);
+      font-style: italic; min-width: 80px; text-align: right;
+    }
+    .responded-yes .member-status { color: var(--yes); font-weight: 700; font-style: normal; }
+    .responded-no  .member-status { color: var(--no);  font-weight: 700; font-style: normal; }
+
+    .rsvp-btns { display: flex; gap: 8px; }
+    .rsvp-btn {
+      padding: 8px 20px; border-radius: 999px; border: 2px solid;
+      font-family: inherit; font-size: 15px; font-weight: 700;
+      cursor: pointer; transition: background .15s, color .15s;
+    }
+    .rsvp-btn.yes {
+      border-color: var(--yes); color: var(--yes); background: transparent;
+    }
+    .rsvp-btn.yes:hover, .rsvp-btn.yes.active {
+      background: var(--yes); color: #fff;
+    }
+    .rsvp-btn.no {
+      border-color: var(--no); color: var(--no); background: transparent;
+    }
+    .rsvp-btn.no:hover, .rsvp-btn.no.active {
+      background: var(--no); color: #fff;
+    }
+    .rsvp-btn:disabled { opacity: .45; cursor: default; }
+
+    /* ── Summary bar ── */
+    .summary-bar {
+      max-width: 640px; margin: 24px auto 0;
+      display: flex; gap: 12px; flex-wrap: wrap;
+    }
+    .summary-chip {
+      padding: 8px 18px; border-radius: 999px;
+      font-size: 15px; font-weight: 700;
+    }
+    .summary-chip.yes { background: var(--yes-light); color: var(--yes); }
+    .summary-chip.no  { background: var(--no-light);  color: var(--no); }
+    .summary-chip.pending { background: var(--cream-2); color: var(--ink-soft); }
+
+    /* ── Toast ── */
+    #toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      background: var(--ink); color: #fff;
+      padding: 12px 24px; border-radius: 10px; font-size: 15px;
+      font-weight: 700; opacity: 0; transition: opacity .3s;
+      pointer-events: none; z-index: 999; white-space: nowrap;
+    }
+    #toast.show { opacity: 1; }
+
+    /* ── Loading ── */
+    .spinner-row {
+      text-align: center; padding: 32px; color: var(--ink-soft);
+    }
+
+    @media (max-width: 600px) {
+      .meeting-card { margin: 20px 16px 0; padding: 24px 20px; }
+      .rsvp-section { margin: 20px 16px 0; }
+      .summary-bar  { margin: 16px 16px 0; }
+      .meeting-title { font-size: 24px; }
+      .member-row { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .member-status { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="logo-row">
+      <div class="logo-mark">C</div>
+      <span class="logo-text">CincySeniors.org</span>
+    </div>
+  </div>
+
+  <!-- Meeting details -->
+  <div class="meeting-card">
+    <div class="meeting-eyebrow">Team Planning Session</div>
+    <h1 class="meeting-title">In-Person Planning Meeting<br>— August 21, 2026</h1>
+    <div class="meeting-details">
+      <div class="detail-row">
+        <span class="detail-icon">📅</span>
+        <div class="detail-text"><strong>Friday, August 21, 2026</strong><br>10:00 AM – 11:00 AM</div>
+      </div>
+      <div class="detail-row">
+        <span class="detail-icon">📍</span>
+        <div class="detail-text">
+          <strong>Interact for Health</strong><br>
+          8230 Montgomery Rd, Suite 300<br>
+          Cincinnati, OH 45236<br>
+          <a href="https://maps.google.com/?q=8230+Montgomery+Rd+Suite+300+Cincinnati+OH+45236" target="_blank" rel="noopener">Get directions ↗</a>
+        </div>
+      </div>
+    </div>
+    <p style="font-size:16px;color:var(--ink-soft);">Please RSVP below so we can plan accordingly. Select your name, then choose <strong>Yes</strong> or <strong>No</strong>.</p>
+  </div>
+
+  <!-- Summary -->
+  <div class="summary-bar" id="summary-bar">
+    <span class="summary-chip pending" id="chip-pending">— pending</span>
+    <span class="summary-chip yes"     id="chip-yes">0 attending</span>
+    <span class="summary-chip no"      id="chip-no">0 not attending</span>
+  </div>
+
+  <!-- RSVP list -->
+  <div class="rsvp-section">
+    <h2>Team Members</h2>
+    <div class="member-list" id="member-list">
+      <div class="spinner-row">Loading RSVPs…</div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+<script>
+  const API   = 'https://cincyseniors.org/cindy/rsvp';
+  const EVENT = 'aug-21-2026';
+
+  const MEMBERS = [
+    "Denis Bailey",
+    "Keti Bakiri",
+    "Howie Baum",
+    "Michelle Beckham-Corbin",
+    "Mark Blackham",
+    "Eric Frayer",
+    "Tara French",
+    "Greg Goshorn",
+    "Jeff Gunderson",
+    "Crystal Kendrick",
+    "Jodi Koehler",
+    "Larry McCullough",
+    "David Raffenberg",
+    "Veronica Sanford",
+    "Darcy Strong",
+    "Scott Sutherland",
+    "Paul Szydlowski",
+  ];
+
+  let rsvps = {}; // { "Name": "yes"|"no" }
+
+  // ── Load current RSVPs ──────────────────────────────────────────────────────
+  async function loadRsvps() {
+    try {
+      const res  = await fetch(`${API}?event=${EVENT}`);
+      const data = await res.json();
+      rsvps = data.rsvps || {};
+    } catch (e) {
+      rsvps = {};
+    }
+    render();
+  }
+
+  // ── Render ──────────────────────────────────────────────────────────────────
+  function render() {
+    const list = document.getElementById('member-list');
+    list.innerHTML = '';
+
+    let yesCount = 0, noCount = 0;
+
+    MEMBERS.forEach(name => {
+      const resp = rsvps[name]; // "yes", "no", or undefined
+      if (resp === 'yes') yesCount++;
+      if (resp === 'no')  noCount++;
+
+      const row = document.createElement('div');
+      row.className = 'member-row' + (resp ? ` responded-${resp}` : '');
+
+      const nameEl = document.createElement('div');
+      nameEl.className = 'member-name';
+      nameEl.textContent = name;
+
+      const statusEl = document.createElement('div');
+      statusEl.className = 'member-status';
+      statusEl.textContent = resp === 'yes' ? '✓ Attending'
+                           : resp === 'no'  ? '✗ Not attending'
+                           : 'No response yet';
+
+      const btns = document.createElement('div');
+      btns.className = 'rsvp-btns';
+
+      ['yes', 'no'].forEach(val => {
+        const btn = document.createElement('button');
+        btn.className = `rsvp-btn ${val}${resp === val ? ' active' : ''}`;
+        btn.textContent = val === 'yes' ? '✓ Yes' : '✗ No';
+        btn.addEventListener('click', () => submitRsvp(name, val));
+        btns.appendChild(btn);
+      });
+
+      row.appendChild(nameEl);
+      row.appendChild(statusEl);
+      row.appendChild(btns);
+      list.appendChild(row);
+    });
+
+    const pending = MEMBERS.length - yesCount - noCount;
+    document.getElementById('chip-pending').textContent = `${pending} pending`;
+    document.getElementById('chip-yes').textContent     = `${yesCount} attending`;
+    document.getElementById('chip-no').textContent      = `${noCount} not attending`;
+  }
+
+  // ── Submit RSVP ─────────────────────────────────────────────────────────────
+  async function submitRsvp(name, response) {
+    try {
+      const res = await fetch(API, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ event: EVENT, name, response }),
+      });
+      if (!res.ok) throw new Error('Server error');
+      const data = await res.json();
+      rsvps = data.rsvps || {};
+      render();
+      toast(`${name} — ${response === 'yes' ? 'See you there! ✓' : 'Thanks for letting us know.'}`);
+    } catch (e) {
+      toast('Could not save — please try again.');
+    }
+  }
+
+  // ── Toast ────────────────────────────────────────────────────────────────────
+  function toast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 3000);
+  }
+
+  loadRsvps();
+</script>
+</body>
+</html>
