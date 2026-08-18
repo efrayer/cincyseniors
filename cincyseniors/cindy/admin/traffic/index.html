@@ -295,8 +295,8 @@
   </a>
   <div class="top-controls">
     <select id="daySelect" onchange="load()">
-      <option value="7">Last 7 days</option>
-      <option value="30" selected>Last 30 days</option>
+      <option value="7" selected>Last 7 days</option>
+      <option value="30">Last 30 days</option>
       <option value="90">Last 90 days</option>
     </select>
     <button class="btn btn-primary" onclick="load()">Refresh</button>
@@ -522,7 +522,7 @@ function buildReferrers(refs) {
 }
 
 function buildRecent(rows) {
-  if (!rows.length) return '<div style="padding:16px;color:var(--muted)">No requests recorded yet.</div>';
+  if (!rows || !rows.length) return '<div style="padding:16px;color:var(--muted)">No requests recorded yet.</div>';
   const trs = rows.map(r => {
     const cls = String(r.status).startsWith('2') ? 's2'
               : String(r.status).startsWith('3') ? 's3'

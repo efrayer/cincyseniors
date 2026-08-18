@@ -273,6 +273,30 @@ async def cindy_chat(request: Request, req: CindyChatRequest):
                 docs.append(hit)
                 seen.add(hit.page_content)
 
+    # Team query boost: if the query is about the team/volunteers, fetch ALL team chunks
+    team_triggers = ["team", "volunteer", "who works", "who is on", "staff", "members of cincy"]
+    is_team_query = any(t in query_lower for t in team_triggers)
+    if is_team_query:
+        all_data = cindy_store._collection.get()
+        seen = {d.page_content for d in docs}
+        for meta, content in zip(all_data["metadatas"], all_data["documents"]):
+            if any(x in meta.get("source", "") for x in ["Team Roster", "Team Contact", "Team Members"]) and content not in seen:
+                from langchain_core.documents import Document as LCDoc
+                docs.append(LCDoc(page_content=content, metadata=meta))
+                seen.add(content)
+
+    # Council on Aging boost: fetch ALL chunks mentioning Council on Aging from any source
+    coa_triggers = ["council on aging", "council on ageing", "coa "]
+    is_coa_query = any(t in query_lower for t in coa_triggers)
+    if is_coa_query:
+        all_data = cindy_store._collection.get()
+        seen = {d.page_content for d in docs}
+        for meta, content in zip(all_data["metadatas"], all_data["documents"]):
+            if "council on aging" in content.lower() and content not in seen:
+                from langchain_core.documents import Document as LCDoc
+                docs.append(LCDoc(page_content=content, metadata=meta))
+                seen.add(content)
+
     # Build context string
     context = "\n\n---\n\n".join(doc.page_content for doc in docs)
 
@@ -975,8 +999,7 @@ async def cindy_traffic(days: int = 30, _: None = Depends(require_admin_key)):
                     except Exception:
                         pass
 
-                if len(recent) < 200:
-                    recent.append({
+                recent.append({
                         "ts":     dt.strftime("%Y-%m-%d %H:%M:%S"),
                         "method": method,
                         "uri":    uri[:120],
@@ -990,13 +1013,14 @@ async def cindy_traffic(days: int = 30, _: None = Depends(require_admin_key)):
     top_pages = sorted(page_counts.items(), key=lambda x: -x[1])[:20]
     top_refs  = sorted(referrer_counts.items(), key=lambda x: -x[1])[:10]
 
-    from datetime import date, timedelta as td
-    today = date.today()
+    from datetime import timedelta as td
+    today = datetime.now(timezone.utc).date()
     daily_series = []
     for i in range(days - 1, -1, -1):
         d = (today - td(days=i)).strftime("%Y-%m-%d")
         daily_series.append({"date": d, "count": day_counts.get(d, 0)})
 
+    recent = recent[-200:]
     recent.reverse()
 
     return {

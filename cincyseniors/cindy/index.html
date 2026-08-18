@@ -490,15 +490,25 @@
       display: flex; gap: 8px; flex-shrink: 0;
       padding: 12px; border-top: 1.5px solid var(--line);
       background: var(--sand);
+      align-items: flex-end;
     }
-    .input-bar input {
+    .input-bar-btns {
+      display: flex; flex-direction: column; gap: 6px; flex-shrink: 0;
+    }
+    .input-bar textarea {
       flex: 1; padding: 9px 14px;
       border-radius: 8px; border: 2px solid var(--line);
       background: var(--input-bg); color: var(--ink);
       font-size: 14px; outline: none;
       font-family: "Source Sans 3", sans-serif;
+      resize: none;
+      min-height: 72px;
+      max-height: 180px;
+      overflow-y: scroll;
+      line-height: 1.5;
     }
-    .input-bar input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(46,92,126,.15); }
+    .input-bar textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(46,92,126,.15); }
+    .input-bar textarea::placeholder { color: var(--muted); opacity: 0.7; }
 
     /* ── Info note ── */
     .info-note {
@@ -523,7 +533,7 @@
     /* ── Text size overrides ── */
     /* ── Text-large overrides ── */
     html.text-large .bub                  { font-size: 19px; }
-    html.text-large .input-bar input      { font-size: 17px; }
+    html.text-large .input-bar textarea   { font-size: 17px; }
     html.text-large .primary-nav a        { font-size: 16px; }
     html.text-large .primary-nav .dropdown-menu a { font-size: 15px; }
     html.text-large .read-aloud-btn       { font-size: 18px; }
@@ -538,7 +548,7 @@
 
     /* ── Text-xl overrides ── */
     html.text-xl .bub                     { font-size: 22px; }
-    html.text-xl .input-bar input         { font-size: 20px; }
+    html.text-xl .input-bar textarea      { font-size: 20px; }
     html.text-xl .primary-nav a           { font-size: 18px; }
     html.text-xl .primary-nav .dropdown-menu a { font-size: 17px; }
     html.text-xl .read-aloud-btn          { font-size: 21px; }
@@ -570,9 +580,10 @@
       .bub table td { padding: 5px 7px; }
 
       .input-bar { padding: 8px 10px; gap: 6px; }
-      .input-bar input {
+      .input-bar textarea {
         font-size: 16px; /* prevents iOS zoom-on-focus */
         padding: 10px 12px;
+        min-height: 72px;
       }
       .btn { padding: 10px 14px; font-size: 14px; min-height: 44px; }
 
@@ -664,9 +675,11 @@
     </div>
 
     <div class="input-bar">
-      <input type="text" id="user-input" placeholder="Enter your question here. Well formed &quot;prompts&quot; get the best responses!" autocomplete="off" aria-label="Your message to Cindy AI" />
-      <button class="btn primary" id="send-btn">Send</button>
-      <button class="btn" id="new-chat-btn">New Chat</button>
+      <textarea id="user-input" rows="3" placeholder="Enter your question here — the more detail you provide, the better Cindy can help you!&#10;(Press Enter to submit, Shift+Enter for a new line)" autocomplete="off" aria-label="Your message to Cindy AI"></textarea>
+      <div class="input-bar-btns">
+        <button class="btn primary" id="send-btn">Submit</button>
+        <button class="btn" id="new-chat-btn">New Chat</button>
+      </div>
     </div>
   </div>
 
@@ -814,7 +827,7 @@ Guidelines:
       div.className = "msg";
       div.innerHTML = `<div class="bub error">${esc(err.message)}</div>`;
       messagesEl.appendChild(div);
-      scrollBottom();
+      div.scrollIntoView({ block: "start", behavior: "smooth" });
     } finally {
       setLoading(false);
     }
@@ -880,7 +893,13 @@ Guidelines:
 
     div.appendChild(bub);
     messagesEl.appendChild(div);
-    scrollBottom();
+    if (role === "user") {
+      scrollBottom();
+    } else {
+      // Scroll back to the input so the user can read the reply and type a follow-up
+      inputEl.scrollIntoView({ block: "end", behavior: "smooth" });
+      inputEl.focus();
+    }
   }
 
   // ── Sources element (collapsible, default closed) ──────────────────────────
