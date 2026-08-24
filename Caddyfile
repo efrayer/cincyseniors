@@ -133,3 +133,10 @@ llm.thinkdashboards.com:80 {
     reverse_proxy app:3000
   }
 }
+
+# NLP Data browser (runs on host)
+nlp.thinkdashboards.com:80 {
+  handle {
+    reverse_proxy host.docker.internal:3001
+  }
+}
