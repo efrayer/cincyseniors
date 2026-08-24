@@ -266,13 +266,41 @@
     .btn-secondary:hover { background: var(--ink); color: var(--cream); }
     .btn:focus { outline: 3px solid var(--sage); outline-offset: 3px; }
 
-    /* Illustration - kitchen table scene */
+    /* Hero visual */
     .porch-illo {
       position: relative;
-      aspect-ratio: 4 / 3;
       width: 100%;
     }
     .porch-illo svg { width: 100%; height: 100%; display: block; }
+
+    .hero-promo {
+      display: block;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 2.5px solid var(--line);
+      box-shadow: 0 8px 28px rgba(31,27,22,0.10);
+      transition: box-shadow 0.2s ease, transform 0.2s ease;
+      text-decoration: none;
+    }
+    .hero-promo:hover {
+      box-shadow: 0 12px 36px rgba(31,27,22,0.16);
+      transform: translateY(-2px);
+    }
+    .hero-promo img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 16px;
+    }
+    .hero-promo-caption {
+      background: var(--terracotta);
+      color: var(--cream);
+      text-align: center;
+      font-size: 17px;
+      font-weight: 700;
+      padding: 12px 16px;
+      letter-spacing: 0.02em;
+    }
 
     /* ---------- Section heads ---------- */
     .section-head {
@@ -598,7 +626,7 @@
       nav.primary .dropdown > a::after { display: none; }
       nav.primary .dropdown-menu { display: flex !important; flex-direction: column; gap: 3px; position: static; box-shadow: none; border: none; padding: 4px 0 4px 16px; border-radius: 0; background: transparent; min-width: 0; }
       nav.primary .dropdown-menu a { font-size: 16px; padding: 10px 14px; color: var(--ink-soft); }
-      .porch-illo { display: none; }
+      .hero-promo { margin-top: 8px; }
 
       section { margin-top: 48px; }
 
@@ -752,75 +780,11 @@
           </div>
         </div>
 
-        <!-- Illustration: kitchen table scene -->
-        <div class="porch-illo" aria-hidden="true">
-          <svg viewBox="0 0 500 380" xmlns="http://www.w3.org/2000/svg">
-            <!-- warm background -->
-            <defs>
-              <radialGradient id="sun" cx="50%" cy="30%" r="60%">
-                <stop offset="0%" stop-color="#FCE4B6" />
-                <stop offset="100%" stop-color="#FAF6EE" stop-opacity="0" />
-              </radialGradient>
-            </defs>
-            <rect width="500" height="380" fill="#F3ECDD" rx="22" />
-            <rect width="500" height="380" fill="url(#sun)" rx="22" />
-
-            <!-- window frame in background -->
-            <rect x="60" y="50" width="380" height="180" fill="#EAD9B8" stroke="#C9B28A" stroke-width="3" rx="6" />
-            <line x1="250" y1="50" x2="250" y2="230" stroke="#C9B28A" stroke-width="3" />
-            <line x1="60" y1="140" x2="440" y2="140" stroke="#C9B28A" stroke-width="3" />
-            <!-- skyline hint -->
-            <path d="M60 140 L100 120 L120 130 L150 105 L180 125 L210 110 L240 130 L260 115 L290 128 L320 108 L350 128 L380 118 L410 132 L440 120 L440 140 Z" fill="#B45A3C" opacity="0.5" />
-
-            <!-- table -->
-            <rect x="40" y="260" width="420" height="14" fill="#8F4227" rx="4" />
-            <rect x="60" y="274" width="16" height="80" fill="#8F4227" />
-            <rect x="424" y="274" width="16" height="80" fill="#8F4227" />
-
-            <!-- coffee cup -->
-            <ellipse cx="110" cy="258" rx="22" ry="6" fill="#6E8B6A" />
-            <path d="M88 258 Q88 238 132 238 Q132 258 132 258 Z" fill="#6E8B6A" />
-            <ellipse cx="110" cy="244" rx="18" ry="4" fill="#4a6147" />
-
-            <!-- laptop -->
-            <rect x="180" y="220" width="140" height="40" fill="#4A4238" rx="4" />
-            <rect x="186" y="226" width="128" height="28" fill="#FAF6EE" rx="2" />
-            <rect x="195" y="232" width="40" height="4" fill="#B45A3C" rx="2" />
-            <rect x="195" y="240" width="80" height="3" fill="#C9B28A" rx="2" />
-            <rect x="195" y="246" width="60" height="3" fill="#C9B28A" rx="2" />
-            <rect x="170" y="258" width="160" height="6" fill="#6B6660" rx="2" />
-
-            <!-- person 1: older, left -->
-            <circle cx="140" cy="185" r="28" fill="#EBC9A5" />
-            <!-- hair -->
-            <path d="M112 178 Q112 150 140 148 Q168 150 168 178 Q168 164 155 160 Q140 158 125 160 Q112 164 112 178 Z" fill="#C9C4BD" />
-            <!-- glasses -->
-            <circle cx="132" cy="185" r="5" fill="none" stroke="#1F1B16" stroke-width="1.5" />
-            <circle cx="148" cy="185" r="5" fill="none" stroke="#1F1B16" stroke-width="1.5" />
-            <line x1="137" y1="185" x2="143" y2="185" stroke="#1F1B16" stroke-width="1.5" />
-            <!-- smile -->
-            <path d="M134 198 Q140 202 146 198" stroke="#1F1B16" stroke-width="1.5" fill="none" stroke-linecap="round" />
-            <!-- body/shirt -->
-            <path d="M100 260 Q100 220 140 215 Q180 220 180 260 Z" fill="#6E8B6A" />
-
-            <!-- person 2: younger, right -->
-            <circle cx="360" cy="190" r="26" fill="#D8A978" />
-            <!-- hair -->
-            <path d="M334 184 Q334 158 360 158 Q386 158 386 184 Q386 170 378 168 L343 168 Q334 170 334 184 Z" fill="#3E2A1E" />
-            <!-- smile -->
-            <path d="M354 200 Q360 204 366 200" stroke="#1F1B16" stroke-width="1.5" fill="none" stroke-linecap="round" />
-            <!-- eyes -->
-            <circle cx="352" cy="188" r="1.5" fill="#1F1B16" />
-            <circle cx="368" cy="188" r="1.5" fill="#1F1B16" />
-            <!-- body/shirt -->
-            <path d="M324 260 Q324 225 360 220 Q396 225 396 260 Z" fill="#B45A3C" />
-
-            <!-- Reds cap on chair behind -->
-            <ellipse cx="440" cy="280" rx="18" ry="5" fill="#8F4227" />
-            <path d="M422 280 Q422 265 440 263 Q458 265 458 280 Z" fill="#8F4227" />
-            <circle cx="440" cy="272" r="2" fill="#FAF6EE" />
-          </svg>
-        </div>
+        <!-- EngAging Seniors promo visual -->
+        <a href="/enAging_Seniors/" class="hero-promo" aria-label="Learn more about EngAging Seniors Smartphone Basics course">
+          <img src="/enAging_Seniors/smartphone.png" alt="Free Smartphone Basics for Beginners — EngAging Seniors class flyer" />
+          <div class="hero-promo-caption">📱 Free Smartphone Class for Beginners — Learn More →</div>
+        </a>
       </section>
 
       <!-- Start Here -->
