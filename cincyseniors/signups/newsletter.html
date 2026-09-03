@@ -537,6 +537,8 @@
     @media (max-width: 400px) {
       nav.primary ul { grid-template-columns: 1fr; }
     }
+
+    nav.primary .dropdown.js-open > .dropdown-menu { opacity: 1; visibility: visible; pointer-events: auto; display: flex; flex-direction: column; gap: 2px; }
   </style>
   <link rel="icon" type="image/svg+xml" href="../favicon.svg">
 </head>
@@ -859,22 +861,42 @@
       }
     })();
 
-    // Mobile nav hamburger toggle
+    // Nav: click/tap to open dropdowns (works on touch + desktop)
     (function () {
-      var toggle = document.querySelector('.nav-toggle');
-      var nav = document.querySelector('nav.primary');
-      if (!toggle || !nav) return;
-      toggle.addEventListener('click', function () {
-        var isOpen = nav.classList.toggle('open');
-        toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-        toggle.innerHTML = isOpen ? '&#x2715;' : '&#9776;';
+      // Click outside to close
+      document.addEventListener('click', function (e) {
+        if (!e.target.closest('.dropdown')) {
+          document.querySelectorAll('.dropdown.js-open').forEach(function (d) {
+            d.classList.remove('js-open');
+          });
+        }
       });
-      // Close nav when a link is tapped
-      nav.querySelectorAll('a').forEach(function (a) {
+
+      // Click/tap on dropdown parent link
+      document.querySelectorAll('nav .dropdown > a').forEach(function (link) {
+        link.addEventListener('click', function (e) {
+          var dropdown = this.parentElement;
+          var isOpen = dropdown.classList.contains('js-open');
+          // Close all other open dropdowns
+          document.querySelectorAll('.dropdown.js-open').forEach(function (d) {
+            if (d !== dropdown) d.classList.remove('js-open');
+          });
+          if (!isOpen) {
+            e.preventDefault(); // Open submenu, don't navigate yet
+            dropdown.classList.add('js-open');
+          } else {
+            dropdown.classList.remove('js-open');
+            // Second tap navigates naturally (no preventDefault)
+          }
+        });
+      });
+
+      // Close dropdown when a submenu item is clicked
+      document.querySelectorAll('nav .dropdown-menu a').forEach(function (a) {
         a.addEventListener('click', function () {
-          nav.classList.remove('open');
-          toggle.setAttribute('aria-expanded', 'false');
-          toggle.innerHTML = '&#9776;';
+          document.querySelectorAll('.dropdown.js-open').forEach(function (d) {
+            d.classList.remove('js-open');
+          });
         });
       });
     })();

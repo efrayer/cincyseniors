@@ -314,6 +314,8 @@
       nav.primary .dropdown > a::after { display: none; }
       nav.primary .dropdown-menu { display: flex !important; flex-direction: column; gap: 3px; position: static; box-shadow: none; border: none; padding: 4px 0 4px 16px; border-radius: 0; background: transparent; min-width: 0; visibility: visible; opacity: 1; pointer-events: auto; }
     }
+
+    nav.primary .dropdown.js-open > .dropdown-menu { opacity: 1; visibility: visible; pointer-events: auto; display: flex; flex-direction: column; gap: 2px; }
   </style>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 </head>

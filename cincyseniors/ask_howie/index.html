@@ -122,14 +122,13 @@
       cursor: pointer; color: var(--ink); font-family: inherit;
     }
     @media (max-width: 640px) {
-      .nav-toggle { display: block; }
-      .primary-nav { display: none; width: 100%; }
-      .primary-nav.open { display: block; }
-      .primary-nav ul { flex-direction: column; gap: 4px; padding: 6px 0; }
-      .primary-nav > ul > li { width: 100%; }
-      .primary-nav a { font-size: 15px; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); display: block; }
-      .primary-nav .dropdown > a::after { display: none; }
-      .primary-nav .dropdown-menu { display: flex !important; flex-direction: column; gap: 2px; position: static; box-shadow: none; border: none; padding: 3px 0 3px 14px; border-radius: 0; background: transparent; min-width: 0; visibility: visible; opacity: 1; pointer-events: auto; }
+      .nav-toggle { display: none; }
+      .primary-nav { display: block !important; width: 100%; }
+      .primary-nav ul { flex-wrap: wrap; gap: 4px; padding: 4px 0 8px; }
+      .primary-nav > ul > li { width: auto; }
+      .primary-nav a { font-size: 15px; padding: 9px 13px; border-radius: 10px; border: 1.5px solid var(--border); }
+      .primary-nav .dropdown > a::after { display: inline; }
+      .primary-nav .dropdown-menu a { font-size: 15px; padding: 11px 14px; min-height: 0; }
     }
 
     /* ── Page layout ── */
@@ -329,6 +328,8 @@
       .form-row { flex-direction: column; }
       .tips-strip { padding: 24px 20px; }
     }
+
+    .primary-nav .dropdown.js-open > .dropdown-menu { opacity: 1; visibility: visible; pointer-events: auto; display: flex; flex-direction: column; gap: 2px; }
   </style>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 </head>

@@ -622,15 +622,13 @@
     /* ---------- Responsive: phone ---------- */
     @media (max-width: 640px) {
       /* Mobile nav */
-      .nav-toggle { display: block; }
-      nav.primary { display: none; width: 100%; }
-      nav.primary.open { display: block; }
-      nav.primary ul { display: flex; flex-direction: column; gap: 4px; padding: 4px 0; }
-      nav.primary > ul > li { width: 100%; }
-      nav.primary a { font-size: 17px; padding: 12px 14px; border-radius: 10px; border: 1.5px solid var(--line); text-align: left; width: 100%; display: block; }
-      nav.primary .dropdown > a::after { display: none; }
-      nav.primary .dropdown-menu { display: flex !important; flex-direction: column; gap: 3px; position: static; box-shadow: none; border: none; padding: 4px 0 4px 16px; border-radius: 0; background: transparent; min-width: 0; }
-      nav.primary .dropdown-menu a { font-size: 16px; padding: 10px 14px; color: var(--ink-soft); }
+      .nav-toggle { display: none; }
+      nav.primary { display: block !important; width: 100%; }
+      nav.primary ul { display: flex; flex-wrap: wrap; gap: 4px; padding: 4px 0 8px; }
+      nav.primary > ul > li { width: auto; }
+      nav.primary a { font-size: 15px; padding: 9px 13px; border-radius: 10px; border: 1.5px solid var(--line); }
+      nav.primary .dropdown > a::after { display: inline; }
+      nav.primary .dropdown-menu a { font-size: 15px; padding: 11px 14px; }
       .porch-illo { display: none; }
 
       section { margin-top: 48px; }
@@ -685,6 +683,8 @@
       .hero h1 { font-size: 28px; }
       nav.primary ul { grid-template-columns: 1fr; }
     }
+
+    nav.primary .dropdown.js-open > .dropdown-menu { opacity: 1; visibility: visible; pointer-events: auto; display: flex; flex-direction: column; gap: 2px; }
   </style>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head>
@@ -1030,22 +1030,42 @@
       }
     })();
 
-    // Mobile nav hamburger toggle
+    // Nav: click/tap to open dropdowns (works on touch + desktop)
     (function () {
-      var toggle = document.querySelector('.nav-toggle');
-      var nav = document.querySelector('nav.primary');
-      if (!toggle || !nav) return;
-      toggle.addEventListener('click', function () {
-        var isOpen = nav.classList.toggle('open');
-        toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-        toggle.innerHTML = isOpen ? '&#x2715;' : '&#9776;';
+      // Click outside to close
+      document.addEventListener('click', function (e) {
+        if (!e.target.closest('.dropdown')) {
+          document.querySelectorAll('.dropdown.js-open').forEach(function (d) {
+            d.classList.remove('js-open');
+          });
+        }
       });
-      // Close nav when a link is tapped
-      nav.querySelectorAll('a').forEach(function (a) {
+
+      // Click/tap on dropdown parent link
+      document.querySelectorAll('nav .dropdown > a').forEach(function (link) {
+        link.addEventListener('click', function (e) {
+          var dropdown = this.parentElement;
+          var isOpen = dropdown.classList.contains('js-open');
+          // Close all other open dropdowns
+          document.querySelectorAll('.dropdown.js-open').forEach(function (d) {
+            if (d !== dropdown) d.classList.remove('js-open');
+          });
+          if (!isOpen) {
+            e.preventDefault(); // Open submenu, don't navigate yet
+            dropdown.classList.add('js-open');
+          } else {
+            dropdown.classList.remove('js-open');
+            // Second tap navigates naturally (no preventDefault)
+          }
+        });
+      });
+
+      // Close dropdown when a submenu item is clicked
+      document.querySelectorAll('nav .dropdown-menu a').forEach(function (a) {
         a.addEventListener('click', function () {
-          nav.classList.remove('open');
-          toggle.setAttribute('aria-expanded', 'false');
-          toggle.innerHTML = '&#9776;';
+          document.querySelectorAll('.dropdown.js-open').forEach(function (d) {
+            d.classList.remove('js-open');
+          });
         });
       });
     })();
