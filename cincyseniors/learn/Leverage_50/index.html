@@ -3,22 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Get Involved — CincySeniors.org</title>
-  <meta name="description" content="Get involved with CincySeniors.org — sign up for our newsletter, volunteer, or attend a Town Hall or small group AI session near you." />
+  <title>Leverage AI 50+ — Free Learning Community — CincySeniors.org</title>
+  <meta name="description" content="Leverage AI 50+ is a free online learning community created specifically to help adults 50+ learn about and confidently use AI." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --cream:      #FAF6EE;
-      --cream-2:    #F3ECDD;
-      --ink:        #1F1B16;
-      --ink-soft:   #4A4238;
-      --terracotta: #B45A3C;
+      --cream:           #FAF6EE;
+      --cream-2:         #F3ECDD;
+      --ink:             #1F1B16;
+      --ink-soft:        #4A4238;
+      --terracotta:      #B45A3C;
       --terracotta-dark: #8F4227;
-      --sage:       #6E8B6A;
-      --amber:      #C98A2B;
-      --line:       #E5DCC7;
+      --sage:            #6E8B6A;
+      --amber:           #C98A2B;
+      --line:            #E5DCC7;
     }
 
     *,*::before,*::after { box-sizing: border-box; }
@@ -38,9 +38,25 @@
 
     a { color: var(--terracotta-dark); text-decoration-thickness: 2px; text-underline-offset: 3px; }
     a:hover { color: var(--terracotta); }
-    h1, h2, h3 { font-family: "Fraunces", Georgia, serif; font-weight: 700; color: var(--ink); letter-spacing: -0.01em; }
 
-    .skip { position: absolute; left: -1000px; top: 0; background: var(--ink); color: var(--cream); padding: 12px 18px; border-radius: 0 0 12px 0; z-index: 100; }
+    h1, h2, h3 {
+      font-family: "Fraunces", Georgia, serif;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+    }
+
+    /* Skip link */
+    .skip {
+      position: absolute;
+      left: -1000px;
+      top: 0;
+      background: var(--ink);
+      color: var(--cream);
+      padding: 12px 18px;
+      border-radius: 0 0 12px 0;
+      z-index: 100;
+    }
     .skip:focus { left: 0; }
 
     /* ---------- Top Bar ---------- */
@@ -85,75 +101,117 @@
     .page-header h1 { font-size: 56px; margin: 0 0 18px; line-height: 1.05; }
     .page-header p.lead { font-size: 22px; color: var(--ink-soft); margin: 0 auto; max-width: 58ch; }
 
-    /* ---------- Cards grid ---------- */
-    .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 28px;
-      margin-top: 8px;
-    }
+    /* ---------- Section heads ---------- */
+    .section-head { margin-bottom: 32px; }
+    .section-head .eyebrow { display: inline-block; font-size: 15px; font-weight: 700; color: var(--terracotta-dark); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 10px; }
+    .section-head h2 { font-size: 38px; margin: 0 0 10px; line-height: 1.1; }
+    .section-head p { font-size: 20px; color: var(--ink-soft); margin: 0; }
 
-    .involve-card {
+    section { margin-top: 64px; }
+
+    /* ---------- Highlight / CTA card ---------- */
+    .cta-card {
+      background: #fff;
+      border: 2px solid var(--terracotta);
+      border-radius: 24px;
+      padding: 48px 40px;
+      text-align: center;
+      box-shadow: 0 8px 28px rgba(180, 90, 60, 0.10);
+    }
+    .cta-card .big-icon { font-size: 56px; margin-bottom: 16px; display: block; }
+    .cta-card h2 { font-size: 36px; margin: 0 0 12px; color: var(--terracotta-dark); }
+    .cta-card p { font-size: 20px; color: var(--ink-soft); max-width: 54ch; margin: 0 auto 28px; }
+    .btn-primary {
+      display: inline-block;
+      background: var(--terracotta);
+      color: #fff;
+      font-family: "Atkinson Hyperlegible", sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      padding: 16px 36px;
+      border-radius: 999px;
+      text-decoration: none;
+      transition: background 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 4px 14px rgba(180, 90, 60, 0.25);
+    }
+    .btn-primary:hover { background: var(--terracotta-dark); color: #fff; box-shadow: 0 6px 20px rgba(180, 90, 60, 0.35); }
+
+    /* ---------- Benefit cards ---------- */
+    .cards-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .info-card {
       background: #fff;
       border: 1.5px solid var(--line);
       border-radius: 22px;
-      padding: 40px;
+      padding: 32px;
       box-shadow: 0 6px 18px rgba(31, 27, 22, 0.05);
       display: flex;
       flex-direction: column;
-      gap: 14px;
-      text-decoration: none;
-      color: var(--ink);
-      transition: box-shadow 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
+      gap: 12px;
     }
-    .involve-card:hover {
-      box-shadow: 0 10px 28px rgba(31, 27, 22, 0.1);
-      transform: translateY(-2px);
-      border-color: var(--terracotta);
-      color: var(--ink);
-    }
-
-    .involve-card .card-icon {
-      font-size: 40px;
-      line-height: 1;
-      width: 72px;
-      height: 72px;
+    .info-card .icon {
+      width: 64px;
+      height: 64px;
       border-radius: 18px;
       background: var(--cream-2);
       display: grid;
       place-items: center;
+      font-size: 30px;
+      margin-bottom: 6px;
     }
-    .involve-card h2 {
-      font-size: 28px;
-      margin: 0;
-    }
-    .involve-card p {
-      margin: 0;
+    .info-card h3 { font-size: 24px; margin: 0; }
+    .info-card p { margin: 0; color: var(--ink-soft); font-size: 18px; }
+
+    /* ---------- Quote / philosophy block ---------- */
+    .philosophy {
+      background: var(--cream-2);
+      border-left: 6px solid var(--terracotta);
+      border-radius: 0 20px 20px 0;
+      padding: 36px 40px;
+      font-size: 22px;
+      font-style: italic;
       color: var(--ink-soft);
-      font-size: 18px;
       line-height: 1.6;
     }
-    .involve-card .card-cta {
-      margin-top: auto;
-      padding-top: 8px;
+    .philosophy cite {
+      display: block;
+      margin-top: 16px;
+      font-style: normal;
+      font-size: 17px;
       font-weight: 700;
       color: var(--terracotta-dark);
-      font-size: 18px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
     }
-    .involve-card .card-cta::after {
-      content: "→";
-      transition: transform 0.15s ease;
-    }
-    .involve-card:hover .card-cta::after { transform: translateX(4px); }
 
-    /* Card accent colors */
-    .involve-card.newsletter .card-icon { background: #EEF4F8; }
-    .involve-card.volunteer  .card-icon { background: #EDF4EC; }
-    .involve-card.townhall   .card-icon { background: #FBF0EC; }
-    .involve-card.smallgroup .card-icon { background: #FDF8EC; }
+    /* ---------- Resource link ---------- */
+    .resource-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: #fff;
+      border: 1.5px solid var(--line);
+      border-radius: 14px;
+      padding: 18px 22px;
+      text-decoration: none;
+      color: var(--ink);
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      margin-top: 12px;
+    }
+    .resource-item:hover {
+      border-color: var(--terracotta);
+      box-shadow: 0 4px 14px rgba(31, 27, 22, 0.08);
+      color: var(--ink);
+    }
+    .resource-icon { font-size: 26px; flex-shrink: 0; line-height: 1; }
+    .resource-details { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+    .resource-title { font-family: "Fraunces", Georgia, serif; font-weight: 700; font-size: 19px; color: var(--ink); }
+    .resource-desc { font-size: 16px; color: var(--ink-soft); line-height: 1.45; }
+    .resource-cta { font-size: 15px; font-weight: 700; color: var(--terracotta-dark); flex-shrink: 0; white-space: nowrap; }
+    .resource-item:hover .resource-cta { color: var(--terracotta); }
 
     /* ---------- Footer ---------- */
     footer { margin-top: 96px; background: var(--cream-2); border-top: 1px solid var(--line); padding: 48px 0 36px; }
@@ -163,14 +221,16 @@
     footer li { margin-bottom: 10px; font-size: 18px; }
     footer a { color: var(--ink); text-decoration: none; border-bottom: 2px solid transparent; }
     footer a:hover { border-bottom-color: var(--terracotta); }
-    .footer-privacy-note { margin-top: 28px; padding: 18px; background: #fff; border-left: 4px solid var(--sage); border-radius: 6px; font-size: 17px; color: var(--ink-soft); }
+    .privacy-note { margin-top: 28px; padding: 18px; background: #fff; border-left: 4px solid var(--sage); border-radius: 6px; font-size: 17px; color: var(--ink-soft); }
     .copyright { max-width: 1120px; margin: 32px auto 0; padding: 24px 24px 0; border-top: 1px solid var(--line); font-size: 16px; color: var(--ink-soft); text-align: center; }
 
+    /* ---------- Text size overrides ---------- */
     html.text-large body { font-size: 23px; }
     html.text-large .page-header h1 { font-size: 62px; }
+    html.text-large .section-head h2 { font-size: 44px; }
     html.text-xl body { font-size: 26px; }
     html.text-xl .page-header h1 { font-size: 68px; }
-
+    html.text-xl .section-head h2 { font-size: 50px; }
 
     /* ---------- Nav toggle button (mobile) ---------- */
     .nav-toggle {
@@ -188,19 +248,15 @@
     .nav-toggle:hover { border-color: var(--terracotta); background: var(--cream-2); }
     .nav-toggle:focus { outline: 3px solid var(--terracotta); outline-offset: 2px; }
 
+    /* ---------- Responsive ---------- */
     @media (max-width: 900px) {
-      .cards-grid { grid-template-columns: 1fr 1fr; }
+      .cards-3 { grid-template-columns: 1fr; }
       .footer-inner { grid-template-columns: 1fr; }
       nav.primary ul { gap: 2px; }
       nav.primary a { padding: 8px 12px; font-size: 17px; }
     }
+
     @media (max-width: 640px) {
-      .topbar-inner { flex-direction: column; align-items: flex-start; gap: 8px; padding: 10px 16px; }
-      header.main { padding: 14px 16px 8px; flex-direction: column; align-items: flex-start; gap: 12px; }
-      nav.primary { width: 100%; }
-      nav.primary ul { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-      nav.primary a { font-size: 16px; padding: 10px 12px; text-align: center; border: 1.5px solid var(--line); border-radius: 10px; }
-      /* Mobile nav */
       .nav-toggle { display: none; }
       nav.primary { display: block !important; width: 100%; }
       nav.primary ul { display: flex; flex-wrap: wrap; gap: 4px; padding: 4px 0 8px; }
@@ -208,25 +264,35 @@
       nav.primary a { font-size: 15px; padding: 9px 13px; border-radius: 10px; border: 1.5px solid var(--line); }
       nav.primary .dropdown > a::after { display: inline; }
       nav.primary .dropdown-menu a { font-size: 15px; padding: 11px 14px; }
+      .topbar-inner { flex-direction: column; align-items: flex-start; gap: 8px; padding: 10px 16px; }
+      header.main { padding: 14px 16px 8px; flex-direction: column; align-items: flex-start; gap: 12px; }
+      nav.primary { width: 100%; }
+      nav.primary ul { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+      nav.primary a { font-size: 16px; padding: 10px 12px; text-align: center; border: 1.5px solid var(--line); border-radius: 10px; }
       .container { padding: 0 16px; }
       .page-header { padding: 36px 0 32px; }
       .page-header h1 { font-size: 36px; }
       .page-header p.lead { font-size: 19px; }
-      .cards-grid { grid-template-columns: 1fr; gap: 18px; }
-      .involve-card { padding: 28px 24px; }
+      .section-head h2 { font-size: 28px; }
+      .cta-card { padding: 32px 22px; }
+      .philosophy { padding: 24px 22px; font-size: 19px; }
       footer { margin-top: 56px; padding: 36px 0 24px; }
       main { padding-bottom: 48px; }
     }
-    @media (max-width: 400px) { nav.primary ul { grid-template-columns: 1fr; } }
+
+    @media (max-width: 400px) {
+      nav.primary ul { grid-template-columns: 1fr; }
+    }
 
     nav.primary .dropdown.js-open > .dropdown-menu { opacity: 1; visibility: visible; pointer-events: auto; display: flex; flex-direction: column; gap: 2px; }
   </style>
-  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
 </head>
 <body>
 
-  <a href="#main" class="skip">Skip to main content</a>
+  <a class="skip" href="#main-content">Skip to main content</a>
 
+  <!-- Top bar -->
   <div class="topbar" role="region" aria-label="Site utilities">
     <div class="topbar-inner">
       <div class="text-size" aria-label="Text size controls">
@@ -239,6 +305,7 @@
     </div>
   </div>
 
+  <!-- Main nav -->
   <header class="main">
     <a class="brand" href="/">
       <span class="brand-mark" aria-hidden="true">C</span>
@@ -260,8 +327,8 @@
             <li role="none"><a href="/self/" role="menuitem">✍️ Self</a></li>
             <li role="none"><a href="/ai-quiz.html" role="menuitem">🧠 AI Quiz</a></li>
             <li role="none"><a href="/engAging_Seniors/" role="menuitem">📱 EngAging Seniors</a></li>
-            <li role="none"><a href="/learn/Leverage_50/" role="menuitem">🚀 Leverage AI 50+</a></li>
-            </ul>
+            <li role="none"><a href="/learn/Leverage_50/" role="menuitem" class="active">🚀 Leverage AI 50+</a></li>
+          </ul>
         </li>
         <li class="dropdown">
           <a href="/cindy/" aria-haspopup="true">Ask CindyAI - Ask Howie</a>
@@ -270,7 +337,7 @@
             <li role="none"><a href="/cindy/about/" role="menuitem">ℹ️ About Cindy</a></li>
             <li role="none"><a href="/ask_howie/" role="menuitem">👤 Ask Howie</a></li>
             <li role="none"><a href="/resources/" role="menuitem">📚 Resources</a></li>
-                      </ul>
+          </ul>
         </li>
         <li class="dropdown">
           <a href="/news/" aria-haspopup="true">News/Tips</a>
@@ -299,46 +366,123 @@
     </nav>
   </header>
 
-  <main id="main">
+  <main id="main-content">
     <div class="container">
 
+      <!-- Page header -->
       <div class="page-header">
-        <span class="eyebrow">Community</span>
-        <h1>Get Involved</h1>
-        <p class="lead">Whether you want to stay informed, lend a hand, or join a session — there's a place for you in the CincySeniors community.</p>
+        <span class="eyebrow">Free Learning Community</span>
+        <h1>Leverage AI 50+</h1>
+        <p class="lead">A free online community created specifically to help adults 50+ learn about and confidently use AI — no technical background needed.</p>
       </div>
 
-      <div class="cards-grid">
+      <!-- Join CTA -->
+      <section style="margin-top: 0;">
+        <div class="cta-card">
+          <span class="big-icon">🚀</span>
+          <h2>Join the Free Community</h2>
+          <p>Access videos, prompts, training, practical examples, resources, discussions, and ongoing education around AI — all in one welcoming place.</p>
+          <a class="btn-primary" href="https://www.skool.com/leverage-ai-1328/about" target="_blank" rel="noopener">Join Leverage AI 50+ — It's Free ↗</a>
+        </div>
+      </section>
 
-        <a class="involve-card newsletter" href="/signups/newsletter.html">
-          <span class="card-icon" aria-hidden="true">📰</span>
-          <h2>Newsletter</h2>
-          <p>Receive a friendly monthly email covering AI news and CincySeniors community updates — once a month, no spam, no sales.</p>
-          <span class="card-cta">Sign up for the newsletter</span>
+      <!-- What you get -->
+      <section>
+        <div class="section-head">
+          <span class="eyebrow">What's Included</span>
+          <h2>Everything You Need to Get Started</h2>
+          <p>Start wherever you are and learn at your own pace.</p>
+        </div>
+        <div class="cards-3">
+          <div class="info-card">
+            <div class="icon">🎥</div>
+            <h3>Videos &amp; Training</h3>
+            <p>Clear, step-by-step videos and training modules designed for adults 50+ who are new to AI — or just want to go deeper.</p>
+          </div>
+          <div class="info-card">
+            <div class="icon">💬</div>
+            <h3>Community &amp; Discussion</h3>
+            <p>Ask questions, share experiences, and learn alongside others in a friendly, supportive community of people just like you.</p>
+          </div>
+          <div class="info-card">
+            <div class="icon">📋</div>
+            <h3>Prompts &amp; Practical Examples</h3>
+            <p>Ready-to-use AI prompts and real-world examples so you can immediately apply what you learn to work, hobbies, and everyday life.</p>
+          </div>
+          <div class="info-card">
+            <div class="icon">🔒</div>
+            <h3>Privacy &amp; Safety Education</h3>
+            <p>Learn how to use AI responsibly, including guidance on privacy, security, and navigating the rapidly changing AI landscape.</p>
+          </div>
+          <div class="info-card">
+            <div class="icon">📈</div>
+            <h3>Ongoing Learning</h3>
+            <p>New resources and education added regularly so you stay current as AI continues to evolve — without feeling overwhelmed.</p>
+          </div>
+          <div class="info-card">
+            <div class="icon">🌐</div>
+            <h3>AI for 50+ Resource Site</h3>
+            <p>Additional information and educational resources at MappingYourMarketing.com/AI50, supporting the community with even more content.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Philosophy -->
+      <section>
+        <div class="section-head">
+          <span class="eyebrow">Our Philosophy</span>
+          <h2>You Don't Have to Be a Techie</h2>
+        </div>
+        <blockquote class="philosophy">
+          "AI, explained by neighbors&hellip; at your own pace."
+          <br /><br />
+          People can start where they are, learn at their own pace, and discover practical ways AI can support their work, businesses, families, hobbies, creativity, productivity, and everyday lives. Our goal isn't simply to teach people about AI — it's to help older adults develop the <strong>confidence, knowledge, and skills</strong> to participate in an increasingly AI-powered world.
+          <cite>— Leverage AI 50+</cite>
+        </blockquote>
+      </section>
+
+      <!-- Who it's for -->
+      <section>
+        <div class="section-head">
+          <span class="eyebrow">Who It's For</span>
+          <h2>Built for Adults 50 and Older</h2>
+          <p>Whether you've never touched AI or you're curious to do more, this community meets you where you are.</p>
+        </div>
+        <div class="cards-3">
+          <div class="info-card">
+            <div class="icon">👔</div>
+            <h3>Work &amp; Business</h3>
+            <p>Discover how AI can boost productivity, support your business, and help you stay competitive in the modern workplace.</p>
+          </div>
+          <div class="info-card">
+            <div class="icon">🎨</div>
+            <h3>Hobbies &amp; Creativity</h3>
+            <p>Explore how AI can enhance writing, art, music, research, and the creative pursuits you love.</p>
+          </div>
+          <div class="info-card">
+            <div class="icon">🏡</div>
+            <h3>Everyday Life</h3>
+            <p>Use AI to simplify tasks, answer questions, plan trips, manage information, and make daily life a little easier.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Additional resource -->
+      <section>
+        <div class="section-head">
+          <span class="eyebrow">Related Resource</span>
+          <h2>AI for 50+ Website</h2>
+          <p>A companion website with additional information and educational resources for adults 50+.</p>
+        </div>
+        <a class="resource-item" href="https://MappingYourMarketing.com/AI50" target="_blank" rel="noopener">
+          <div class="resource-icon">🌐</div>
+          <div class="resource-details">
+            <span class="resource-title">MappingYourMarketing.com/AI50</span>
+            <span class="resource-desc">Practical applications for work, business, productivity, research, creativity, learning, and everyday life — designed for adults 50+.</span>
+          </div>
+          <span class="resource-cta">Visit ↗</span>
         </a>
-
-        <a class="involve-card volunteer" href="/signups/volunteer.html">
-          <span class="card-icon" aria-hidden="true">🤝</span>
-          <h2>Volunteer</h2>
-          <p>Share your time and patience. Sit alongside seniors at Town Halls and small group sessions to help them feel confident with AI tools.</p>
-          <span class="card-cta">Become a volunteer</span>
-        </a>
-
-        <a class="involve-card townhall" href="/signups/townhall.html">
-          <span class="card-icon" aria-hidden="true">🏛️</span>
-          <h2>Town Hall Signup</h2>
-          <p>Larger community gatherings at Senior Centers and community buildings across Greater Cincinnati. Open to all — no experience with AI needed.</p>
-          <span class="card-cta">Register for a Town Hall</span>
-        </a>
-
-        <a class="involve-card smallgroup" href="/signups/smallgroup.html">
-          <span class="card-icon" aria-hidden="true">👥</span>
-          <h2>Small Group Signup</h2>
-          <p>Intimate sessions of 8–10 participants with hands-on time at libraries and public spaces. Guided by a volunteer at your own pace.</p>
-          <span class="card-cta">Join a small group session</span>
-        </a>
-
-      </div>
+      </section>
 
     </div>
   </main>
@@ -348,7 +492,7 @@
       <div>
         <h4>About CincySeniors.org</h4>
         <p style="margin: 0; color: var(--ink-soft); font-size: 18px;">A local, community-run guide to using AI safely for older adults across Greater Cincinnati. Free. No ads. No sales.</p>
-        <div class="footer-privacy-note"><strong>Our promise:</strong> We're a local, community-run site.</div>
+        <div class="privacy-note"><strong>Our promise:</strong> We're a local, community-run site.</div>
       </div>
       <div>
         <h4>Get Involved</h4>
@@ -394,35 +538,9 @@
       try { saved = parseInt(localStorage.getItem('csTextSize') || '0', 10); } catch (e) {}
       applySize(isNaN(saved) ? 0 : Math.min(saved, 2));
     })();
-  </script>
 
-  <!-- ── Cookie consent banner ── -->
-  <div id="cookie-banner" role="dialog" aria-live="polite" aria-label="Cookie notice" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#1F1B16;color:#FAF6EE;font-family:'Atkinson Hyperlegible',system-ui,sans-serif;font-size:17px;line-height:1.5;padding:16px 24px;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;box-shadow:0 -4px 20px rgba(0,0,0,0.25);">
-    <p style="margin:0;max-width:720px;">We use cookies to ensure you get the best experience on our website. If you continue to use this site we'll assume you are happy with this. <a href="/privacy.html" style="color:#E5A87C;font-weight:700;text-underline-offset:3px;">Privacy Policy</a></p>
-    <button id="cookie-ok" style="flex-shrink:0;background:#B45A3C;color:#FAF6EE;border:2px solid #8F4227;border-radius:10px;padding:10px 28px;font-family:inherit;font-size:17px;font-weight:700;cursor:pointer;white-space:nowrap;">OK</button>
-  </div>
-  <script>
+    // Nav: click/tap to open dropdowns
     (function () {
-      function getCookie(name) {
-        var match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
-        return match ? decodeURIComponent(match[1]) : null;
-      }
-      if (!getCookie('cs_cookie_ok')) {
-        var banner = document.getElementById('cookie-banner');
-        if (banner) banner.style.display = 'flex';
-        var btn = document.getElementById('cookie-ok');
-        if (btn) btn.addEventListener('click', function () {
-          var exp = new Date();
-          exp.setFullYear(exp.getFullYear() + 1);
-          document.cookie = 'cs_cookie_ok=1;path=/;expires=' + exp.toUTCString();
-          banner.style.display = 'none';
-        });
-      }
-    })();
-
-    // Nav: click/tap to open dropdowns (works on touch + desktop)
-    (function () {
-      // Click outside to close
       document.addEventListener('click', function (e) {
         if (!e.target.closest('.dropdown')) {
           document.querySelectorAll('.dropdown.js-open').forEach(function (d) {
@@ -431,26 +549,22 @@
         }
       });
 
-      // Click/tap on dropdown parent link
       document.querySelectorAll('nav .dropdown > a').forEach(function (link) {
         link.addEventListener('click', function (e) {
           var dropdown = this.parentElement;
           var isOpen = dropdown.classList.contains('js-open');
-          // Close all other open dropdowns
           document.querySelectorAll('.dropdown.js-open').forEach(function (d) {
             if (d !== dropdown) d.classList.remove('js-open');
           });
           if (!isOpen) {
-            e.preventDefault(); // Open submenu, don't navigate yet
+            e.preventDefault();
             dropdown.classList.add('js-open');
           } else {
             dropdown.classList.remove('js-open');
-            // Second tap navigates naturally (no preventDefault)
           }
         });
       });
 
-      // Close dropdown when a submenu item is clicked
       document.querySelectorAll('nav .dropdown-menu a').forEach(function (a) {
         a.addEventListener('click', function () {
           document.querySelectorAll('.dropdown.js-open').forEach(function (d) {
@@ -459,6 +573,7 @@
         });
       });
     })();
-    </script>
+  </script>
+
 </body>
 </html>
