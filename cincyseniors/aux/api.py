@@ -23,6 +23,7 @@ from app.config import (
     TTS_ENGINE, OPENAI_API_KEY, TTS_VOICE, TTS_MODEL, TTS_INSTRUCTIONS,
     ADMIN_API_KEY,
     UPLOAD_PASSWORD_HASH, UPLOAD_DIR,
+    SMTP_HOST, SMTP_PORT, SMTP_SECURE, SMTP_USER, SMTP_PASS, NOTIFY_TO,
 )
 from app.graph import build_graph, retrieve, generate_stream
 from app.ingest import ingest_file, run as ingest_run, _load_manifest, _save_manifest, delete_document
@@ -1008,9 +1009,11 @@ class AskHowieRequest(BaseModel):
 @app.post("/ask-howie/submit")
 @limiter.limit("3/minute")
 async def ask_howie_submit(request: Request, req: AskHowieRequest):
-    """Save an Ask Howie question to a local JSONL log file."""
+    """Save an Ask Howie question to a local JSONL log file and email a notification."""
     import json as _json
+    import smtplib
     from datetime import datetime, timezone
+    from email.message import EmailMessage
 
     if not req.email.strip() or not req.question.strip():
         raise HTTPException(status_code=400, detail="Email and question are required.")
@@ -1026,6 +1029,49 @@ async def ask_howie_submit(request: Request, req: AskHowieRequest):
 
     with open(ASK_HOWIE_LOG, "a", encoding="utf-8") as f:
         f.write(_json.dumps(entry) + "\n")
+
+    # Send email notification if SMTP is configured
+    if SMTP_USER and SMTP_PASS:
+        try:
+            subject = "Ask Howie — New Question"
+            if req.topic:
+                subject += f" [{req.topic}]"
+
+            body_lines = [
+                f"A new question was submitted via CincySeniors.org/ask_howie/",
+                "",
+                f"From:     {req.name or '(not provided)'}",
+                f"Email:    {req.email}",
+                f"Topic:    {req.topic or '(not provided)'}",
+                f"Time:     {entry['ts']}",
+                "",
+                "Question:",
+                "-" * 60,
+                req.question,
+                "-" * 60,
+                "",
+                "Reply directly to this email to respond to the submitter.",
+            ]
+
+            msg = EmailMessage()
+            msg["Subject"] = subject
+            msg["From"]    = f"CincySeniors Ask Howie <{SMTP_USER}>"
+            msg["To"]      = NOTIFY_TO
+            msg["Reply-To"] = req.email
+            msg.set_content("\n".join(body_lines))
+
+            if SMTP_SECURE:
+                with smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT) as server:
+                    server.login(SMTP_USER, SMTP_PASS)
+                    server.send_message(msg)
+            else:
+                with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as server:
+                    server.starttls()
+                    server.login(SMTP_USER, SMTP_PASS)
+                    server.send_message(msg)
+        except Exception as mail_err:
+            # Log the error but don't fail the request — question is already saved
+            print(f"[ask-howie] email send failed: {mail_err}")
 
     return {"ok": True}
 
