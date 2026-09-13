@@ -993,6 +993,43 @@ async def cindy_traffic(days: int = 30, _: None = Depends(require_admin_key)):
     }
 
 
+# ── Ask Howie submission endpoint ─────────────────────────────────────────────
+
+ASK_HOWIE_LOG = Path(__file__).resolve().parent.parent / "ask_howie_questions.jsonl"
+
+
+class AskHowieRequest(BaseModel):
+    name: str = ""
+    email: str
+    topic: str = ""
+    question: str
+
+
+@app.post("/ask-howie/submit")
+@limiter.limit("3/minute")
+async def ask_howie_submit(request: Request, req: AskHowieRequest):
+    """Save an Ask Howie question to a local JSONL log file."""
+    import json as _json
+    from datetime import datetime, timezone
+
+    if not req.email.strip() or not req.question.strip():
+        raise HTTPException(status_code=400, detail="Email and question are required.")
+
+    entry = {
+        "ts": datetime.now(timezone.utc).isoformat(),
+        "name": _esc(req.name)[:120],
+        "email": _esc(req.email)[:200],
+        "topic": _esc(req.topic)[:120],
+        "question": _esc(req.question)[:4000],
+        "ip": request.client.host if request.client else "",
+    }
+
+    with open(ASK_HOWIE_LOG, "a", encoding="utf-8") as f:
+        f.write(_json.dumps(entry) + "\n")
+
+    return {"ok": True}
+
+
 # ── File Upload endpoint ───────────────────────────────────────────────────────
 
 _UPLOAD_ALLOWED_EXT = {

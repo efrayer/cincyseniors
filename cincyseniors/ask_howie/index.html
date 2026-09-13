@@ -698,11 +698,15 @@
         <label for="howie-question">Your Question <span style="color:var(--red);font-weight:700;">*</span></label>
         <textarea id="howie-question" name="question" placeholder="Type your question here — as much or as little detail as you'd like. Howie will read every word." required></textarea>
       </div>
-      <p class="form-note">🔒 Your email is only used to reply to your question. We never share it.</p>
-      <button type="submit" class="submit-btn">Send to Howie ✉️</button>
+      <div class="form-note" style="display:flex;flex-direction:column;gap:8px;">
+        <p style="margin:0;">🔒 Your email is only used so Howie can reply to you. It is never shared or published.</p>
+        <p style="margin:0;">📢 <strong>Good questions may be shared on this site in the future — always anonymously,</strong> with your name and email removed. By submitting, you agree to this possibility. If you'd prefer your question stay completely private, just mention that in your message.</p>
+      </div>
+      <button type="submit" class="submit-btn" id="howie-submit-btn">Send to Howie ✉️</button>
+      <p id="howie-error" style="display:none;margin-top:12px;color:var(--red);font-weight:700;font-size:16px;"></p>
     </form>
     <div id="howie-thanks" style="display:none; margin-top:24px; padding:20px 24px; background:#fff; border:2px solid var(--howie-btn); border-radius:12px; font-size:18px; color:var(--ink);">
-      <strong>Thanks! Howie got your question.</strong><br>
+      <strong>✅ Thanks! Howie received your question.</strong><br>
       He'll reply to your email as soon as he can — usually within a day or two.
     </div>
   </div>
@@ -792,29 +796,47 @@
     });
   });
 
-  // Form submission — opens mailto with pre-filled content
+  // Form submission — POST to /ask-howie/submit
   document.getElementById('howie-form').addEventListener('submit', function (e) {
     e.preventDefault();
-    var name    = document.getElementById('howie-name').value.trim();
-    var email   = document.getElementById('howie-email').value.trim();
-    var topic   = document.getElementById('howie-topic').value;
+    var name     = document.getElementById('howie-name').value.trim();
+    var email    = document.getElementById('howie-email').value.trim();
+    var topic    = document.getElementById('howie-topic').value;
     var question = document.getElementById('howie-question').value.trim();
+    var errorEl  = document.getElementById('howie-error');
+    var submitBtn = document.getElementById('howie-submit-btn');
 
-    if (!email || !question) return;
+    errorEl.style.display = 'none';
 
-    var subject = encodeURIComponent('Ask Howie' + (topic ? ' — ' + topic : '') + (name ? ' (from ' + name + ')' : ''));
-    var body = encodeURIComponent(
-      (name ? 'From: ' + name + '\n' : '') +
-      'Email: ' + email + '\n' +
-      (topic ? 'Topic: ' + topic + '\n' : '') +
-      '\nQuestion:\n' + question
-    );
+    if (!email || !question) {
+      errorEl.textContent = 'Please enter your email address and your question.';
+      errorEl.style.display = 'block';
+      return;
+    }
 
-    window.location.href = 'mailto:howie_baum@fuse.net?subject=' + subject + '&body=' + body;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending…';
 
-    // Show thank-you
-    document.getElementById('howie-thanks').style.display = 'block';
-    document.getElementById('howie-form').style.display = 'none';
+    fetch('/ask-howie/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: name, email: email, topic: topic, question: question })
+    })
+    .then(function (res) { return res.json(); })
+    .then(function (data) {
+      if (data.ok) {
+        document.getElementById('howie-thanks').style.display = 'block';
+        document.getElementById('howie-form').style.display = 'none';
+      } else {
+        throw new Error(data.detail || 'Submission failed.');
+      }
+    })
+    .catch(function (err) {
+      errorEl.textContent = 'Something went wrong — please try again in a moment. (' + err.message + ')';
+      errorEl.style.display = 'block';
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Send to Howie ✉️';
+    });
   });
 </script>
 
