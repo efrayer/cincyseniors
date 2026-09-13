@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Secure File Upload — CincySeniors.org</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --cream:           #FAF6EE;
+      --cream-2:         #F3ECDD;
+      --ink:             #1F1B16;
+      --ink-soft:        #4A4238;
+      --terracotta:      #B45A3C;
+      --terracotta-dark: #8F4227;
+      --sage:            #6E8B6A;
+      --line:            #E5DCC7;
+      --red:             #C0392B;
+      --green:           #2E7D32;
+    }
+
+    *,*::before,*::after { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Atkinson Hyperlegible", system-ui, sans-serif;
+      font-size: 18px;
+      line-height: 1.6;
+      color: var(--ink);
+      background: var(--cream);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    a { color: var(--terracotta-dark); }
+
+    /* ── Top bar ── */
+    .topbar { background: var(--cream-2); border-bottom: 1px solid var(--line); }
+    .topbar-inner { max-width: 1120px; margin: 0 auto; padding: 10px 24px; display: flex; justify-content: space-between; align-items: center; }
+
+    /* ── Header ── */
+    header { max-width: 1120px; margin: 0 auto; padding: 20px 24px 12px; display: flex; align-items: center; gap: 14px; }
+    .brand { display: flex; align-items: center; gap: 14px; text-decoration: none; color: var(--ink); }
+    .brand-mark { width: 48px; height: 48px; border-radius: 50%; background: var(--terracotta); color: #fff; display: grid; place-items: center; font-family: "Fraunces", serif; font-weight: 700; font-size: 24px; flex-shrink: 0; }
+    .brand-name { font-family: "Fraunces", serif; font-weight: 700; font-size: 24px; }
+    .brand-tag { display: block; font-size: 14px; color: var(--ink-soft); }
+
+    /* ── Main layout ── */
+    main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 48px 24px; }
+
+    /* ── Card ── */
+    .card {
+      background: #fff;
+      border: 1.5px solid var(--line);
+      border-radius: 24px;
+      padding: 48px 44px;
+      width: 100%;
+      max-width: 520px;
+      box-shadow: 0 8px 32px rgba(31, 27, 22, 0.08);
+    }
+
+    .card-header { text-align: center; margin-bottom: 32px; }
+    .lock-icon { font-size: 48px; margin-bottom: 12px; display: block; }
+    .card-header h1 { font-family: "Fraunces", serif; font-size: 30px; margin: 0 0 8px; }
+    .card-header p { font-size: 16px; color: var(--ink-soft); margin: 0; }
+
+    /* ── Form fields ── */
+    .field { margin-bottom: 20px; }
+    label { display: block; font-weight: 700; font-size: 16px; margin-bottom: 6px; color: var(--ink); }
+    input[type="password"],
+    input[type="file"] {
+      width: 100%;
+      font-family: inherit;
+      font-size: 17px;
+      padding: 12px 14px;
+      border: 1.5px solid var(--line);
+      border-radius: 10px;
+      background: var(--cream);
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    input[type="password"]:focus,
+    input[type="file"]:focus {
+      border-color: var(--terracotta);
+      background: #fff;
+    }
+    input[type="file"] { cursor: pointer; padding: 10px 14px; }
+
+    /* ── Drop zone ── */
+    .drop-zone {
+      border: 2px dashed var(--line);
+      border-radius: 12px;
+      padding: 28px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      background: var(--cream);
+      position: relative;
+    }
+    .drop-zone.dragover { border-color: var(--terracotta); background: #fff5f0; }
+    .drop-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+      padding: 0;
+      border: none;
+    }
+    .drop-icon { font-size: 36px; display: block; margin-bottom: 8px; pointer-events: none; }
+    .drop-label { font-size: 16px; color: var(--ink-soft); pointer-events: none; }
+    .drop-label strong { color: var(--terracotta-dark); }
+    .drop-filename { font-size: 15px; font-weight: 700; color: var(--ink); margin-top: 8px; display: none; }
+
+    /* ── Submit button ── */
+    .btn-submit {
+      width: 100%;
+      background: var(--terracotta);
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      padding: 15px 20px;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background 0.15s, opacity 0.15s;
+      margin-top: 8px;
+    }
+    .btn-submit:hover:not(:disabled) { background: var(--terracotta-dark); }
+    .btn-submit:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    /* ── Progress bar ── */
+    .progress-wrap {
+      display: none;
+      margin-top: 16px;
+      height: 8px;
+      background: var(--line);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: var(--terracotta);
+      border-radius: 999px;
+      transition: width 0.2s ease;
+    }
+
+    /* ── Status messages ── */
+    .status {
+      display: none;
+      margin-top: 20px;
+      padding: 16px 18px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      text-align: center;
+    }
+    .status.success {
+      background: #e8f5e9;
+      border: 1.5px solid #a5d6a7;
+      color: var(--green);
+    }
+    .status.error {
+      background: #fdecea;
+      border: 1.5px solid #ef9a9a;
+      color: var(--red);
+    }
+
+    /* ── Allowed types note ── */
+    .allowed-note {
+      font-size: 13px;
+      color: var(--ink-soft);
+      margin-top: 6px;
+      line-height: 1.5;
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 14px;
+      color: var(--ink-soft);
+      border-top: 1px solid var(--line);
+    }
+
+    @media (max-width: 580px) {
+      .card { padding: 32px 22px; }
+      header { padding: 14px 16px 8px; }
+    }
+  </style>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+</head>
+<body>
+
+  <!-- Top bar -->
+  <div class="topbar">
+    <div class="topbar-inner">
+      <span style="font-size:14px;color:var(--ink-soft);">Internal use only &mdash; not publicly listed</span>
+      <a href="/" style="font-size:14px;font-weight:700;color:var(--ink);text-decoration:none;">← Back to CincySeniors.org</a>
+    </div>
+  </div>
+
+  <!-- Brand header -->
+  <header>
+    <a class="brand" href="/">
+      <span class="brand-mark" aria-hidden="true">C</span>
+      <span>
+        <span class="brand-name">CincySeniors.org</span>
+        <span class="brand-tag">Secure File Upload</span>
+      </span>
+    </a>
+  </header>
+
+  <main>
+    <div class="card" role="main">
+      <div class="card-header">
+        <span class="lock-icon" aria-hidden="true">🔒</span>
+        <h1>Secure File Upload</h1>
+        <p>Enter the upload password and select a file to upload securely.</p>
+      </div>
+
+      <form id="uploadForm" novalidate>
+
+        <!-- Password -->
+        <div class="field">
+          <label for="password">Upload Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Enter password"
+            autocomplete="current-password"
+            required
+          />
+        </div>
+
+        <!-- File drop zone -->
+        <div class="field">
+          <label>File</label>
+          <div class="drop-zone" id="dropZone">
+            <span class="drop-icon" aria-hidden="true">📂</span>
+            <p class="drop-label"><strong>Click to browse</strong> or drag &amp; drop a file here</p>
+            <p class="drop-filename" id="dropFilename"></p>
+            <input
+              type="file"
+              id="fileInput"
+              name="file"
+              required
+              aria-label="Choose file to upload"
+            />
+          </div>
+          <p class="allowed-note">
+            Allowed: PDF, Word, Excel, PowerPoint, TXT, CSV, PNG, JPG, GIF, WEBP, MP4, MOV, ZIP &mdash; max 50 MB
+          </p>
+        </div>
+
+        <button type="submit" class="btn-submit" id="submitBtn">Upload File</button>
+
+        <!-- Progress -->
+        <div class="progress-wrap" id="progressWrap">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <!-- Result -->
+        <div class="status" id="statusMsg" role="alert" aria-live="polite"></div>
+
+      </form>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2026 CincySeniors.org &mdash; Files are stored securely and not accessible via the web.
+  </footer>
+
+  <script>
+    (function () {
+      const form       = document.getElementById('uploadForm');
+      const fileInput  = document.getElementById('fileInput');
+      const dropZone   = document.getElementById('dropZone');
+      const dropName   = document.getElementById('dropFilename');
+      const submitBtn  = document.getElementById('submitBtn');
+      const progressWrap = document.getElementById('progressWrap');
+      const progressBar  = document.getElementById('progressBar');
+      const statusMsg  = document.getElementById('statusMsg');
+
+      // ── Drag & drop ──
+      dropZone.addEventListener('dragover', function (e) {
+        e.preventDefault();
+        dropZone.classList.add('dragover');
+      });
+      dropZone.addEventListener('dragleave', function () {
+        dropZone.classList.remove('dragover');
+      });
+      dropZone.addEventListener('drop', function (e) {
+        e.preventDefault();
+        dropZone.classList.remove('dragover');
+        if (e.dataTransfer.files.length) {
+          fileInput.files = e.dataTransfer.files;
+          updateDropLabel(e.dataTransfer.files[0].name);
+        }
+      });
+      fileInput.addEventListener('change', function () {
+        if (fileInput.files.length) {
+          updateDropLabel(fileInput.files[0].name);
+        }
+      });
+
+      function updateDropLabel(name) {
+        dropName.textContent = '📄 ' + name;
+        dropName.style.display = 'block';
+      }
+
+      // ── Form submit ──
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        clearStatus();
+
+        var password = document.getElementById('password').value;
+        var file = fileInput.files[0];
+
+        if (!password) {
+          showError('Please enter the upload password.');
+          return;
+        }
+        if (!file) {
+          showError('Please select a file to upload.');
+          return;
+        }
+
+        var formData = new FormData();
+        formData.append('password', password);
+        formData.append('file', file);
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Uploading…';
+        progressWrap.style.display = 'block';
+        animateProgress();
+
+        fetch('/upload/submit', {
+          method: 'POST',
+          body: formData,
+        })
+        .then(function (res) {
+          return res.json().then(function (data) {
+            return { status: res.status, data: data };
+          });
+        })
+        .then(function (result) {
+          stopProgress(100);
+          if (result.status === 200 && result.data.ok) {
+            showSuccess(
+              '✅ File uploaded successfully!\n' +
+              'Saved as: ' + result.data.filename + '\n' +
+              'Size: ' + formatBytes(result.data.size_bytes)
+            );
+            form.reset();
+            dropName.style.display = 'none';
+          } else {
+            var msg = (result.data && result.data.detail) ? result.data.detail : 'Upload failed.';
+            if (result.status === 401) {
+              showError('❌ Incorrect password. Please try again.');
+            } else if (result.status === 413) {
+              showError('❌ File is too large. Maximum size is 50 MB.');
+            } else if (result.status === 400) {
+              showError('❌ ' + msg);
+            } else if (result.status === 429) {
+              showError('❌ Too many upload attempts. Please wait a moment and try again.');
+            } else {
+              showError('❌ ' + msg);
+            }
+          }
+        })
+        .catch(function (err) {
+          stopProgress(0);
+          showError('❌ Network error. Please check your connection and try again.');
+        })
+        .finally(function () {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Upload File';
+        });
+      });
+
+      // ── Progress animation ──
+      var progressInterval = null;
+      var currentProgress = 0;
+
+      function animateProgress() {
+        currentProgress = 0;
+        progressBar.style.width = '0%';
+        progressInterval = setInterval(function () {
+          if (currentProgress < 85) {
+            currentProgress += Math.random() * 8;
+            progressBar.style.width = Math.min(currentProgress, 85) + '%';
+          }
+        }, 200);
+      }
+
+      function stopProgress(finalPct) {
+        clearInterval(progressInterval);
+        progressBar.style.width = finalPct + '%';
+        setTimeout(function () {
+          progressWrap.style.display = 'none';
+          progressBar.style.width = '0%';
+        }, 800);
+      }
+
+      // ── Status helpers ──
+      function showSuccess(msg) {
+        statusMsg.className = 'status success';
+        statusMsg.style.display = 'block';
+        statusMsg.style.whiteSpace = 'pre-line';
+        statusMsg.textContent = msg;
+      }
+
+      function showError(msg) {
+        statusMsg.className = 'status error';
+        statusMsg.style.display = 'block';
+        statusMsg.textContent = msg;
+        stopProgress(0);
+      }
+
+      function clearStatus() {
+        statusMsg.style.display = 'none';
+        statusMsg.textContent = '';
+        statusMsg.className = 'status';
+      }
+
+      function formatBytes(bytes) {
+        if (bytes < 1024) return bytes + ' B';
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+        return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+      }
+    })();
+  </script>
+
+</body>
+</html>

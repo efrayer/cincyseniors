@@ -5,7 +5,7 @@ import json
 import re
 from pathlib import Path
 
-from fastapi import Depends, FastAPI, File, Header, HTTPException, Request, UploadFile
+from fastapi import Depends, FastAPI, File, Form, Header, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
@@ -22,6 +22,7 @@ from app.config import (
     CINDY_DATA_DIR, CINDY_COLLECTION, CINDY_MANIFEST_PATH,
     TTS_ENGINE, OPENAI_API_KEY, TTS_VOICE, TTS_MODEL, TTS_INSTRUCTIONS,
     ADMIN_API_KEY,
+    UPLOAD_PASSWORD_HASH, UPLOAD_DIR,
 )
 from app.graph import build_graph, retrieve, generate_stream
 from app.ingest import ingest_file, run as ingest_run, _load_manifest, _save_manifest, delete_document
@@ -990,6 +991,65 @@ async def cindy_traffic(days: int = 30, _: None = Depends(require_admin_key)):
         "daily_series":   daily_series,
         "recent":         recent[:100],
     }
+
+
+# ── File Upload endpoint ───────────────────────────────────────────────────────
+
+_UPLOAD_ALLOWED_EXT = {
+    ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx",
+    ".txt", ".csv", ".png", ".jpg", ".jpeg", ".gif", ".webp",
+    ".mp4", ".mov", ".zip",
+}
+_UPLOAD_MAX_BYTES = 50 * 1024 * 1024  # 50 MB
+
+
+@app.post("/upload/submit")
+@limiter.limit("5/minute")
+async def upload_submit(
+    request: Request,
+    password: str = Form(...),
+    file: UploadFile = File(...),
+):
+    """Password-protected file upload endpoint. Saves files outside the web root."""
+    import bcrypt
+    import re
+    from datetime import datetime
+
+    # Verify password — constant-time comparison via bcrypt
+    try:
+        authenticated = bcrypt.checkpw(password.encode(), UPLOAD_PASSWORD_HASH.encode())
+    except Exception:
+        authenticated = False
+    if not authenticated:
+        raise HTTPException(status_code=401, detail="Invalid password.")
+
+    # Validate file extension against allowlist
+    original_name = file.filename or "upload"
+    suffix = Path(original_name).suffix.lower()
+    if suffix not in _UPLOAD_ALLOWED_EXT:
+        raise HTTPException(
+            status_code=400,
+            detail=f"File type '{suffix or '(none)'}' is not permitted. "
+                   f"Allowed: {', '.join(sorted(_UPLOAD_ALLOWED_EXT))}",
+        )
+
+    # Read file and enforce size limit
+    data = await file.read()
+    if len(data) > _UPLOAD_MAX_BYTES:
+        raise HTTPException(status_code=413, detail="File exceeds the 50 MB size limit.")
+
+    # Sanitize filename — keep only safe characters, prefix with UTC timestamp
+    stem = Path(original_name).stem
+    stem = re.sub(r"[^\w\-]", "_", stem)[:80].strip("_") or "file"
+    timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+    safe_name = f"{timestamp}_{stem}{suffix}"
+
+    # Write to upload directory (never served publicly by Caddy)
+    UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+    dest = UPLOAD_DIR / safe_name
+    dest.write_bytes(data)
+
+    return {"ok": True, "filename": safe_name, "size_bytes": len(data)}
 
 
 if __name__ == "__main__":
