@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Protecting Yourself Online — Tips from Howie | CincySeniors.org</title>
+  <meta name="description" content="A plain-language guide to staying safe online — scam warnings, password tips, identity protection, and more. Free take-home reference from Howie at CincySeniors.org." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:          #FBF7F1;
+      --panel:       #FFFBF3;
+      --cream-2:     #F3ECDD;
+      --ink:         #231914;
+      --ink-2:       #4A3E36;
+      --border:      #D8C9AE;
+      --line:        #D8C9AE;
+      --sand:        #E7D9C0;
+      --howie:       #7A5C1E;
+      --howie-dark:  #5C4314;
+      --howie-light: rgba(122,92,30,.09);
+      --howie-btn:   #C98A2B;
+      --howie-btn-dk:#A06E1A;
+      --red:         #A8322A;
+      --red-dk:      #8A281F;
+      --green:       #2E5C2E;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: "Source Sans 3", -apple-system, system-ui, sans-serif;
+      font-size: 19px;
+      line-height: 1.7;
+      color: var(--ink);
+      background: var(--bg);
+    }
+
+    a { color: var(--howie); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+    a:hover { color: var(--howie-dark); }
+
+    h1, h2, h3, h4 {
+      font-family: "Fraunces", Georgia, serif;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+    }
+
+    /* ── Skip link ── */
+    .skip-link { position: absolute; left: -9999px; top: 0; background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 0 0 10px 0; z-index: 999; font-size: 16px; }
+    .skip-link:focus { left: 0; }
+
+    /* ── Top bar ── */
+    .topbar { background: var(--cream-2); border-bottom: 1px solid var(--border); font-size: 16px; }
+    .topbar-inner { max-width: 1040px; margin: 0 auto; padding: 8px 24px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .text-size { display: inline-flex; gap: 6px; align-items: center; color: var(--ink-2); }
+    .text-size button { background: transparent; border: 1.5px solid var(--border); border-radius: 999px; padding: 3px 10px; font-family: inherit; cursor: pointer; color: var(--ink); font-size: 15px; }
+    .text-size button:hover { border-color: var(--howie-btn); }
+    .text-size button.active { background: var(--howie-btn); color: #fff; border-color: var(--howie-btn-dk); }
+
+    /* ── Nav ── */
+    .page-wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
+    .site-header { display: flex; justify-content: space-between; align-items: center; padding: 18px 0 12px; gap: 20px; flex-wrap: wrap; }
+    .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--ink); }
+    .brand-mark { width: 46px; height: 46px; border-radius: 50%; background: var(--howie-btn); color: #fff; display: grid; place-items: center; font-family: "Fraunces", serif; font-weight: 700; font-size: 22px; flex-shrink: 0; }
+    .brand-name { font-family: "Fraunces", serif; font-weight: 700; font-size: 22px; line-height: 1.1; }
+    .brand-tag { display: block; font-size: 13px; color: var(--ink-2); }
+
+    .nav-toggle { display: none; background: transparent; border: 1.5px solid var(--border); border-radius: 8px; padding: 8px 14px; font-size: 20px; cursor: pointer; color: var(--ink); font-family: inherit; }
+    .nav-toggle:focus { outline: 3px solid var(--howie-btn); outline-offset: 2px; }
+
+    .primary-nav ul { list-style: none; display: flex; gap: 4px; flex-wrap: wrap; }
+    .primary-nav a { display: block; padding: 8px 14px; border-radius: 999px; text-decoration: none; color: var(--ink); font-weight: 600; font-size: 16px; }
+    .primary-nav a:hover { background: var(--cream-2); }
+    .primary-nav a:focus { outline: 3px solid var(--howie-btn); outline-offset: 2px; }
+    .primary-nav .dropdown { position: relative; }
+    .primary-nav .dropdown > a::after { content: " ▾"; font-size: 0.75em; }
+    .primary-nav .dropdown-menu { display: none; position: absolute; top: calc(100% + 4px); right: 0; background: var(--panel); border: 1.5px solid var(--border); border-radius: 14px; padding: 8px; min-width: 220px; box-shadow: 0 8px 24px rgba(31,27,22,0.12); z-index: 200; flex-direction: column; gap: 2px; }
+    .primary-nav .dropdown:hover .dropdown-menu,
+    .primary-nav .dropdown:focus-within .dropdown-menu,
+    .primary-nav .dropdown.js-open .dropdown-menu { display: flex; }
+    .primary-nav .dropdown-menu a { border-radius: 8px; font-size: 15px; padding: 9px 13px; }
+
+    /* ── Breadcrumb ── */
+    .breadcrumb { font-size: 15px; color: var(--ink-2); padding: 14px 0 0; }
+    .breadcrumb a { color: var(--howie); text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb span { margin: 0 6px; color: var(--border); }
+
+    /* ── Page hero ── */
+    .page-hero { padding: 40px 0 36px; border-bottom: 1px solid var(--border); margin-bottom: 48px; }
+    .eyebrow { display: inline-block; font-size: 13px; font-weight: 700; color: var(--howie); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 12px; }
+    .page-hero h1 { font-size: 48px; line-height: 1.08; margin-bottom: 14px; }
+    .page-hero .subtitle { font-size: 20px; color: var(--ink-2); max-width: 56ch; line-height: 1.6; }
+
+    /* ── Download banner ── */
+    .download-banner {
+      display: flex; align-items: center; gap: 18px;
+      background: #FFF6E0; border: 2px solid var(--howie-btn);
+      border-radius: 16px; padding: 20px 24px; margin-bottom: 52px;
+      flex-wrap: wrap;
+    }
+    .download-banner .dl-icon { font-size: 36px; flex-shrink: 0; line-height: 1; }
+    .download-banner .dl-text { flex: 1; min-width: 180px; }
+    .download-banner .dl-text strong { display: block; font-size: 17px; color: var(--ink); margin-bottom: 2px; }
+    .download-banner .dl-text span { font-size: 15px; color: var(--ink-2); }
+    .btn-download {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--howie-btn); color: #fff;
+      font-family: inherit; font-weight: 700; font-size: 17px;
+      padding: 13px 26px; border-radius: 999px; text-decoration: none;
+      white-space: nowrap; flex-shrink: 0;
+      transition: background 0.15s;
+    }
+    .btn-download:hover { background: var(--howie-btn-dk); color: #fff; }
+
+    /* ── Content layout ── */
+    .content-cols { display: grid; grid-template-columns: 1fr 300px; gap: 48px; align-items: start; margin-bottom: 64px; }
+
+    /* ── Sections ── */
+    .guide-section { margin-bottom: 44px; }
+    .guide-section h2 { font-size: 28px; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid var(--sand); }
+
+    /* ── Golden rule block ── */
+    .golden-rule {
+      background: #FFF6E0; border-left: 5px solid var(--howie-btn);
+      border-radius: 0 14px 14px 0; padding: 24px 28px; margin-bottom: 28px;
+    }
+    .golden-rule h3 { font-size: 20px; color: var(--howie-dark); margin-bottom: 12px; }
+    .golden-rule ol { padding-left: 22px; }
+    .golden-rule li { font-size: 18px; margin-bottom: 8px; }
+    .golden-rule .ai-tip { margin-top: 14px; font-size: 16px; color: var(--ink-2); font-style: italic; border-top: 1px solid var(--sand); padding-top: 12px; }
+
+    /* ── Alert / always-a-scam ── */
+    .alert-block {
+      background: #FEF2F2; border: 1.5px solid #FCA5A5; border-radius: 14px;
+      padding: 22px 26px; margin-bottom: 24px;
+    }
+    .alert-block h3 { font-size: 19px; color: var(--red); margin-bottom: 12px; }
+    .alert-block ul { list-style: none; padding: 0; }
+    .alert-block li { padding: 7px 0; border-bottom: 1px solid #FCA5A5; font-size: 17px; display: flex; gap: 10px; }
+    .alert-block li:last-child { border-bottom: none; }
+    .alert-block li::before { content: "🚫"; flex-shrink: 0; }
+
+    /* ── Never share block ── */
+    .never-block {
+      background: #FFF0F0; border: 1.5px solid #F5C6C6; border-radius: 14px;
+      padding: 22px 26px; margin-bottom: 24px;
+    }
+    .never-block h3 { font-size: 19px; color: var(--red-dk); margin-bottom: 12px; }
+    .never-block ul { list-style: none; padding: 0; }
+    .never-block li { padding: 7px 0; border-bottom: 1px solid #F5C6C6; font-size: 17px; display: flex; gap: 10px; }
+    .never-block li:last-child { border-bottom: none; }
+    .never-block li::before { content: "🔴"; flex-shrink: 0; }
+
+    /* ── Tip list ── */
+    .tip-list { list-style: none; padding: 0; }
+    .tip-list li {
+      display: flex; gap: 12px; align-items: flex-start;
+      padding: 10px 0; border-bottom: 1px solid var(--sand);
+      font-size: 18px;
+    }
+    .tip-list li:last-child { border-bottom: none; }
+    .tip-list .tip-bullet { flex-shrink: 0; width: 28px; height: 28px; background: var(--howie-light); border-radius: 50%; display: grid; place-items: center; font-size: 14px; color: var(--howie); font-weight: 700; margin-top: 2px; }
+    .tip-list .tip-label { font-weight: 700; color: var(--ink); }
+    .tip-list .tip-desc { color: var(--ink-2); }
+
+    /* ── Contact table ── */
+    .contacts-list { list-style: none; padding: 0; }
+    .contacts-list li { display: flex; align-items: baseline; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--sand); font-size: 17px; flex-wrap: wrap; }
+    .contacts-list li:last-child { border-bottom: none; }
+    .contacts-list .contact-label { font-weight: 700; color: var(--ink); min-width: 180px; }
+    .contacts-list a { color: var(--howie); }
+
+    /* ── Howie quote ── */
+    .howie-quote {
+      background: var(--cream-2); border-radius: 16px; padding: 26px 28px;
+      display: flex; gap: 16px; align-items: flex-start; margin-bottom: 28px;
+    }
+    .howie-avatar { width: 52px; height: 52px; border-radius: 50%; background: var(--howie-btn); color: #fff; display: grid; place-items: center; font-family: "Fraunces", serif; font-weight: 700; font-size: 22px; flex-shrink: 0; }
+    .howie-quote-body { flex: 1; }
+    .howie-quote-body p { font-size: 18px; font-style: italic; color: var(--ink); line-height: 1.65; margin-bottom: 8px; }
+    .howie-quote-body cite { font-size: 14px; font-style: normal; font-weight: 700; color: var(--howie); letter-spacing: 0.06em; text-transform: uppercase; }
+
+    /* ── Sidebar ── */
+    .sidebar { display: flex; flex-direction: column; gap: 24px; position: sticky; top: 24px; }
+    .sidebar-card { background: #fff; border: 1.5px solid var(--border); border-radius: 16px; padding: 22px; }
+    .sidebar-card h3 { font-size: 18px; margin-bottom: 12px; color: var(--ink); }
+    .sidebar-card ul { list-style: none; padding: 0; }
+    .sidebar-card li { padding: 6px 0; border-bottom: 1px solid var(--sand); font-size: 15px; }
+    .sidebar-card li:last-child { border-bottom: none; }
+    .sidebar-card a { font-size: 15px; text-decoration: none; color: var(--howie); display: block; padding: 6px 0; border-bottom: 1px solid var(--sand); }
+    .sidebar-card a:last-child { border-bottom: none; }
+    .sidebar-card a:hover { text-decoration: underline; }
+
+    .sidebar-ask { background: #FFF6E0; border: 2px solid var(--howie-btn); border-radius: 16px; padding: 22px; text-align: center; }
+    .sidebar-ask p { font-size: 16px; color: var(--ink-2); margin-bottom: 14px; line-height: 1.5; }
+    .btn-ask { display: inline-block; background: var(--howie-btn); color: #fff; font-family: inherit; font-weight: 700; font-size: 16px; padding: 11px 22px; border-radius: 999px; text-decoration: none; transition: background 0.15s; }
+    .btn-ask:hover { background: var(--howie-btn-dk); color: #fff; }
+
+    /* ── Footer ── */
+    footer { background: var(--cream-2); border-top: 1px solid var(--border); margin-top: 64px; }
+    .page-footer { padding: 28px 0; text-align: center; font-size: 16px; color: var(--ink-2); }
+    .page-footer a { color: var(--howie); text-decoration: none; }
+    .page-footer a:hover { text-decoration: underline; }
+
+    /* ── Text size ── */
+    html.text-large body { font-size: 22px; }
+    html.text-large .page-hero h1 { font-size: 54px; }
+    html.text-xl body { font-size: 25px; }
+    html.text-xl .page-hero h1 { font-size: 60px; }
+
+    /* ── Responsive ── */
+    @media (max-width: 860px) {
+      .content-cols { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+    }
+    @media (max-width: 600px) {
+      .page-hero h1 { font-size: 34px; }
+      .page-wrap { padding: 0 16px; }
+      .download-banner { flex-direction: column; gap: 14px; }
+      .btn-download { width: 100%; justify-content: center; }
+      .topbar-inner { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+</head>
+<body>
+
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
+<!-- Top bar -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="text-size" aria-label="Text size controls">
+      <span>Text size:</span>
+      <button type="button" aria-label="Normal text">A</button>
+      <button type="button" aria-label="Larger text">A+</button>
+      <button type="button" aria-label="Largest text">A++</button>
+    </div>
+    <a href="mailto:info@cincyseniors.org" style="font-weight:700;color:var(--ink);text-decoration:none;">✉ info@cincyseniors.org</a>
+  </div>
+</div>
+
+<!-- Header / nav -->
+<div class="page-wrap">
+  <header class="site-header">
+    <a class="brand" href="/">
+      <span class="brand-mark" aria-hidden="true">C</span>
+      <span>
+        <span class="brand-name">CincySeniors.org</span>
+        <span class="brand-tag">A Cincy AI Catalyst (CAIC) guide to using AI</span>
+      </span>
+    </a>
+    <button class="nav-toggle" aria-expanded="false" aria-label="Open navigation">&#9776;</button>
+    <nav class="primary-nav" aria-label="Primary">
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li class="dropdown">
+          <a href="/learn/" aria-haspopup="true">Learn</a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="/learn/" role="menuitem">📖 Learn About AI</a></li>
+            <li><a href="/health/" role="menuitem">❤️ Health</a></li>
+            <li><a href="/wealth/" role="menuitem">💰 Wealth</a></li>
+            <li><a href="/self/" role="menuitem">✍️ Self</a></li>
+            <li><a href="/ai-quiz.html" role="menuitem">🧠 AI Quiz</a></li>
+            <li><a href="/engAging_Seniors/" role="menuitem">📱 EngAging Seniors</a></li>
+            <li><a href="/learn/Leverage_50/" role="menuitem">🚀 Leverage AI 50+</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="/cindy/" aria-haspopup="true">Ask CindyAI - Ask Howie</a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="/cindy/" role="menuitem">💬 Chat with Cindy AI</a></li>
+            <li><a href="/cindy/about/" role="menuitem">ℹ️ About Cindy</a></li>
+            <li><a href="/ask_howie/" role="menuitem">👤 Ask Howie</a></li>
+            <li><a href="/resources/" role="menuitem">📚 Resources</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="/news/" aria-haspopup="true">News/Tips</a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="/news/" role="menuitem">📰 News</a></li>
+            <li><a href="/helpful-tips/" role="menuitem">💡 Helpful Tips</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="/signups/" aria-haspopup="true">Get Involved</a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="/signups/newsletter.html" role="menuitem">📰 Newsletter</a></li>
+            <li><a href="/signups/volunteer.html" role="menuitem">🤝 Volunteer</a></li>
+            <li><a href="/signups/townhall.html" role="menuitem">🏛️ Town Hall Signup</a></li>
+            <li><a href="/signups/smallgroup.html" role="menuitem">👥 Small Group Signup</a></li>
+          </ul>
+        </li>
+        <li><a href="/team/">Our Team</a></li>
+      </ul>
+    </nav>
+  </header>
+</div>
+
+<main id="main-content">
+<div class="page-wrap">
+
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="/">Home</a><span aria-hidden="true">›</span>
+    <a href="/ask_howie/">Ask Howie</a><span aria-hidden="true">›</span>
+    Protecting Yourself Online
+  </nav>
+
+  <!-- Hero -->
+  <div class="page-hero">
+    <span class="eyebrow">Tips from Howie</span>
+    <h1>Protecting Yourself Online</h1>
+    <p class="subtitle">A plain-language reference guide for older adults &amp; families — covering scams, passwords, identity theft, phone safety, and what to do if something goes wrong.</p>
+  </div>
+
+  <!-- Download banner -->
+  <div class="download-banner">
+    <span class="dl-icon" aria-hidden="true">📄</span>
+    <div class="dl-text">
+      <strong>Large-Print Take-Home Reference Guide</strong>
+      <span>Download &amp; save this guide — print it out and keep it next to your computer or phone.</span>
+    </div>
+    <a class="btn-download" href="/ask_howie/Protecting_Yourself_Online.pdf" download="Protecting_Yourself_Online.pdf">
+      ⬇ Download &amp; Save the PDF
+    </a>
+  </div>
+
+  <!-- Two-column content + sidebar -->
+  <div class="content-cols">
+
+    <!-- Main content -->
+    <div>
+
+      <!-- Howie welcome quote -->
+      <div class="howie-quote">
+        <div class="howie-avatar" aria-hidden="true">H</div>
+        <div class="howie-quote-body">
+          <p>"Welcome! Scammers rely on urgency to make you panic. Take a breath, slow down, and keep this reference guide right next to your computer or phone!"</p>
+          <cite>— Howie</cite>
+        </div>
+      </div>
+
+      <!-- The Golden Rule -->
+      <div class="guide-section">
+        <h2>⭐ The Golden Rule</h2>
+        <div class="golden-rule">
+          <h3>When something feels off — Stop, Verify, Protect.</h3>
+          <ol>
+            <li><strong>STOP</strong> — Don't react to pressure or urgency.</li>
+            <li><strong>VERIFY</strong> — Check through a trusted source — never through the message itself.</li>
+            <li><strong>PROTECT</strong> — Use strong passwords, MFA, updates, and backups.</li>
+          </ol>
+          <p class="ai-tip">💡 <strong>AI Tip:</strong> AI can help with the analysis. YOU make the final decision.</p>
+        </div>
+      </div>
+
+      <!-- Always a Scam -->
+      <div class="guide-section">
+        <h2>🚫 Always a Scam — No Exceptions</h2>
+        <p style="margin-bottom:16px;color:var(--ink-2);font-size:17px;">If any of the following happens, stop immediately — it is a scam, every single time.</p>
+        <div class="alert-block">
+          <h3>Red-flag demands</h3>
+          <ul>
+            <li><strong>Gift Cards / Wire Transfer</strong> — Payment demanded by gift card or wire transfer. Legitimate organizations never ask for this.</li>
+            <li><strong>Password / Code Requests</strong> — Anyone asking for your password or verification code. No real company will ever ask for this.</li>
+            <li><strong>Remote Access</strong> — An unsolicited request for remote access to your computer. Hang up immediately.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Never Share -->
+      <div class="guide-section">
+        <h2>🔴 Never Share These</h2>
+        <div class="never-block">
+          <h3>Keep these private — always</h3>
+          <ul>
+            <li>Passwords or verification codes</li>
+            <li>Full Social Security Number (last 4 digits only, if ever needed)</li>
+            <li>Bank or card numbers by email or text</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Passwords & Accounts -->
+      <div class="guide-section">
+        <h2>🔑 Passwords &amp; Accounts</h2>
+        <ul class="tip-list">
+          <li>
+            <span class="tip-bullet">12+</span>
+            <span><span class="tip-label">Use 12+ Characters.</span> <span class="tip-desc">Length matters more than complexity. A longer passphrase is harder to crack than a short jumble of characters.</span></span>
+          </li>
+          <li>
+            <span class="tip-bullet">1×</span>
+            <span><span class="tip-label">Never Reuse Passwords.</span> <span class="tip-desc">If one account gets hacked and you reused the password, every account with that password is now at risk.</span></span>
+          </li>
+          <li>
+            <span class="tip-bullet">🔐</span>
+            <span><span class="tip-label">Use a Password Manager.</span> <span class="tip-desc">A password manager remembers all your passwords so you only need to remember one master password.</span></span>
+          </li>
+          <li>
+            <span class="tip-bullet">✅</span>
+            <span><span class="tip-label">Turn on MFA Everywhere.</span> <span class="tip-desc">Multi-factor authentication adds a second step (like a text code) that stops most account takeovers even if your password is stolen.</span></span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Other Red Flags -->
+      <div class="guide-section">
+        <h2>⚠️ Other Red Flags</h2>
+        <ul class="tip-list">
+          <li>
+            <span class="tip-bullet">⏱</span>
+            <span><span class="tip-label">Urgency &amp; Scary Language.</span> <span class="tip-desc">Messages pushing you to "act now or lose your account" are designed to short-circuit your judgment. Pause.</span></span>
+          </li>
+          <li>
+            <span class="tip-bullet">❓</span>
+            <span><span class="tip-label">Unusual Requests.</span> <span class="tip-desc">Requests that seem out of character for the supposed sender — your bank, a family member, or a company.</span></span>
+          </li>
+          <li>
+            <span class="tip-bullet">🏆</span>
+            <span><span class="tip-label">Too-Good-to-Be-True Offers.</span> <span class="tip-desc">Unexpected prizes, lottery winnings, or inheritances from strangers are always scams.</span></span>
+          </li>
+          <li>
+            <span class="tip-bullet">✏️</span>
+            <span><span class="tip-label">Typos &amp; Odd Grammar.</span> <span class="tip-desc">Legitimate companies proofread their messages. Unusual wording or spelling errors are warning signs.</span></span>
+          </li>
+          <li>
+            <span class="tip-bullet">📧</span>
+            <span><span class="tip-label">Sender Mismatch.</span> <span class="tip-desc">The display name looks familiar but the actual email address is strange — e.g., "Apple Support" sending from a Gmail address.</span></span>
+          </li>
+          <li>
+            <span class="tip-bullet">🔗</span>
+            <span><span class="tip-label">Link Mismatch.</span> <span class="tip-desc">Hover over a link (don't click!) and check that the destination matches where it claims to go.</span></span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Protect Your Devices -->
+      <div class="guide-section">
+        <h2>🖥️ Protect Your Devices</h2>
+        <ul class="tip-list">
+          <li><span class="tip-bullet">🔄</span><span><span class="tip-label">Auto Updates.</span> <span class="tip-desc">Keep your operating system and apps updated — updates fix security holes that scammers exploit.</span></span></li>
+          <li><span class="tip-bullet">🛡️</span><span><span class="tip-label">Built-In Protection.</span> <span class="tip-desc">Use your device's built-in security tools. Windows Defender and macOS security are excellent starting points.</span></span></li>
+          <li><span class="tip-bullet">💾</span><span><span class="tip-label">Regular Backups.</span> <span class="tip-desc">Back up your photos and important files regularly to an external drive or cloud service.</span></span></li>
+          <li><span class="tip-bullet">🔒</span><span><span class="tip-label">Lock Screen.</span> <span class="tip-desc">Use a PIN, password, or fingerprint to lock your phone and computer when not in use.</span></span></li>
+          <li><span class="tip-bullet">📍</span><span><span class="tip-label">Find My Device.</span> <span class="tip-desc">Enable "Find My" (Apple) or "Find My Device" (Android/Windows) so you can locate or remotely wipe a lost device.</span></span></li>
+        </ul>
+      </div>
+
+      <!-- Your Identity -->
+      <div class="guide-section">
+        <h2>🪪 Your Identity</h2>
+        <ul class="tip-list">
+          <li><span class="tip-bullet">🗂️</span><span><span class="tip-label">Shred Documents.</span> <span class="tip-desc">Shred anything with account numbers, Social Security numbers, or personal details before throwing it away.</span></span></li>
+          <li><span class="tip-bullet">📬</span><span><span class="tip-label">Bring In Your Mail Daily.</span> <span class="tip-desc">Mail left in the box is an easy target for identity thieves.</span></span></li>
+          <li><span class="tip-bullet">🏦</span><span><span class="tip-label">Review Statements Regularly.</span> <span class="tip-desc">Check bank and credit card statements for unfamiliar charges at least once a month.</span></span></li>
+          <li><span class="tip-bullet">❄️</span><span><span class="tip-label">Consider a Credit Freeze.</span> <span class="tip-desc">Freezing your credit at Equifax, Experian, and TransUnion is free and prevents anyone from opening new credit in your name.</span></span></li>
+        </ul>
+      </div>
+
+      <!-- Phone & Wi-Fi -->
+      <div class="guide-section">
+        <h2>📱 Phone &amp; Wi-Fi Safety</h2>
+        <ul class="tip-list">
+          <li><span class="tip-bullet">📵</span><span><span class="tip-label">Let Unknown Numbers Go to Voicemail.</span> <span class="tip-desc">If it's important, they'll leave a message. Scammers rarely do.</span></span></li>
+          <li><span class="tip-bullet">✋</span><span><span class="tip-label">Don't Tap Links in Texts.</span> <span class="tip-desc">Even if the text looks like it's from a familiar company — FedEx, your bank, the USPS — go directly to their official website instead.</span></span></li>
+          <li><span class="tip-bullet">📲</span><span><span class="tip-label">Official App Stores Only.</span> <span class="tip-desc">Only install apps from the official Apple App Store or Google Play Store.</span></span></li>
+          <li><span class="tip-bullet">📶</span><span><span class="tip-label">Avoid Banking on Public Wi-Fi.</span> <span class="tip-desc">Public Wi-Fi at coffee shops or airports isn't secure. Use your phone's cellular hotspot for sensitive tasks.</span></span></li>
+        </ul>
+      </div>
+
+      <!-- Family Emergency Scam -->
+      <div class="guide-section">
+        <h2>👨‍👩‍👧 The Family Emergency Scam</h2>
+        <div class="alert-block">
+          <h3>AI can now clone a loved one's voice convincingly.</h3>
+          <ul>
+            <li>If a caller claims a family member is in trouble and needs money sent immediately — do not trust the voice alone.</li>
+            <li>Ask for your family's <strong>secret word</strong> (agree on one in advance).</li>
+            <li>Hang up and call the person back on a number you already know.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- If You've Been Scammed -->
+      <div class="guide-section">
+        <h2>🆘 If You Think You've Been Scammed</h2>
+        <ul class="tip-list">
+          <li><span class="tip-bullet">1</span><span><span class="tip-label">Stop the conversation</span> <span class="tip-desc">— hang up, close the window, or leave the chat immediately.</span></span></li>
+          <li><span class="tip-bullet">2</span><span><span class="tip-label">Change your passwords</span> <span class="tip-desc">— starting with email, then banking, then everything else.</span></span></li>
+          <li><span class="tip-bullet">3</span><span><span class="tip-label">Call your bank</span> <span class="tip-desc">— immediately if any money was moved or financial details were shared.</span></span></li>
+          <li><span class="tip-bullet">4</span><span><span class="tip-label">Save the details</span> <span class="tip-desc">— take screenshots or write down what happened for reporting purposes.</span></span></li>
+        </ul>
+      </div>
+
+      <!-- Checking a Suspicious Message -->
+      <div class="guide-section">
+        <h2>🤖 How to Check a Suspicious Message</h2>
+        <ul class="tip-list">
+          <li>
+            <span class="tip-bullet">📸</span>
+            <span><span class="tip-label">AI Second Opinion.</span> <span class="tip-desc">Screenshot the message, cover any private details (name, address, account numbers), then paste it into an AI chatbot and ask "Is this a scam?"</span></span>
+          </li>
+          <li>
+            <span class="tip-bullet">🔍</span>
+            <span><span class="tip-label">Free Scam-Check Tools.</span>
+            <span class="tip-desc">
+              <a href="https://genie.norton.com" target="_blank" rel="noopener">Norton Genie (genie.norton.com)</a> and
+              <a href="https://scamio.bitdefender.com" target="_blank" rel="noopener">Bitdefender Scamio (scamio.bitdefender.com)</a>
+              — both free, both fast.
+            </span></span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Key Contacts -->
+      <div class="guide-section">
+        <h2>📞 Key Contacts &amp; Reporting Resources</h2>
+        <ul class="contacts-list">
+          <li>
+            <span class="contact-label">FTC Fraud Reporting</span>
+            <span><a href="https://reportfraud.ftc.gov" target="_blank" rel="noopener">reportfraud.ftc.gov</a> &nbsp;·&nbsp; 1-877-382-4357</span>
+          </li>
+          <li>
+            <span class="contact-label">FBI Internet Crime (IC3)</span>
+            <span><a href="https://www.ic3.gov" target="_blank" rel="noopener">ic3.gov</a></span>
+          </li>
+          <li>
+            <span class="contact-label">Identity Theft</span>
+            <span><a href="https://www.identitytheft.gov" target="_blank" rel="noopener">identitytheft.gov</a></span>
+          </li>
+          <li>
+            <span class="contact-label">Equifax Credit Freeze</span>
+            <span>1-888-836-6351</span>
+          </li>
+          <li>
+            <span class="contact-label">Experian Credit Freeze</span>
+            <span>1-888-397-3742</span>
+          </li>
+          <li>
+            <span class="contact-label">TransUnion Credit Freeze</span>
+            <span>1-800-680-7289</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Final Howie quote -->
+      <div class="howie-quote">
+        <div class="howie-avatar" aria-hidden="true">H</div>
+        <div class="howie-quote-body">
+          <p>"Remember: Technology moves fast, but staying safe comes down to simple habits. Pause, verify independently, and never hesitate to ask for help from someone you trust!"</p>
+          <cite>— Howie's Final Reminder</cite>
+        </div>
+      </div>
+
+      <!-- Second download CTA -->
+      <div class="download-banner" style="margin-top:40px;">
+        <span class="dl-icon" aria-hidden="true">📄</span>
+        <div class="dl-text">
+          <strong>Save this guide for later</strong>
+          <span>Download the large-print PDF to keep handy next to your computer or share with a friend or family member.</span>
+        </div>
+        <a class="btn-download" href="/ask_howie/Protecting_Yourself_Online.pdf" download="Protecting_Yourself_Online.pdf">
+          ⬇ Download &amp; Save the PDF
+        </a>
+      </div>
+
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" aria-label="Quick reference">
+
+      <div class="sidebar-card">
+        <h3>⭐ Quick Reference</h3>
+        <ul>
+          <li>🚫 Gift cards = always a scam</li>
+          <li>🚫 Password requests = always a scam</li>
+          <li>🚫 Remote access requests = always a scam</li>
+          <li>🔑 Use 12+ character passwords</li>
+          <li>🔑 Never reuse passwords</li>
+          <li>✅ Turn on MFA everywhere</li>
+          <li>📵 Unknown call? Let it go to voicemail</li>
+          <li>✋ Don't tap links in texts</li>
+          <li>❄️ Consider freezing your credit</li>
+        </ul>
+      </div>
+
+      <div class="sidebar-card">
+        <h3>📞 Emergency Numbers</h3>
+        <ul>
+          <li><strong>FTC:</strong> 1-877-382-4357</li>
+          <li><strong>Equifax:</strong> 1-888-836-6351</li>
+          <li><strong>Experian:</strong> 1-888-397-3742</li>
+          <li><strong>TransUnion:</strong> 1-800-680-7289</li>
+        </ul>
+      </div>
+
+      <div class="sidebar-card">
+        <h3>🔗 Free Tools</h3>
+        <a href="https://reportfraud.ftc.gov" target="_blank" rel="noopener">FTC Fraud Report</a>
+        <a href="https://www.identitytheft.gov" target="_blank" rel="noopener">IdentityTheft.gov</a>
+        <a href="https://genie.norton.com" target="_blank" rel="noopener">Norton Genie (scam checker)</a>
+        <a href="https://scamio.bitdefender.com" target="_blank" rel="noopener">Bitdefender Scamio</a>
+        <a href="https://www.ic3.gov" target="_blank" rel="noopener">FBI IC3 (report cybercrime)</a>
+      </div>
+
+      <div class="sidebar-ask">
+        <h3>Have a question?</h3>
+        <p>Ask Howie — a real person who answers every question personally.</p>
+        <a class="btn-ask" href="/ask_howie/#ask-howie">✉️ Ask Howie</a>
+      </div>
+
+    </aside>
+
+  </div>
+
+</div>
+</main>
+
+<footer>
+  <div class="page-wrap">
+    <div class="page-footer">
+      <a href="/">CincySeniors.org</a> &nbsp;·&nbsp;
+      <a href="/ask_howie/">Ask Howie</a> &nbsp;·&nbsp;
+      <a href="/cindy/">Ask Cindy AI</a> &nbsp;·&nbsp;
+      <a href="mailto:info@cincyseniors.org">info@cincyseniors.org</a> &nbsp;·&nbsp;
+      <a href="/privacy.html">Privacy Policy</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Text size controls
+  (function () {
+    var html = document.documentElement;
+    var btns = document.querySelectorAll('.text-size button');
+    var classes = ['', 'text-large', 'text-xl'];
+    var labels = ['Normal', 'Large', 'Largest'];
+    function applySize(idx) {
+      html.classList.remove('text-large', 'text-xl');
+      if (classes[idx]) html.classList.add(classes[idx]);
+      btns.forEach(function (btn, i) {
+        btn.classList.toggle('active', i === idx);
+        btn.setAttribute('aria-pressed', i === idx ? 'true' : 'false');
+      });
+      try { localStorage.setItem('csTextSize', idx); } catch (e) {}
+    }
+    btns.forEach(function (btn, i) {
+      btn.setAttribute('aria-pressed', 'false');
+      btn.title = labels[i] + ' text';
+      btn.addEventListener('click', function () { applySize(i); });
+    });
+    var saved = 0;
+    try { saved = parseInt(localStorage.getItem('csTextSize') || '0', 10); } catch (e) {}
+    applySize(isNaN(saved) ? 0 : Math.min(saved, 2));
+  })();
+
+  // Dropdown nav
+  (function () {
+    document.addEventListener('click', function (e) {
+      if (!e.target.closest('.dropdown')) {
+        document.querySelectorAll('.dropdown.js-open').forEach(function (d) { d.classList.remove('js-open'); });
+      }
+    });
+    document.querySelectorAll('.primary-nav .dropdown > a').forEach(function (link) {
+      link.addEventListener('click', function (e) {
+        var dropdown = this.parentElement;
+        var isOpen = dropdown.classList.contains('js-open');
+        document.querySelectorAll('.dropdown.js-open').forEach(function (d) { if (d !== dropdown) d.classList.remove('js-open'); });
+        if (!isOpen) { e.preventDefault(); dropdown.classList.add('js-open'); }
+        else { dropdown.classList.remove('js-open'); }
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>

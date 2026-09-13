@@ -192,6 +192,24 @@
     }
     .ask-btn:hover { background: var(--howie-btn-dk); color: #fff; }
 
+    /* ── Featured guide banner ── */
+    .featured-guide {
+      display: flex; align-items: center; gap: 20px;
+      background: #FFF6E0; border: 2px solid var(--howie-btn);
+      border-radius: 18px; padding: 22px 28px; margin-bottom: 44px;
+      text-decoration: none; color: var(--ink);
+      transition: box-shadow 0.15s, border-color 0.15s;
+      flex-wrap: wrap;
+    }
+    .featured-guide:hover { box-shadow: 0 6px 24px rgba(201,138,43,0.18); border-color: var(--howie-btn-dk); color: var(--ink); }
+    .featured-guide .fg-icon { font-size: 44px; flex-shrink: 0; line-height: 1; }
+    .featured-guide .fg-body { flex: 1; min-width: 180px; }
+    .featured-guide .fg-label { display: inline-block; font-size: 12px; font-weight: 700; color: var(--howie); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 4px; }
+    .featured-guide .fg-title { font-family: "Fraunces", Georgia, serif; font-weight: 700; font-size: 22px; color: var(--ink); margin-bottom: 4px; line-height: 1.2; }
+    .featured-guide .fg-desc { font-size: 15px; color: var(--ink-2); line-height: 1.5; }
+    .featured-guide .fg-cta { font-size: 15px; font-weight: 700; color: var(--howie); white-space: nowrap; flex-shrink: 0; }
+    .featured-guide:hover .fg-cta { color: var(--howie-dark); }
+
     /* ── Section title ── */
     .section-title {
       font-size: 32px; margin-bottom: 6px; color: var(--ink);
@@ -429,6 +447,17 @@
       <a href="#ask-howie" class="ask-btn">✉️ Ask Howie a Question</a>
     </div>
   </div>
+
+  <!-- Featured guide -->
+  <a class="featured-guide" href="/ask_howie/protecting-yourself-online.html">
+    <span class="fg-icon" aria-hidden="true">🛡️</span>
+    <span class="fg-body">
+      <span class="fg-label">Free Guide from Howie</span>
+      <span class="fg-title">Protecting Yourself Online</span>
+      <span class="fg-desc">Scam warnings, password tips, identity protection, phone safety, and what to do if something goes wrong — in plain language. Includes a downloadable large-print PDF.</span>
+    </span>
+    <span class="fg-cta">Read the Guide →</span>
+  </a>
 
   <!-- Topics section -->
   <div style="margin-bottom: 12px;">
