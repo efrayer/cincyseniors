@@ -187,6 +187,7 @@
       transition: opacity 0.18s ease, visibility 0s;
     }
     nav.primary .dropdown-menu a {
+      white-space: nowrap;
       border-radius: 8px;
       font-size: 17px;
       padding: 12px 16px;
@@ -445,7 +446,8 @@
       nav.primary > ul > li { width: auto; }
       nav.primary a { font-size: 15px; padding: 9px 13px; border-radius: 10px; border: 1.5px solid var(--line); }
       nav.primary .dropdown > a::after { display: inline; }
-      nav.primary .dropdown-menu a { font-size: 15px; padding: 11px 14px; }
+      nav.primary .dropdown-menu a {
+      white-space: nowrap; font-size: 15px; padding: 11px 14px; }
       .topbar-inner {
         flex-direction: column;
         align-items: flex-start;
