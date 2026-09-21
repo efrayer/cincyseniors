@@ -74,6 +74,16 @@ www.cincyseniors.org:80, cincyseniors.org:80 {
     reverse_proxy host.docker.internal:8000
   }
 
+  # Secure file upload — POST handler proxied to FastAPI
+  handle /upload/submit {
+    reverse_proxy host.docker.internal:8000
+  }
+
+  # Ask Howie question submission — proxied to FastAPI
+  handle /ask-howie/submit {
+    reverse_proxy host.docker.internal:8000
+  }
+
   # Optional: if you want static helper pages under /web for Cincy Seniors
   handle /web/* {
     root * /srv-cincyseniors
