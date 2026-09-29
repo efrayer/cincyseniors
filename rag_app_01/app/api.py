@@ -5,7 +5,7 @@ import json
 import re
 from pathlib import Path
 
-from fastapi import Depends, FastAPI, File, Header, HTTPException, Request, UploadFile
+from fastapi import Depends, FastAPI, File, Form, Header, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
@@ -22,6 +22,8 @@ from app.config import (
     CINDY_DATA_DIR, CINDY_COLLECTION, CINDY_MANIFEST_PATH,
     TTS_ENGINE, OPENAI_API_KEY, TTS_VOICE, TTS_MODEL, TTS_INSTRUCTIONS,
     ADMIN_API_KEY,
+    UPLOAD_PASSWORD_HASH, UPLOAD_DIR,
+    SMTP_HOST, SMTP_PORT, SMTP_SECURE, SMTP_USER, SMTP_PASS, NOTIFY_TO,
 )
 from app.graph import build_graph, retrieve, generate_stream
 from app.ingest import ingest_file, run as ingest_run, _load_manifest, _save_manifest, delete_document
@@ -1079,6 +1081,146 @@ async def post_rsvp(req: RsvpRequest):
     data[req.event][req.name] = req.response
     _save_rsvp_data(data)
     return {"event": req.event, "rsvps": data[req.event]}
+
+
+# ── Ask Howie submission endpoint ─────────────────────────────────────────────
+
+ASK_HOWIE_LOG = Path(__file__).resolve().parent.parent / "ask_howie_questions.jsonl"
+
+
+class AskHowieRequest(BaseModel):
+    name: str = ""
+    email: str
+    topic: str = ""
+    question: str
+
+
+@app.post("/ask-howie/submit")
+@limiter.limit("3/minute")
+async def ask_howie_submit(request: Request, req: AskHowieRequest):
+    """Save an Ask Howie question to a local JSONL log file and email a notification."""
+    import json as _json
+    import smtplib
+    from datetime import datetime, timezone
+    from email.message import EmailMessage
+
+    if not req.email.strip() or not req.question.strip():
+        raise HTTPException(status_code=400, detail="Email and question are required.")
+
+    entry = {
+        "ts": datetime.now(timezone.utc).isoformat(),
+        "name": html.escape(req.name)[:120],
+        "email": html.escape(req.email)[:200],
+        "topic": html.escape(req.topic)[:120],
+        "question": html.escape(req.question)[:4000],
+        "ip": request.client.host if request.client else "",
+    }
+
+    with open(ASK_HOWIE_LOG, "a", encoding="utf-8") as f:
+        f.write(_json.dumps(entry) + "\n")
+
+    # Send email notification if SMTP is configured
+    if SMTP_USER and SMTP_PASS:
+        try:
+            subject = "Ask Howie — New Question"
+            if req.topic:
+                subject += f" [{req.topic}]"
+
+            body_lines = [
+                f"A new question was submitted via CincySeniors.org/ask_howie/",
+                "",
+                f"From:     {req.name or '(not provided)'}",
+                f"Email:    {req.email}",
+                f"Topic:    {req.topic or '(not provided)'}",
+                f"Time:     {entry['ts']}",
+                "",
+                "Question:",
+                "-" * 60,
+                req.question,
+                "-" * 60,
+                "",
+                "Reply directly to this email to respond to the submitter.",
+            ]
+
+            msg = EmailMessage()
+            msg["Subject"] = subject
+            msg["From"]    = f"CincySeniors Ask Howie <{SMTP_USER}>"
+            msg["To"]      = NOTIFY_TO
+            msg["Reply-To"] = req.email
+            msg.set_content("\n".join(body_lines))
+
+            if SMTP_SECURE:
+                with smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT) as server:
+                    server.login(SMTP_USER, SMTP_PASS)
+                    server.send_message(msg)
+            else:
+                with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as server:
+                    server.starttls()
+                    server.login(SMTP_USER, SMTP_PASS)
+                    server.send_message(msg)
+        except Exception as mail_err:
+            # Log the error but don't fail the request — question is already saved
+            print(f"[ask-howie] email send failed: {mail_err}")
+
+    return {"ok": True}
+
+
+# ── File Upload endpoint ───────────────────────────────────────────────────────
+
+_UPLOAD_ALLOWED_EXT = {
+    ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx",
+    ".txt", ".csv", ".png", ".jpg", ".jpeg", ".gif", ".webp",
+    ".mp4", ".mov", ".zip",
+}
+_UPLOAD_MAX_BYTES = 50 * 1024 * 1024  # 50 MB
+
+
+@app.post("/upload/submit")
+@limiter.limit("5/minute")
+async def upload_submit(
+    request: Request,
+    password: str = Form(...),
+    file: UploadFile = File(...),
+):
+    """Password-protected file upload endpoint. Saves files outside the web root."""
+    import bcrypt
+    from datetime import datetime
+
+    # Verify password — constant-time comparison via bcrypt
+    try:
+        authenticated = bcrypt.checkpw(password.encode(), UPLOAD_PASSWORD_HASH.encode())
+    except Exception:
+        authenticated = False
+    if not authenticated:
+        raise HTTPException(status_code=401, detail="Invalid password.")
+
+    # Validate file extension against allowlist
+    original_name = file.filename or "upload"
+    suffix = Path(original_name).suffix.lower()
+    if suffix not in _UPLOAD_ALLOWED_EXT:
+        raise HTTPException(
+            status_code=400,
+            detail=f"File type '{suffix or '(none)'}' is not permitted. "
+                   f"Allowed: {', '.join(sorted(_UPLOAD_ALLOWED_EXT))}",
+        )
+
+    # Read file and enforce size limit
+    data = await file.read()
+    if len(data) > _UPLOAD_MAX_BYTES:
+        raise HTTPException(status_code=413, detail="File exceeds the 50 MB size limit.")
+
+    # Sanitize filename — keep only safe characters, prefix with UTC timestamp
+    stem = Path(original_name).stem
+    stem = re.sub(r"[^\w\-]", "_", stem)[:80].strip("_") or "file"
+    timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+    safe_name = f"{timestamp}_{stem}{suffix}"
+
+    # Write to upload directory (never served publicly by Caddy)
+    UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+    dest = UPLOAD_DIR / safe_name
+    dest.write_bytes(data)
+
+    return {"ok": True, "filename": safe_name, "size_bytes": len(data)}
 
 
 if __name__ == "__main__":

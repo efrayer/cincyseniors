@@ -54,3 +54,22 @@ TTS_INSTRUCTIONS = os.environ.get(
 # ── Admin API key ─────────────────────────────────────────────────────────────
 # Required header on all admin/write endpoints: X-Admin-Key: <value>
 ADMIN_API_KEY = os.environ.get("ADMIN_API_KEY", "")
+
+# ── SMTP (email notifications) ────────────────────────────────────────────────
+SMTP_HOST   = os.environ.get("SMTP_HOST", "smtp.gmail.com")
+SMTP_PORT   = int(os.environ.get("SMTP_PORT", "587"))
+SMTP_SECURE = os.environ.get("SMTP_SECURE", "false").lower() == "true"
+SMTP_USER   = os.environ.get("SMTP_USER", "")
+SMTP_PASS   = os.environ.get("SMTP_PASS", "")
+NOTIFY_TO   = os.environ.get("NOTIFY_TO", "info@cincyseniors.org")
+
+# ── File Upload ────────────────────────────────────────────────────────────────
+# bcrypt hash of the upload password.
+# To regenerate: python3 -c "import bcrypt; print(bcrypt.hashpw(b'YOUR_PASSWORD', bcrypt.gensalt(12)).decode())"
+# Then set UPLOAD_PASSWORD_HASH in .env or the environment.
+UPLOAD_PASSWORD_HASH = os.environ.get(
+    "UPLOAD_PASSWORD_HASH",
+    "$2b$12$7Eqv5UT50upiQcoD/ksWbeMw5YK3sVoiIl4Fx1rkroF.8e7qvpoeG",
+)
+# Directory where uploaded files are saved (outside the web root — never served publicly).
+UPLOAD_DIR = Path(os.environ.get("UPLOAD_DIR", str(PROJECT_ROOT / "uploads")))
