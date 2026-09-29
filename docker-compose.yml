@@ -8,7 +8,7 @@ services:
     ports:
       - "80:80"
     environment:
-      - CADDY_ADMIN_HASH=YOUR_BCRYPT_HASH_HERE
+      - CADDY_ADMIN_HASH=${CADDY_ADMIN_HASH}
     volumes:
       - ./Caddyfile:/config/Caddyfile:ro
       - ./site:/srv:ro
