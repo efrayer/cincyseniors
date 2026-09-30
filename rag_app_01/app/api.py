@@ -12,7 +12,9 @@ from fastapi.staticfiles import StaticFiles
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
+from langchain_chroma import Chroma
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
+from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
 
@@ -30,6 +32,15 @@ from app.ingest import ingest_file, run as ingest_run, _load_manifest, _save_man
 from app.chat_logger import init_db, log_turn, log_read_aloud, new_session_id
 
 STATIC_DIR = Path(__file__).resolve().parent / "static"
+
+# ── Singletons (initialized once at import time, reused on every request) ─────
+
+_embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
+_cindy_store = Chroma(
+    persist_directory=str(CHROMA_DIR),
+    collection_name=CINDY_COLLECTION,
+    embedding_function=_embeddings,
+)
 
 
 def _esc(value: str) -> str:
@@ -229,14 +240,6 @@ async def cindy_chat(request: Request, req: CindyChatRequest):
         return {"reply": "I didn't receive a question. How can I help you today?", "sources": []}
 
     # Retrieve relevant chunks from the CincySeniors collection
-    from langchain_chroma import Chroma
-    from langchain_huggingface import HuggingFaceEmbeddings
-    embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
-    cindy_store = Chroma(
-        persist_directory=str(CHROMA_DIR),
-        collection_name=CINDY_COLLECTION,
-        embedding_function=embeddings,
-    )
     # For writing/essay prompts, extract the core topic for better retrieval
     import re as _re
     rag_query = last_user
@@ -247,7 +250,7 @@ async def cindy_chat(request: Request, req: CindyChatRequest):
     if writing_match:
         rag_query = writing_match.group(1).strip()
 
-    docs = cindy_store.similarity_search(rag_query, k=4)
+    docs = _cindy_store.similarity_search(rag_query, k=4)
 
     # Keyword boost: only run for directory/org lookups, not general questions.
     # Triggered when the query contains org-specific terms like "senior center",
@@ -261,7 +264,7 @@ async def cindy_chat(request: Request, req: CindyChatRequest):
     is_directory_query = any(t in query_lower for t in directory_triggers)
 
     if is_directory_query:
-        all_data = cindy_store._collection.get()
+        all_data = _cindy_store._collection.get()
         keyword_hits = []
         for meta, content in zip(all_data["metadatas"], all_data["documents"]):
             if meta.get("type") == "directory_entry":
@@ -279,7 +282,7 @@ async def cindy_chat(request: Request, req: CindyChatRequest):
     team_triggers = ["team", "volunteer", "who works", "who is on", "staff", "members of cincy"]
     is_team_query = any(t in query_lower for t in team_triggers)
     if is_team_query:
-        all_data = cindy_store._collection.get()
+        all_data = _cindy_store._collection.get()
         seen = {d.page_content for d in docs}
         for meta, content in zip(all_data["metadatas"], all_data["documents"]):
             if any(x in meta.get("source", "") for x in ["Team Roster", "Team Contact", "Team Members"]) and content not in seen:
@@ -291,7 +294,7 @@ async def cindy_chat(request: Request, req: CindyChatRequest):
     coa_triggers = ["council on aging", "council on ageing", "coa "]
     is_coa_query = any(t in query_lower for t in coa_triggers)
     if is_coa_query:
-        all_data = cindy_store._collection.get()
+        all_data = _cindy_store._collection.get()
         seen = {d.page_content for d in docs}
         for meta, content in zip(all_data["metadatas"], all_data["documents"]):
             if "council on aging" in content.lower() and content not in seen:
@@ -400,16 +403,8 @@ async def cindy_ingest(files: list[UploadFile] = File(...), _: None = Depends(re
     """Upload and ingest PDFs into the CincySeniors collection."""
     from langchain_community.document_loaders import PyPDFLoader
     from langchain_text_splitters import RecursiveCharacterTextSplitter
-    from langchain_chroma import Chroma
-    from langchain_huggingface import HuggingFaceEmbeddings
 
     CINDY_DATA_DIR.mkdir(parents=True, exist_ok=True)
-    embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
-    cindy_store = Chroma(
-        persist_directory=str(CHROMA_DIR),
-        collection_name=CINDY_COLLECTION,
-        embedding_function=embeddings,
-    )
     splitter = RecursiveCharacterTextSplitter(
         chunk_size=CHUNK_SIZE, chunk_overlap=CHUNK_OVERLAP
     )
@@ -438,7 +433,7 @@ async def cindy_ingest(files: list[UploadFile] = File(...), _: None = Depends(re
             })
             continue
 
-        cindy_store.add_documents(chunks)
+        _cindy_store.add_documents(chunks)
         manifest[f.filename] = str(file_path.stat().st_mtime)
         results.append({
             "filename": f.filename,
@@ -447,7 +442,7 @@ async def cindy_ingest(files: list[UploadFile] = File(...), _: None = Depends(re
         })
 
     _cindy_save_manifest(manifest)
-    total = cindy_store._collection.count()
+    total = _cindy_store._collection.count()
     return {"results": results, "total_vectors": total}
 
 
@@ -461,8 +456,6 @@ async def cindy_ingest_text(req: CindyIngestTextRequest, _: None = Depends(requi
     """Ingest a plain-text snippet into the CincySeniors collection."""
     from langchain_core.documents import Document
     from langchain_text_splitters import RecursiveCharacterTextSplitter
-    from langchain_chroma import Chroma
-    from langchain_huggingface import HuggingFaceEmbeddings
 
     if not req.title.strip() or not req.text.strip():
         raise HTTPException(status_code=400, detail="Both title and text are required.")
@@ -472,25 +465,19 @@ async def cindy_ingest_text(req: CindyIngestTextRequest, _: None = Depends(requi
     title = _esc(req.title)
     text  = _esc(req.text)
 
-    embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
-    cindy_store = Chroma(
-        persist_directory=str(CHROMA_DIR),
-        collection_name=CINDY_COLLECTION,
-        embedding_function=embeddings,
-    )
     splitter = RecursiveCharacterTextSplitter(
         chunk_size=CHUNK_SIZE, chunk_overlap=CHUNK_OVERLAP
     )
 
     doc = Document(page_content=text, metadata={"source": title, "type": "text"})
     chunks = splitter.split_documents([doc])
-    cindy_store.add_documents(chunks)
+    _cindy_store.add_documents(chunks)
 
     manifest = _cindy_load_manifest()
     manifest[title] = "text"
     _cindy_save_manifest(manifest)
 
-    total = cindy_store._collection.count()
+    total = _cindy_store._collection.count()
     return {"results": [{"filename": title, "chunks": len(chunks)}], "total_vectors": total}
 
 
@@ -506,18 +493,10 @@ async def cindy_ingest_url(req: CindyIngestUrlRequest, _: None = Depends(require
     from bs4 import BeautifulSoup
     from langchain_core.documents import Document
     from langchain_text_splitters import RecursiveCharacterTextSplitter
-    from langchain_chroma import Chroma
-    from langchain_huggingface import HuggingFaceEmbeddings
 
     if not req.urls:
         raise HTTPException(status_code=400, detail="At least one URL is required.")
 
-    embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
-    cindy_store = Chroma(
-        persist_directory=str(CHROMA_DIR),
-        collection_name=CINDY_COLLECTION,
-        embedding_function=embeddings,
-    )
     splitter = RecursiveCharacterTextSplitter(
         chunk_size=CHUNK_SIZE, chunk_overlap=CHUNK_OVERLAP
     )
@@ -545,14 +524,14 @@ async def cindy_ingest_url(req: CindyIngestUrlRequest, _: None = Depends(require
             title = soup.title.string.strip() if soup.title and soup.title.string else url
             doc = Document(page_content=text, metadata={"source": url, "title": title, "type": "url"})
             chunks = splitter.split_documents([doc])
-            cindy_store.add_documents(chunks)
+            _cindy_store.add_documents(chunks)
             manifest[url] = title
             _cindy_save_manifest(manifest)
             results.append({"url": url, "title": title, "chunks": len(chunks), "status": "ok"})
         except Exception as e:
             results.append({"url": url, "status": "error", "reason": str(e)})
 
-    total = cindy_store._collection.count()
+    total = _cindy_store._collection.count()
     return {"results": results, "total_vectors": total}
 
 
@@ -675,20 +654,11 @@ async def cindy_list_documents(_: None = Depends(require_admin_key)):
 @app.delete("/cindy/documents/{filename}")
 async def cindy_remove_document(filename: str, _: None = Depends(require_admin_key)):
     """Remove a document from the CincySeniors collection."""
-    from langchain_chroma import Chroma
-    from langchain_huggingface import HuggingFaceEmbeddings
-
     manifest = _cindy_load_manifest()
     if filename not in manifest:
         return {"status": "not_found", "message": f"{filename} not in CincySeniors manifest"}
 
-    embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
-    cindy_store = Chroma(
-        persist_directory=str(CHROMA_DIR),
-        collection_name=CINDY_COLLECTION,
-        embedding_function=embeddings,
-    )
-    collection = cindy_store._collection
+    collection = _cindy_store._collection
     is_url  = filename.startswith("http://") or filename.startswith("https://")
     is_text = manifest.get(filename) == "text"
 
@@ -735,16 +705,7 @@ async def cindy_remove_document(filename: str, _: None = Depends(require_admin_k
 @app.get("/cindy/directory/entries")
 async def cindy_directory_entries(_: None = Depends(require_admin_key)):
     """Return all directory_entry chunks with completeness metadata."""
-    from langchain_chroma import Chroma
-    from langchain_huggingface import HuggingFaceEmbeddings
-
-    embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
-    cindy_store = Chroma(
-        persist_directory=str(CHROMA_DIR),
-        collection_name=CINDY_COLLECTION,
-        embedding_function=embeddings,
-    )
-    data = cindy_store._collection.get()
+    data = _cindy_store._collection.get()
     entries = []
     for doc_id, meta, content in zip(data["ids"], data["metadatas"], data["documents"]):
         if meta.get("type") != "directory_entry":
@@ -781,16 +742,7 @@ class DirectoryEnrichRequest(BaseModel):
 @app.post("/cindy/directory/enrich")
 async def cindy_directory_enrich(req: DirectoryEnrichRequest, _: None = Depends(require_admin_key)):
     """Replace a directory entry with an enriched version."""
-    from langchain_chroma import Chroma
-    from langchain_huggingface import HuggingFaceEmbeddings
     from langchain_core.documents import Document as LCDoc
-
-    embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
-    cindy_store = Chroma(
-        persist_directory=str(CHROMA_DIR),
-        collection_name=CINDY_COLLECTION,
-        embedding_function=embeddings,
-    )
 
     # Build location string (all fields HTML-escaped before storage)
     name    = _esc(req.name)
@@ -817,7 +769,7 @@ async def cindy_directory_enrich(req: DirectoryEnrichRequest, _: None = Depends(
     new_text = "\n".join(lines)
 
     # Delete old entry
-    cindy_store._collection.delete(ids=[req.doc_id])
+    _cindy_store._collection.delete(ids=[req.doc_id])
 
     # Add enriched entry
     doc = LCDoc(
@@ -827,7 +779,7 @@ async def cindy_directory_enrich(req: DirectoryEnrichRequest, _: None = Depends(
             "source": "cincinnati_senior_directory_enriched",
         },
     )
-    cindy_store.add_documents([doc])
+    _cindy_store.add_documents([doc])
 
     return {"status": "ok", "new_content": new_text}
 
@@ -845,8 +797,6 @@ class DirectoryAddRequest(BaseModel):
 @app.post("/cindy/directory/add")
 async def cindy_directory_add(req: DirectoryAddRequest, _: None = Depends(require_admin_key)):
     """Add a brand-new directory entry to the CincySeniors collection."""
-    from langchain_chroma import Chroma
-    from langchain_huggingface import HuggingFaceEmbeddings
     from langchain_core.documents import Document as LCDoc
 
     if not req.name.strip():
@@ -860,13 +810,6 @@ async def cindy_directory_add(req: DirectoryAddRequest, _: None = Depends(requir
     org_type = _esc(req.org_type)
     phone    = _esc(req.phone)
     website  = _esc(req.website)
-
-    embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
-    cindy_store = Chroma(
-        persist_directory=str(CHROMA_DIR),
-        collection_name=CINDY_COLLECTION,
-        embedding_function=embeddings,
-    )
 
     if address:
         location = f"{address}, {csz} {county}".strip()
@@ -890,7 +833,7 @@ async def cindy_directory_add(req: DirectoryAddRequest, _: None = Depends(requir
             "source": "cincinnati_senior_directory_enriched",
         },
     )
-    cindy_store.add_documents([doc])
+    _cindy_store.add_documents([doc])
 
     return {"status": "ok", "new_content": new_text}
 

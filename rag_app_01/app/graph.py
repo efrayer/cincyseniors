@@ -12,6 +12,15 @@ from langgraph.graph import StateGraph, START, END
 from app.config import CHROMA_DIR, EMBEDDING_MODEL, LLM_BASE_URL, LLM_API_KEY, RETRIEVAL_K
 
 
+# ── Singletons (initialized once at import time, reused on every query) ───────
+
+_embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
+_vector_store = Chroma(
+    persist_directory=str(CHROMA_DIR),
+    embedding_function=_embeddings,
+)
+
+
 # ── State ────────────────────────────────────────────────────────────────────
 
 class GraphState(TypedDict):
@@ -24,12 +33,7 @@ class GraphState(TypedDict):
 
 def retrieve(state: GraphState) -> dict:
     """Retrieve relevant documents from Chroma."""
-    embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
-    vector_store = Chroma(
-        persist_directory=str(CHROMA_DIR),
-        embedding_function=embeddings,
-    )
-    docs = vector_store.similarity_search(state["question"], k=RETRIEVAL_K)
+    docs = _vector_store.similarity_search(state["question"], k=RETRIEVAL_K)
     return {"documents": docs}
 
 
