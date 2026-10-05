@@ -1247,7 +1247,8 @@
       var s = text
         .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
         .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-        .replace(/\*(.*?)\*/g, "<em>$1</em>");
+        .replace(/\*(.*?)\*/g, "<em>$1</em>")
+        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, function(_,txt,url){ var ext=url.startsWith('http'); return '<a href="'+url+'"'+(ext?' target="_blank" rel="noopener"':'')+'>'+txt+'</a>'; });
       // bullet lists
       var lines = s.split("\n");
       var out = []; var inList = false;
@@ -1685,7 +1686,8 @@
     function renderMd(t) {
       var s = t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
                .replace(/\*\*(.*?)\*\*/g,"<strong>$1</strong>")
-               .replace(/\*(.*?)\*/g,"<em>$1</em>");
+               .replace(/\*(.*?)\*/g,"<em>$1</em>")
+               .replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
       var lines = s.split("\n"), out = [], inList = false;
       lines.forEach(function(l) {
         if (/^[-*] /.test(l)) {
