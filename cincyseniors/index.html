@@ -507,29 +507,147 @@
     }
     .partners span { white-space: nowrap; }
 
-    /* ---------- Chat helper strip ---------- */
-    .helper {
-      background: var(--sage);
-      color: #fff;
-      border-radius: 22px;
-      padding: 48px;
-      display: grid;
-      grid-template-columns: 1fr auto;
+    /* ---------- Cindy inline chat embed ---------- */
+    .cindy-embed {
+      background: var(--cream-2);
+      border: 1.5px solid var(--line);
+      border-radius: 20px;
+      overflow: hidden;
+      max-width: 680px;
+      margin: 0 auto;
+      box-shadow: 0 4px 20px rgba(31,27,22,0.07);
+    }
+    .cindy-embed-header {
+      display: flex;
       align-items: center;
-      gap: 40px;
-    }
-    .helper h2 {
+      gap: 12px;
+      padding: 14px 20px;
+      background: var(--terracotta);
       color: #fff;
-      font-size: 38px;
-      margin: 0 0 10px;
     }
-    .helper p { margin: 0; font-size: 20px; opacity: 0.95; max-width: 52ch; }
-    .btn-helper {
+    .cindy-avatar {
+      font-size: 26px;
+      line-height: 1;
+    }
+    .cindy-embed-header strong {
+      display: block;
+      font-family: 'Fraunces', serif;
+      font-size: 17px;
+      line-height: 1.2;
+    }
+    .cindy-status {
+      font-size: 13px;
+      opacity: 0.88;
+    }
+    .cindy-fullscreen-link {
+      margin-left: auto;
+      color: #fff;
+      font-size: 13px;
+      text-decoration: underline;
+      opacity: 0.85;
+      white-space: nowrap;
+    }
+    .cindy-fullscreen-link:hover { opacity: 1; }
+    .cindy-messages {
+      padding: 18px 20px 10px;
+      min-height: 120px;
+      max-height: 320px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .cindy-msg { max-width: 88%; }
+    .cindy-msg p, .cindy-msg div { margin: 0; font-size: 17px; line-height: 1.6; }
+    .cindy-msg--bot {
+      align-self: flex-start;
+      background: #fff;
+      border: 1.5px solid var(--line);
+      border-radius: 4px 18px 18px 18px;
+      padding: 12px 16px;
+    }
+    .cindy-msg--user {
+      align-self: flex-end;
+      background: var(--terracotta);
+      color: #fff;
+      border-radius: 18px 4px 18px 18px;
+      padding: 12px 16px;
+    }
+    .cindy-msg--loading .cindy-dots span {
+      display: inline-block;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--ink-soft);
+      margin: 0 2px;
+      animation: cindybounce 1.1s infinite ease-in-out;
+    }
+    .cindy-msg--loading .cindy-dots span:nth-child(2) { animation-delay: .18s; }
+    .cindy-msg--loading .cindy-dots span:nth-child(3) { animation-delay: .36s; }
+    @keyframes cindybounce {
+      0%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-6px); }
+    }
+    .cindy-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 4px 20px 12px;
+    }
+    .cindy-chip {
+      background: #fff;
+      border: 1.5px solid var(--line);
+      border-radius: 20px;
+      padding: 7px 14px;
+      font-family: inherit;
+      font-size: 14px;
+      color: var(--ink);
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .cindy-chip:hover {
+      border-color: var(--terracotta);
+      background: var(--cream);
+    }
+    .cindy-input-row {
+      display: flex;
+      gap: 10px;
+      padding: 0 16px 14px;
+      align-items: flex-end;
+    }
+    .cindy-input {
+      flex: 1;
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-family: inherit;
+      font-size: 16px;
       background: #fff;
       color: var(--ink);
-      border: 2.5px solid #fff;
+      resize: none;
+      line-height: 1.5;
     }
-    .btn-helper:hover { background: var(--cream); }
+    .cindy-input:focus { outline: none; border-color: var(--terracotta); }
+    .cindy-send-btn {
+      background: var(--terracotta);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 20px;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+    .cindy-send-btn:hover { background: var(--terracotta-dark); }
+    .cindy-send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .cindy-disclaimer {
+      padding: 0 20px 14px;
+      font-size: 13px;
+      color: var(--ink-soft);
+      line-height: 1.5;
+    }
 
     /* ---------- Footer ---------- */
     footer {
@@ -586,7 +704,6 @@
     html.text-large body { font-size: 23px; }
     html.text-large .hero h1 { font-size: clamp(40px, 7vw, 64px); }
     html.text-large .section-head h2 { font-size: 50px; }
-    html.text-large .helper h2 { font-size: 44px; }
     html.text-large .start-card h3 { font-size: 30px; }
     html.text-large .pillar h3 { font-size: 32px; }
     html.text-large .quote { font-size: 32px; }
@@ -594,7 +711,6 @@
     html.text-xl body { font-size: 26px; }
     html.text-xl .hero h1 { font-size: clamp(44px, 8vw, 70px); }
     html.text-xl .section-head h2 { font-size: 56px; }
-    html.text-xl .helper h2 { font-size: 50px; }
     html.text-xl .start-card h3 { font-size: 34px; }
     html.text-xl .pillar h3 { font-size: 36px; }
     html.text-xl .quote { font-size: 36px; }
@@ -621,7 +737,6 @@
       .hero { grid-template-columns: 1fr; gap: 24px; }
       .hero h1 { font-size: 42px; }
       .cards-3, .pillars, .scams { grid-template-columns: 1fr; }
-      .helper { grid-template-columns: 1fr; padding: 32px; }
       .footer-inner { grid-template-columns: 1fr; }
       nav.primary ul { gap: 2px; }
       nav.primary a { padding: 8px 12px; font-size: 17px; }
@@ -678,9 +793,6 @@
       .quote { font-size: 22px; }
       .partners { gap: 16px; font-size: 16px; }
 
-      .helper { padding: 28px 20px; }
-      .helper h2 { font-size: 28px; }
-      .helper p { font-size: 18px; }
 
       footer { margin-top: 56px; padding: 36px 0 24px; }
 
@@ -902,14 +1014,53 @@
         </div>
       </section>
 
-      <!-- Chat helper invitation -->
-      <section id="helper" aria-labelledby="helper-heading">
-        <div class="helper">
-          <div>
-            <h2 id="helper-heading">Have a question? Ask Cindy, our helper AI, anytime.</h2>
-            <p>No signup required. Type a question in plain English.</p>
+      <!-- Cindy AI inline chat -->
+      <section id="cindy-chat-section" aria-labelledby="cindy-chat-heading">
+        <div class="section-head">
+          <h2 id="cindy-chat-heading">Have a question? Ask Cindy.</h2>
+          <p>Our AI is trained on local Cincinnati senior resources. No signup, no login — just ask.</p>
+        </div>
+
+        <div class="cindy-embed" role="region" aria-label="Chat with Cindy AI">
+
+          <!-- Header -->
+          <div class="cindy-embed-header">
+            <span class="cindy-avatar" aria-hidden="true">💬</span>
+            <div>
+              <strong>Cindy AI</strong>
+              <span class="cindy-status">● Ready to help</span>
+            </div>
+            <a href="/cindy/" class="cindy-fullscreen-link" title="Open full conversation">Open full chat ↗</a>
           </div>
-          <a class="btn btn-helper" href="/cindy/">💬 Ask Cindy AI</a>
+
+          <!-- Messages -->
+          <div class="cindy-messages" id="cindy-msgs" aria-live="polite">
+            <div class="cindy-msg cindy-msg--bot">
+              <p>Hi there! I'm Cindy — I know the Greater Cincinnati area's senior programs, services, and AI resources pretty well. What can I help you find today?</p>
+            </div>
+          </div>
+
+          <!-- Starter chips -->
+          <div class="cindy-chips" id="cindy-chips" aria-label="Suggested questions">
+            <button class="cindy-chip" type="button">What senior programs are near me?</button>
+            <button class="cindy-chip" type="button">How do I get started with AI?</button>
+            <button class="cindy-chip" type="button">Are there free computer classes?</button>
+            <button class="cindy-chip" type="button">What is the Town Hall about?</button>
+          </div>
+
+          <!-- Input -->
+          <div class="cindy-input-row">
+            <textarea
+              id="cindy-embed-input"
+              class="cindy-input"
+              rows="2"
+              placeholder="Type your question here…"
+              aria-label="Your question for Cindy AI"
+            ></textarea>
+            <button class="cindy-send-btn" id="cindy-embed-send" aria-label="Send">Send</button>
+          </div>
+
+          <p class="cindy-disclaimer">Cindy AI may not have every local detail — always confirm with service providers. For emergencies call <strong>911</strong>.</p>
         </div>
       </section>
     </div>
@@ -1043,6 +1194,114 @@
         });
       });
     })();
-    </script>
+  </script>
+
+  <!-- Cindy AI embed script -->
+  <script>
+  (function () {
+    var API_URL = "/cindy/chat";
+    var SYSTEM_PROMPT = "You are Cindy, a warm and knowledgeable guide for CincySeniors.org — a community resource website for older adults and caregivers in the Greater Cincinnati area. Your role is to help seniors, their families, and caregivers find local programs, services, transportation, healthcare support, social activities, meal programs, housing assistance, and other resources in the Greater Cincinnati region. Please rely on the resources in the RAG application for answers first. Guidelines: Be warm, patient, and clear. Use plain language — avoid jargon. Focus on Cincinnati-area resources when possible (Hamilton County, Butler County, Warren County, Clermont County, and Northern Kentucky). When recommending services, provide names, general descriptions, and suggest users call or visit the organization to confirm current details. If you are unsure about specific details, say so honestly. Keep responses concise but complete. Use short paragraphs or bullet points for readability. Never provide medical diagnoses or legal advice.";
+
+    var history = [];
+    var isLoading = false;
+
+    var msgsEl  = document.getElementById("cindy-msgs");
+    var inputEl = document.getElementById("cindy-embed-input");
+    var sendBtn = document.getElementById("cindy-embed-send");
+    var chipsEl = document.getElementById("cindy-chips");
+
+    // Chip click → fill input and send
+    chipsEl.querySelectorAll(".cindy-chip").forEach(function (chip) {
+      chip.addEventListener("click", function () {
+        inputEl.value = chip.textContent;
+        chipsEl.style.display = "none";
+        doSend();
+      });
+    });
+
+    // Enter to send (Shift+Enter = newline)
+    inputEl.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); doSend(); }
+    });
+    sendBtn.addEventListener("click", doSend);
+
+    function esc(s) {
+      return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    }
+
+    function addMsg(role, html) {
+      var div = document.createElement("div");
+      div.className = "cindy-msg cindy-msg--" + role;
+      div.innerHTML = html;
+      msgsEl.appendChild(div);
+      msgsEl.scrollTop = msgsEl.scrollHeight;
+      return div;
+    }
+
+    function addLoading() {
+      return addMsg("bot cindy-msg--loading", '<div class="cindy-dots"><span></span><span></span><span></span></div>');
+    }
+
+    // Basic markdown: bold, newlines, bullet lists
+    function renderMd(text) {
+      var s = text
+        .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+        .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+        .replace(/\*(.*?)\*/g, "<em>$1</em>");
+      // bullet lists
+      var lines = s.split("\n");
+      var out = []; var inList = false;
+      lines.forEach(function(line) {
+        if (/^[-*] /.test(line)) {
+          if (!inList) { out.push("<ul>"); inList = true; }
+          out.push("<li>" + line.replace(/^[-*] /, "") + "</li>");
+        } else {
+          if (inList) { out.push("</ul>"); inList = false; }
+          out.push(line ? "<p>" + line + "</p>" : "");
+        }
+      });
+      if (inList) out.push("</ul>");
+      return out.join("");
+    }
+
+    async function doSend() {
+      var text = inputEl.value.trim();
+      if (!text || isLoading) return;
+
+      chipsEl.style.display = "none";
+      addMsg("user", "<p>" + esc(text) + "</p>");
+      history.push({ role: "user", content: text });
+      inputEl.value = "";
+      isLoading = true;
+      sendBtn.disabled = true;
+
+      var loader = addLoading();
+
+      try {
+        var res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            messages: [{ role: "system", content: SYSTEM_PROMPT }, ...history],
+            temperature: 0.65,
+            useRag: true,
+          }),
+        });
+        var data = await res.json();
+        var reply = (data && data.reply) ? data.reply : "Sorry, I couldn't get a response. Please try again or visit the full chat page.";
+        history.push({ role: "assistant", content: reply });
+        loader.remove();
+        addMsg("bot", renderMd(reply));
+      } catch (err) {
+        loader.remove();
+        addMsg("bot", "<p>Sorry, something went wrong. Please <a href='/cindy/'>try the full chat page</a>.</p>");
+      } finally {
+        isLoading = false;
+        sendBtn.disabled = false;
+        inputEl.focus();
+      }
+    }
+  })();
+  </script>
 </body>
 </html>
