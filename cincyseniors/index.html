@@ -1303,5 +1303,394 @@
     }
   })();
   </script>
+
+  <!-- ── Cindy AI floating chat widget ─────────────────────────────────── -->
+  <style>
+    /* Launcher button */
+    #cindy-launcher {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 0;
+    }
+    #cindy-launcher-img {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      box-shadow: 0 4px 18px rgba(31,27,22,0.22);
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+      display: block;
+    }
+    #cindy-launcher:hover #cindy-launcher-img {
+      transform: scale(1.07);
+      box-shadow: 0 8px 28px rgba(31,27,22,0.30);
+    }
+    #cindy-launcher-label {
+      background: #1F1B16;
+      color: #fff;
+      font-family: 'Atkinson Hyperlegible', 'Source Sans 3', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      white-space: nowrap;
+      box-shadow: 0 2px 8px rgba(31,27,22,0.18);
+    }
+    #cindy-launcher-badge {
+      position: absolute;
+      top: 0; right: 0;
+      width: 18px; height: 18px;
+      background: #4CAF50;
+      border-radius: 50%;
+      border: 2.5px solid #fff;
+    }
+
+    /* Chat panel */
+    #cindy-float-panel {
+      position: fixed;
+      bottom: 116px;
+      right: 24px;
+      z-index: 8999;
+      width: 360px;
+      max-height: 520px;
+      background: #FAF6EE;
+      border-radius: 20px;
+      box-shadow: 0 8px 40px rgba(31,27,22,0.18);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transform: translateY(20px);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.22s ease, opacity 0.22s ease;
+    }
+    #cindy-float-panel.cindy-open {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Panel header */
+    .cf-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      background: #E8621A;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .cf-header img {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(255,255,255,0.4);
+    }
+    .cf-header-text { flex: 1; }
+    .cf-header-text strong {
+      display: block;
+      font-family: 'Fraunces', serif;
+      font-size: 16px;
+      line-height: 1.2;
+    }
+    .cf-header-text span {
+      font-size: 12px;
+      opacity: 0.88;
+    }
+    .cf-header-btns { display: flex; gap: 6px; }
+    .cf-btn-icon {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 15px;
+      width: 30px; height: 30px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s;
+      text-decoration: none;
+    }
+    .cf-btn-icon:hover { background: rgba(255,255,255,0.35); color: #fff; }
+
+    /* Messages */
+    .cf-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px 14px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: 0;
+    }
+    .cf-msg { max-width: 88%; font-size: 15px; line-height: 1.55; }
+    .cf-msg p { margin: 0 0 6px; }
+    .cf-msg p:last-child { margin: 0; }
+    .cf-msg ul { margin: 4px 0; padding-left: 18px; }
+    .cf-msg--bot {
+      align-self: flex-start;
+      background: #fff;
+      border: 1.5px solid #E5DCC7;
+      border-radius: 4px 16px 16px 16px;
+      padding: 10px 14px;
+    }
+    .cf-msg--user {
+      align-self: flex-end;
+      background: #E8621A;
+      color: #fff;
+      border-radius: 16px 4px 16px 16px;
+      padding: 10px 14px;
+    }
+    .cf-dots span {
+      display: inline-block;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #888;
+      margin: 0 2px;
+      animation: cfdot 1.1s infinite ease-in-out;
+    }
+    .cf-dots span:nth-child(2) { animation-delay: .18s; }
+    .cf-dots span:nth-child(3) { animation-delay: .36s; }
+    @keyframes cfdot {
+      0%,80%,100% { transform: translateY(0); }
+      40% { transform: translateY(-5px); }
+    }
+
+    /* Chips */
+    .cf-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 2px 14px 10px;
+      flex-shrink: 0;
+    }
+    .cf-chip {
+      background: #fff;
+      border: 1.5px solid #E5DCC7;
+      border-radius: 16px;
+      padding: 5px 11px;
+      font-family: inherit;
+      font-size: 13px;
+      color: #1F1B16;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .cf-chip:hover { border-color: #E8621A; }
+
+    /* Input row */
+    .cf-input-row {
+      display: flex;
+      gap: 8px;
+      padding: 0 12px 12px;
+      flex-shrink: 0;
+      border-top: 1px solid #E5DCC7;
+      padding-top: 10px;
+    }
+    .cf-input {
+      flex: 1;
+      border: 1.5px solid #E5DCC7;
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-family: inherit;
+      font-size: 15px;
+      background: #fff;
+      color: #1F1B16;
+      resize: none;
+      line-height: 1.4;
+    }
+    .cf-input:focus { outline: none; border-color: #E8621A; }
+    .cf-send {
+      background: #E8621A;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 8px 16px;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .cf-send:hover { background: #c0501a; }
+    .cf-send:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .cf-footer-note {
+      font-size: 11px;
+      color: #7a6e62;
+      text-align: center;
+      padding: 0 14px 10px;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 480px) {
+      #cindy-float-panel { width: calc(100vw - 24px); right: 12px; bottom: 110px; }
+      #cindy-launcher { right: 12px; bottom: 16px; }
+    }
+  </style>
+
+  <!-- Launcher button -->
+  <button id="cindy-launcher" aria-label="Chat with Cindy AI" aria-expanded="false" aria-controls="cindy-float-panel">
+    <span style="position:relative;display:block;">
+      <img id="cindy-launcher-img" src="/cindy/about/cindy_logo.png" alt="Cindy AI" />
+      <span id="cindy-launcher-badge" aria-hidden="true"></span>
+    </span>
+    <span id="cindy-launcher-label">Ask Cindy AI</span>
+  </button>
+
+  <!-- Chat panel -->
+  <div id="cindy-float-panel" role="dialog" aria-label="Chat with Cindy AI" aria-hidden="true">
+
+    <div class="cf-header">
+      <img src="/cindy/about/cindy_logo.png" alt="" aria-hidden="true" />
+      <div class="cf-header-text">
+        <strong>Cindy AI</strong>
+        <span>CincySeniors.org · Greater Cincinnati</span>
+      </div>
+      <div class="cf-header-btns">
+        <a href="/cindy/" class="cf-btn-icon" title="Open full chat" target="_blank">⤢</a>
+        <button class="cf-btn-icon" id="cindy-float-close" title="Close" aria-label="Close chat">✕</button>
+      </div>
+    </div>
+
+    <div class="cf-messages" id="cf-msgs" aria-live="polite">
+      <div class="cf-msg cf-msg--bot">
+        <p>Hi there! I'm Cindy 👋</p>
+        <p>I can help you find senior programs, AI resources, and local services across Greater Cincinnati. What's on your mind?</p>
+      </div>
+    </div>
+
+    <div class="cf-chips" id="cf-chips">
+      <button class="cf-chip" type="button">What senior programs are near me?</button>
+      <button class="cf-chip" type="button">How do I get started with AI?</button>
+      <button class="cf-chip" type="button">Are there free computer classes?</button>
+    </div>
+
+    <div class="cf-input-row">
+      <textarea id="cf-input" class="cf-input" rows="2" placeholder="Type your question…" aria-label="Message Cindy AI"></textarea>
+      <button class="cf-send" id="cf-send" aria-label="Send">Send</button>
+    </div>
+
+    <p class="cf-footer-note">Cindy AI may not have every detail — always confirm with providers. Emergencies: 911.</p>
+  </div>
+
+  <script>
+  (function () {
+    var API  = "/cindy/chat";
+    var SYS  = "You are Cindy, a warm and knowledgeable guide for CincySeniors.org — a community resource website for older adults and caregivers in the Greater Cincinnati area. Your role is to help seniors, their families, and caregivers find local programs, services, transportation, healthcare support, social activities, meal programs, housing assistance, and other resources in the Greater Cincinnati region. Please rely on the resources in the RAG application for answers first. Be warm, patient, and clear. Use plain language. Focus on Cincinnati-area resources. Keep responses concise. Never provide medical diagnoses or legal advice.";
+
+    var hist = [];
+    var busy = false;
+
+    var launcher = document.getElementById("cindy-launcher");
+    var panel    = document.getElementById("cindy-float-panel");
+    var closeBtn = document.getElementById("cindy-float-close");
+    var msgsEl   = document.getElementById("cf-msgs");
+    var chipsEl  = document.getElementById("cf-chips");
+    var inputEl  = document.getElementById("cf-input");
+    var sendBtn  = document.getElementById("cf-send");
+
+    function open() {
+      panel.classList.add("cindy-open");
+      panel.setAttribute("aria-hidden", "false");
+      launcher.setAttribute("aria-expanded", "true");
+      inputEl.focus();
+    }
+    function close() {
+      panel.classList.remove("cindy-open");
+      panel.setAttribute("aria-hidden", "true");
+      launcher.setAttribute("aria-expanded", "false");
+      launcher.focus();
+    }
+
+    launcher.addEventListener("click", function () {
+      panel.classList.contains("cindy-open") ? close() : open();
+    });
+    closeBtn.addEventListener("click", close);
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && panel.classList.contains("cindy-open")) close();
+    });
+
+    chipsEl.querySelectorAll(".cf-chip").forEach(function (c) {
+      c.addEventListener("click", function () {
+        inputEl.value = c.textContent;
+        chipsEl.style.display = "none";
+        send();
+      });
+    });
+
+    inputEl.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); }
+    });
+    sendBtn.addEventListener("click", send);
+
+    function esc(s) { return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+    function addMsg(cls, html) {
+      var d = document.createElement("div");
+      d.className = "cf-msg " + cls;
+      d.innerHTML = html;
+      msgsEl.appendChild(d);
+      msgsEl.scrollTop = msgsEl.scrollHeight;
+      return d;
+    }
+
+    function renderMd(t) {
+      var s = t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+               .replace(/\*\*(.*?)\*\*/g,"<strong>$1</strong>")
+               .replace(/\*(.*?)\*/g,"<em>$1</em>");
+      var lines = s.split("\n"), out = [], inList = false;
+      lines.forEach(function(l) {
+        if (/^[-*] /.test(l)) {
+          if (!inList) { out.push("<ul>"); inList = true; }
+          out.push("<li>" + l.replace(/^[-*] /,"") + "</li>");
+        } else {
+          if (inList) { out.push("</ul>"); inList = false; }
+          if (l.trim()) out.push("<p>" + l + "</p>");
+        }
+      });
+      if (inList) out.push("</ul>");
+      return out.join("");
+    }
+
+    async function send() {
+      var text = inputEl.value.trim();
+      if (!text || busy) return;
+      chipsEl.style.display = "none";
+      addMsg("cf-msg--user", "<p>" + esc(text) + "</p>");
+      hist.push({ role: "user", content: text });
+      inputEl.value = "";
+      busy = true;
+      sendBtn.disabled = true;
+      var loader = addMsg("cf-msg--bot", '<div class="cf-dots"><span></span><span></span><span></span></div>');
+      try {
+        var res  = await fetch(API, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ messages: [{ role:"system", content:SYS }, ...hist], temperature:0.65, useRag:true })
+        });
+        var data  = await res.json();
+        var reply = (data && data.reply) ? data.reply : "Sorry, I couldn't get a response. Please try again.";
+        hist.push({ role:"assistant", content:reply });
+        loader.remove();
+        addMsg("cf-msg--bot", renderMd(reply));
+      } catch(e) {
+        loader.remove();
+        addMsg("cf-msg--bot", "<p>Something went wrong. <a href='/cindy/'>Try the full chat</a>.</p>");
+      } finally {
+        busy = false;
+        sendBtn.disabled = false;
+        inputEl.focus();
+      }
+    }
+  })();
+  </script>
 </body>
 </html>
