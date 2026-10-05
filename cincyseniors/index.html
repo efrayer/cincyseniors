@@ -1292,7 +1292,11 @@
         var reply = (data && data.reply) ? data.reply : "Sorry, I couldn't get a response. Please try again or visit the full chat page.";
         history.push({ role: "assistant", content: reply });
         loader.remove();
-        addMsg("bot", renderMd(reply));
+        var rendered = renderMd(reply);
+        if (/health|wealth|self/i.test(text) && rendered.indexOf("/#pillars") === -1) {
+          rendered += '<p style="margin-top:10px;"><a href="/#pillars">👉 See real examples on our main page</a></p>';
+        }
+        addMsg("bot", rendered);
       } catch (err) {
         loader.remove();
         addMsg("bot", "<p>Sorry, something went wrong. Please <a href='/cindy/'>try the full chat page</a>.</p>");
@@ -1730,7 +1734,12 @@
         hist.push({ role:"assistant", content:reply });
         clearInterval(ticker);
         loader.remove();
-        addMsg("cf-msg--bot", renderMd(reply));
+        var rendered = renderMd(reply);
+        // Always append pillars link when the question is about Health/Wealth/Self
+        if (/health|wealth|self/i.test(text) && rendered.indexOf("/#pillars") === -1) {
+          rendered += '<p style="margin-top:10px;"><a href="/#pillars">👉 See real examples on our main page</a></p>';
+        }
+        addMsg("cf-msg--bot", rendered);
       } catch(e) {
         clearInterval(ticker);
         loader.remove();
