@@ -1449,19 +1449,27 @@
       border-radius: 16px 4px 16px 16px;
       padding: 10px 14px;
     }
-    .cf-dots span {
-      display: inline-block;
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: #888;
-      margin: 0 2px;
-      animation: cfdot 1.1s infinite ease-in-out;
+    .cf-thinking {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 2px 0;
     }
-    .cf-dots span:nth-child(2) { animation-delay: .18s; }
-    .cf-dots span:nth-child(3) { animation-delay: .36s; }
-    @keyframes cfdot {
-      0%,80%,100% { transform: translateY(0); }
-      40% { transform: translateY(-5px); }
+    .cf-thinking-pulse {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #E8621A;
+      flex-shrink: 0;
+      animation: cf-pulse 1.2s ease-in-out infinite;
+    }
+    @keyframes cf-pulse {
+      0%,100% { opacity: 0.35; transform: scale(0.8); }
+      50%      { opacity: 1;    transform: scale(1.15); }
+    }
+    .cf-thinking-text {
+      font-size: 13px;
+      color: #7a6e62;
+      font-style: italic;
     }
 
     /* Chips */
@@ -1669,7 +1677,14 @@
       inputEl.value = "";
       busy = true;
       sendBtn.disabled = true;
-      var loader = addMsg("cf-msg--bot", '<div class="cf-dots"><span></span><span></span><span></span></div>');
+      var STEPS = ["Searching knowledge base...", "Reviewing sources...", "Composing response..."];
+      var stepIdx = 0;
+      var loader = addMsg("cf-msg--bot", '<div class="cf-thinking"><span class="cf-thinking-pulse"></span><span class="cf-thinking-text">' + STEPS[0] + '</span></div>');
+      var ticker = setInterval(function () {
+        stepIdx = (stepIdx + 1) % STEPS.length;
+        var t = loader.querySelector(".cf-thinking-text");
+        if (t) t.textContent = STEPS[stepIdx];
+      }, 2000);
       try {
         var res  = await fetch(API, {
           method: "POST",
@@ -1679,9 +1694,11 @@
         var data  = await res.json();
         var reply = (data && data.reply) ? data.reply : "Sorry, I couldn't get a response. Please try again.";
         hist.push({ role:"assistant", content:reply });
+        clearInterval(ticker);
         loader.remove();
         addMsg("cf-msg--bot", renderMd(reply));
       } catch(e) {
+        clearInterval(ticker);
         loader.remove();
         addMsg("cf-msg--bot", "<p>Something went wrong. <a href='/cindy/'>Try the full chat</a>.</p>");
       } finally {
