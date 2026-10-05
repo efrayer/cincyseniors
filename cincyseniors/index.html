@@ -1530,6 +1530,24 @@
     .cf-send:hover { background: #c0501a; }
     .cf-send:disabled { opacity: 0.5; cursor: not-allowed; }
 
+    .cf-close-bar {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      background: #f0ebe0;
+      border: none;
+      border-top: 1px solid #E5DCC7;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      color: #5a4e42;
+      cursor: pointer;
+      text-align: center;
+      transition: background 0.15s;
+      flex-shrink: 0;
+    }
+    .cf-close-bar:hover { background: #e5ddd0; }
+
     .cf-footer-note {
       font-size: 11px;
       color: #7a6e62;
@@ -1587,6 +1605,7 @@
     </div>
 
     <p class="cf-footer-note">Cindy AI may not have every detail — always confirm with providers. Emergencies: 911.</p>
+    <button class="cf-close-bar" id="cf-close-bar" aria-label="Close chat">Tap to close ✕</button>
   </div>
 
   <script>
@@ -1605,16 +1624,20 @@
     var inputEl  = document.getElementById("cf-input");
     var sendBtn  = document.getElementById("cf-send");
 
+    var labelEl = document.getElementById("cindy-launcher-label");
+
     function open() {
       panel.classList.add("cindy-open");
       panel.setAttribute("aria-hidden", "false");
       launcher.setAttribute("aria-expanded", "true");
+      labelEl.textContent = "Close ✕";
       inputEl.focus();
     }
     function close() {
       panel.classList.remove("cindy-open");
       panel.setAttribute("aria-hidden", "true");
       launcher.setAttribute("aria-expanded", "false");
+      labelEl.textContent = "Ask Cindy AI";
       launcher.focus();
     }
 
@@ -1622,8 +1645,17 @@
       panel.classList.contains("cindy-open") ? close() : open();
     });
     closeBtn.addEventListener("click", close);
+    document.getElementById("cf-close-bar").addEventListener("click", close);
     document.addEventListener("keydown", function (e) {
       if (e.key === "Escape" && panel.classList.contains("cindy-open")) close();
+    });
+    // Click outside to close
+    document.addEventListener("click", function (e) {
+      if (panel.classList.contains("cindy-open") &&
+          !panel.contains(e.target) &&
+          !launcher.contains(e.target)) {
+        close();
+      }
     });
 
     chipsEl.querySelectorAll(".cf-chip").forEach(function (c) {
