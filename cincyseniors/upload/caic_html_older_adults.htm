@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI for Older Adults — Cincinnati AI Catalyst</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --caic-blue:      #1A3A6B;
+      --caic-blue-mid:  #2B5BA8;
+      --caic-accent:    #00AEEF;
+      --caic-light:     #F0F6FF;
+      --ink:            #1C1C1E;
+      --ink-soft:       #4A4A4F;
+      --line:           #D8E2F0;
+      --white:          #ffffff;
+      --cindy-orange:   #E8621A;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      color: var(--ink);
+      background: var(--white);
+      font-size: 17px;
+      line-height: 1.6;
+    }
+
+    a { color: var(--caic-blue-mid); }
+    a:hover { color: var(--caic-accent); }
+
+    /* ── Header ── */
+    .site-header {
+      background: var(--caic-blue);
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .site-header-brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+    }
+    .site-header-logo {
+      width: 44px;
+      height: 44px;
+      background: var(--white);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--caic-blue);
+      letter-spacing: -1px;
+      flex-shrink: 0;
+    }
+    .site-header-name {
+      color: var(--white);
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+    .site-header-name span {
+      display: block;
+      font-size: 12px;
+      font-weight: 400;
+      opacity: 0.75;
+      letter-spacing: 0.04em;
+    }
+    .site-header nav a {
+      color: rgba(255,255,255,0.85);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      margin-left: 24px;
+      transition: color 0.15s;
+    }
+    .site-header nav a:hover { color: var(--caic-accent); }
+
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(135deg, var(--caic-blue) 0%, var(--caic-blue-mid) 100%);
+      color: var(--white);
+      padding: 64px 32px 56px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='2' fill='%23ffffff' fill-opacity='0.06'/%3E%3Ccircle cx='10' cy='10' r='1.5' fill='%23ffffff' fill-opacity='0.04'/%3E%3Ccircle cx='50' cy='50' r='1.5' fill='%23ffffff' fill-opacity='0.04'/%3E%3C/svg%3E") repeat;
+    }
+    .hero-inner { position: relative; max-width: 720px; margin: 0 auto; }
+    .hero-eyebrow {
+      display: inline-block;
+      background: var(--caic-accent);
+      color: var(--caic-blue);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 18px;
+    }
+    .hero p {
+      font-size: 19px;
+      opacity: 0.9;
+      max-width: 58ch;
+      margin: 0 auto;
+      line-height: 1.65;
+    }
+
+    /* ── Main layout ── */
+    .container { max-width: 860px; margin: 0 auto; padding: 0 28px; }
+
+    /* ── Intro ── */
+    .intro-section {
+      padding: 56px 0 48px;
+      border-bottom: 1px solid var(--line);
+    }
+    .intro-section h2 {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--caic-blue);
+      margin-bottom: 14px;
+    }
+    .intro-section p {
+      color: var(--ink-soft);
+      max-width: 70ch;
+      margin-bottom: 14px;
+    }
+    .intro-section p:last-child { margin-bottom: 0; }
+
+    /* ── Cindy feature ── */
+    .cindy-feature {
+      background: var(--caic-light);
+      border: 1.5px solid var(--line);
+      border-radius: 16px;
+      padding: 36px;
+      margin: 48px 0;
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 32px;
+      align-items: center;
+    }
+    .cindy-feature img {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 4px 16px rgba(26,58,107,0.15);
+    }
+    .cindy-feature h3 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--caic-blue);
+      margin-bottom: 10px;
+    }
+    .cindy-feature p {
+      color: var(--ink-soft);
+      margin-bottom: 16px;
+      font-size: 16px;
+    }
+    .btn-primary {
+      display: inline-block;
+      background: var(--cindy-orange);
+      color: var(--white);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 15px;
+      padding: 10px 22px;
+      border-radius: 8px;
+      transition: background 0.15s;
+    }
+    .btn-primary:hover { background: #c0501a; color: var(--white); }
+    .btn-outline {
+      display: inline-block;
+      background: transparent;
+      color: var(--caic-blue-mid);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 15px;
+      padding: 10px 22px;
+      border-radius: 8px;
+      border: 1.5px solid var(--caic-blue-mid);
+      margin-left: 10px;
+      transition: background 0.15s, color 0.15s;
+    }
+    .btn-outline:hover { background: var(--caic-blue-mid); color: var(--white); }
+
+    /* ── Resource cards ── */
+    .resources-section { padding: 48px 0; border-bottom: 1px solid var(--line); }
+    .resources-section h2 {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--caic-blue);
+      margin-bottom: 8px;
+    }
+    .resources-section > p {
+      color: var(--ink-soft);
+      margin-bottom: 28px;
+    }
+    .resource-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 18px;
+    }
+    .resource-card {
+      background: var(--white);
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
+      padding: 22px 20px;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      display: block;
+    }
+    .resource-card:hover {
+      border-color: var(--caic-accent);
+      box-shadow: 0 4px 16px rgba(0,174,239,0.12);
+      color: inherit;
+    }
+    .resource-card-icon { font-size: 28px; margin-bottom: 10px; display: block; }
+    .resource-card h3 { font-size: 16px; font-weight: 700; color: var(--caic-blue); margin-bottom: 6px; }
+    .resource-card p { font-size: 14px; color: var(--ink-soft); line-height: 1.5; }
+
+    /* ── About section ── */
+    .about-section { padding: 48px 0 56px; }
+    .about-section h2 {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--caic-blue);
+      margin-bottom: 14px;
+    }
+    .about-section p { color: var(--ink-soft); margin-bottom: 12px; max-width: 68ch; }
+
+    /* ── Footer ── */
+    .site-footer {
+      background: var(--caic-blue);
+      color: rgba(255,255,255,0.75);
+      padding: 36px 32px;
+      font-size: 14px;
+    }
+    .site-footer-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: center;
+    }
+    .site-footer a { color: var(--caic-accent); text-decoration: none; }
+    .site-footer a:hover { text-decoration: underline; }
+
+    /* ── Sample notice banner ── */
+    .sample-notice {
+      background: #FFF3CD;
+      border-bottom: 2px solid #FFCA28;
+      padding: 10px 28px;
+      font-size: 14px;
+      text-align: center;
+      color: #5a4400;
+    }
+
+    @media (max-width: 640px) {
+      .site-header { padding: 14px 18px; }
+      .site-header nav { display: none; }
+      .hero { padding: 44px 20px 40px; }
+      .cindy-feature { grid-template-columns: 1fr; text-align: center; }
+      .cindy-feature img { margin: 0 auto; }
+      .container { padding: 0 18px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sample page notice -->
+  <div class="sample-notice">
+    📋 <strong>Sample page</strong> — prepared for the Cincinnati AI Catalyst webmaster as a suggested update to <code>cincycatalyst.ai/teams/older-adults/</code>
+  </div>
+
+  <!-- Header (CaiC style) -->
+  <header class="site-header">
+    <a href="https://www.cincycatalyst.ai/" class="site-header-brand" target="_blank" rel="noopener">
+      <div class="site-header-logo">CaiC</div>
+      <div class="site-header-name">
+        Cincinnati AI Catalyst
+        <span>Coordinated · Inclusive · Human-Centered AI</span>
+      </div>
+    </a>
+    <nav aria-label="Site navigation">
+      <a href="https://www.cincycatalyst.ai/teams/" target="_blank" rel="noopener">Teams</a>
+      <a href="https://www.cincycatalyst.ai/events/" target="_blank" rel="noopener">Events</a>
+      <a href="https://www.cincycatalyst.ai/contact/" target="_blank" rel="noopener">Contact</a>
+    </nav>
+  </header>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-inner">
+      <span class="hero-eyebrow">CaiC Team · Older Adults</span>
+      <h1>AI for Older Adults<br>in Greater Cincinnati</h1>
+      <p>Helping older adults and caregivers across the Cincinnati region discover, learn, and use AI tools safely — at their own pace, with neighbors they trust.</p>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <!-- Intro -->
+    <section class="intro-section">
+      <h2>About This Team</h2>
+      <p>The CaiC Older Adults team is dedicated to ensuring that AI benefits every generation. We believe older adults deserve access to practical, plain-language guidance on how AI can support daily life — from health and wellness to finances, social connection, and safety online.</p>
+      <p>Our community hub is <strong><a href="https://www.cincyseniors.org/" target="_blank" rel="noopener">CincySeniors.org</a></strong> — a free, no-signup resource built specifically for older adults and caregivers in Greater Cincinnati.</p>
+    </section>
+
+    <!-- Cindy AI Feature -->
+    <div class="cindy-feature">
+      <img src="https://www.cincyseniors.org/cindy/about/cindy_logo.png" alt="Cindy AI — CincySeniors.org virtual guide" />
+      <div>
+        <h3>Meet Cindy AI</h3>
+        <p>Cindy is CincySeniors.org's AI guide — trained on local Cincinnati senior resources, programs, and services. Ask her anything in plain English: no signup, no login required.</p>
+        <p>She knows local programs, Council on Aging contacts, AI basics, and much more.</p>
+        <a href="https://www.cincyseniors.org/cindy/" class="btn-primary" target="_blank" rel="noopener">💬 Chat with Cindy AI</a>
+        <a href="https://www.cincyseniors.org/" class="btn-outline" target="_blank" rel="noopener">Visit CincySeniors.org</a>
+      </div>
+    </div>
+
+    <!-- Resource cards -->
+    <section class="resources-section">
+      <h2>What You'll Find at CincySeniors.org</h2>
+      <p>Direct links to the sections most useful for older adults and caregivers.</p>
+
+      <div class="resource-grid">
+
+        <a class="resource-card" href="https://www.cincyseniors.org/learn/" target="_blank" rel="noopener">
+          <span class="resource-card-icon">📖</span>
+          <h3>Learn About AI</h3>
+          <p>Plain-language guides on what AI is, how it works, and how to use it safely — at your own pace.</p>
+        </a>
+
+        <a class="resource-card" href="https://www.cincyseniors.org/health/" target="_blank" rel="noopener">
+          <span class="resource-card-icon">❤️</span>
+          <h3>Health</h3>
+          <p>How AI can support health tracking, doctor visits, medication reminders, and wellness tools.</p>
+        </a>
+
+        <a class="resource-card" href="https://www.cincyseniors.org/wealth/" target="_blank" rel="noopener">
+          <span class="resource-card-icon">💰</span>
+          <h3>Wealth</h3>
+          <p>AI tools for managing finances, spotting scams, and navigating benefits and retirement resources.</p>
+        </a>
+
+        <a class="resource-card" href="https://www.cincyseniors.org/self/" target="_blank" rel="noopener">
+          <span class="resource-card-icon">🌿</span>
+          <h3>Self</h3>
+          <p>Using AI for learning, creativity, staying connected with family, and personal growth.</p>
+        </a>
+
+        <a class="resource-card" href="https://www.cincyseniors.org/ask_howie/" target="_blank" rel="noopener">
+          <span class="resource-card-icon">👤</span>
+          <h3>Ask Howie (Human)</h3>
+          <p>Submit a question and get a personal reply from Howie — a real person who answers every question.</p>
+        </a>
+
+        <a class="resource-card" href="https://www.cincyseniors.org/helpful-tips/" target="_blank" rel="noopener">
+          <span class="resource-card-icon">💡</span>
+          <h3>Helpful Tips</h3>
+          <p>Real advice from older adults in the community — things they've tried, tested, and found useful.</p>
+        </a>
+
+        <a class="resource-card" href="https://www.cincyseniors.org/resources/" target="_blank" rel="noopener">
+          <span class="resource-card-icon">📚</span>
+          <h3>Local Resources</h3>
+          <p>Links to Council on Aging, SeniorPlanet, local programs, and other trusted regional services.</p>
+        </a>
+
+        <a class="resource-card" href="https://www.cincyseniors.org/signups/" target="_blank" rel="noopener">
+          <span class="resource-card-icon">🤝</span>
+          <h3>Get Involved</h3>
+          <p>Sign up for newsletters, volunteer opportunities, Town Halls, and small group learning sessions.</p>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- About CincySeniors -->
+    <section class="about-section">
+      <h2>About CincySeniors.org</h2>
+      <p>CincySeniors.org is a free, community-run website created to help older adults across Greater Cincinnati learn about AI safely — no ads, no sales, no signup required.</p>
+      <p>It is maintained in partnership with the CaiC Older Adults team and includes AI-powered tools, local resource directories, educational guides, and a human question-and-answer service.</p>
+      <p>
+        <a href="https://www.cincyseniors.org/" target="_blank" rel="noopener">www.cincyseniors.org</a>
+        &nbsp;·&nbsp;
+        <a href="mailto:info@cincyseniors.org">info@cincyseniors.org</a>
+      </p>
+    </section>
+
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="site-footer-inner">
+      <div>
+        <strong style="color:#fff;">Cincinnati AI Catalyst</strong><br>
+        A 501(c)(3) nonprofit · Greater Cincinnati Region
+      </div>
+      <div>
+        <a href="https://www.cincycatalyst.ai/" target="_blank" rel="noopener">cincycatalyst.ai</a>
+        &nbsp;·&nbsp;
+        <a href="https://www.cincyseniors.org/" target="_blank" rel="noopener">cincyseniors.org</a>
+        &nbsp;·&nbsp;
+        <a href="https://www.cincycatalyst.ai/contact/" target="_blank" rel="noopener">Contact CaiC</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
