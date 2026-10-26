@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>People Skills AI Can't Replace — CincySeniors.org</title>
+  <meta name="description" content="How work is changing, and the human strengths to encourage and hire. A slide-deck presentation compiled by Howie Baum and Claude AI, drawing on Noema Magazine." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <style>
+    /* ========== CSS Variables ========== */
+    :root {
+      --cream:           #FAF6EE;
+      --cream-2:         #F3ECDD;
+      --ink:             #1F1B16;
+      --ink-soft:        #4A4238;
+      --terracotta:      #B45A3C;
+      --terracotta-dark: #8F4227;
+      --sage:            #6E8B6A;
+      --amber:           #C98A2B;
+      --line:            #E5DCC7;
+      --navy:            #1E3358;
+      --gold:            #8B6B14;
+
+      /* Slide palette */
+      --slide-cream:     #F5F0E6;
+      --slide-navy:      #1E3358;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: "Atkinson Hyperlegible", system-ui, sans-serif;
+      font-size: 20px;
+      line-height: 1.65;
+      color: var(--ink);
+      background-color: var(--cream);
+    }
+
+    a { color: var(--terracotta-dark); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+    a:hover { color: var(--terracotta); }
+
+    h1, h2, h3, h4 {
+      font-family: "Fraunces", Georgia, serif;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-top: 0;
+    }
+
+    /* ========== Skip link ========== */
+    .skip {
+      position: absolute;
+      left: -1000px;
+      top: 0;
+      background: var(--ink);
+      color: var(--cream);
+      padding: 12px 18px;
+      border-radius: 0 0 12px 0;
+      z-index: 200;
+    }
+    .skip:focus { left: 0; }
+
+    /* ========== Top bar ========== */
+    .topbar { background: var(--cream-2); border-bottom: 1px solid var(--line); font-size: 17px; }
+    .topbar-inner { max-width: 1120px; margin: 0 auto; padding: 10px 24px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .text-size { display: inline-flex; gap: 6px; align-items: center; color: var(--ink-soft); }
+    .text-size button { background: transparent; border: 1.5px solid var(--line); border-radius: 999px; padding: 4px 10px; font-family: inherit; cursor: pointer; color: var(--ink); }
+    .text-size button:hover { border-color: var(--terracotta); }
+    .text-size button.active { background: var(--terracotta); color: #fff; border-color: var(--terracotta-dark); }
+
+    /* ========== Header / Nav ========== */
+    header.main { max-width: 1120px; margin: 0 auto; padding: 22px 24px 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+    .brand { display: flex; align-items: center; gap: 14px; text-decoration: none; color: var(--ink); }
+    .brand-mark { width: 52px; height: 52px; border-radius: 50%; background: var(--terracotta); color: var(--cream); display: grid; place-items: center; font-family: "Fraunces", serif; font-weight: 700; font-size: 26px; flex-shrink: 0; }
+    .brand-name { font-family: "Fraunces", serif; font-weight: 700; font-size: 26px; line-height: 1.1; }
+    .brand-tag { display: block; font-family: "Atkinson Hyperlegible", sans-serif; font-weight: 400; color: var(--ink-soft); font-size: 15px; }
+
+    nav.primary ul { list-style: none; display: flex; gap: 8px; padding: 0; margin: 0; flex-wrap: wrap; }
+    nav.primary a { display: block; padding: 10px 16px; border-radius: 999px; text-decoration: none; color: var(--ink); font-weight: 700; font-size: 18px; }
+    nav.primary a:hover { background: var(--cream-2); }
+    nav.primary a.active { background: var(--cream-2); color: var(--terracotta-dark); }
+    nav.primary a:focus { outline: 3px solid var(--terracotta); outline-offset: 2px; }
+    nav.primary .dropdown { position: relative; }
+    nav.primary .dropdown > a::after { content: " ▾"; font-size: 0.75em; }
+    nav.primary .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      right: 0;
+      background: var(--cream);
+      border: 1.5px solid var(--line);
+      border-radius: 14px;
+      padding: 8px;
+      min-width: 240px;
+      box-shadow: 0 8px 24px rgba(31, 27, 22, 0.12);
+      z-index: 200;
+    }
+    nav.primary .dropdown:hover .dropdown-menu,
+    nav.primary .dropdown:focus-within .dropdown-menu {
+      opacity: 1; visibility: visible; pointer-events: auto;
+      display: flex; flex-direction: column; gap: 2px;
+      transition: opacity 0.15s ease, visibility 0s;
+    }
+    nav.primary .dropdown-menu a { white-space: nowrap; border-radius: 8px; font-size: 17px; padding: 10px 14px; }
+    nav.primary .dropdown.js-open > .dropdown-menu { opacity: 1; visibility: visible; pointer-events: auto; display: flex; flex-direction: column; gap: 2px; }
+
+    /* ========== Breadcrumb ========== */
+    .breadcrumb-bar { background: var(--cream-2); border-bottom: 1px solid var(--line); }
+    .breadcrumb { max-width: 960px; margin: 0 auto; padding: 10px 24px; font-size: 16px; color: var(--ink-soft); }
+    .breadcrumb a { color: var(--ink-soft); text-decoration: none; border-bottom: 1px solid var(--line); }
+    .breadcrumb a:hover { color: var(--terracotta-dark); border-bottom-color: var(--terracotta-dark); }
+    .breadcrumb span { margin: 0 6px; }
+
+    /* ========== Slide wrapper ========== */
+    .slide {
+      position: relative;
+      padding: 64px 0;
+      overflow: hidden;
+    }
+    .slide-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    .slide-badge {
+      position: absolute;
+      top: 22px;
+      right: 28px;
+      font-family: "Fraunces", serif;
+      font-size: 13px;
+      font-weight: 700;
+      opacity: 0.35;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* ========== Cream slide defaults ========== */
+    .slide-cream { background: var(--slide-cream); color: var(--ink); }
+    .slide-cream .slide-badge { color: var(--ink); }
+    .slide-cream h2 { color: var(--navy); }
+    .slide-cream .source-note { font-size: 15px; color: var(--ink-soft); margin-top: 28px; font-style: italic; }
+
+    /* ========== Navy slide defaults ========== */
+    .slide-navy { background: var(--slide-navy); color: #fff; }
+    .slide-navy .slide-badge { color: #fff; }
+    .slide-navy h2 { color: #fff; }
+    .slide-navy a { color: #C9D9FF; }
+
+    /* ========== Slide headings ========== */
+    .slide-eyebrow {
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      opacity: 0.65;
+    }
+    .slide-cream .slide-eyebrow { color: var(--gold); }
+    .slide-navy .slide-eyebrow { color: #C9D9FF; }
+
+    .slide h2 {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 40px;
+      line-height: 1.1;
+      margin-bottom: 36px;
+    }
+
+    /* ========== Hero / Title Slide ========== */
+    .slide-hero {
+      background: var(--slide-navy);
+      color: #fff;
+      padding: 80px 0 72px;
+      text-align: center;
+    }
+    .slide-hero .slide-inner { max-width: 800px; }
+    .slide-hero .hero-eyebrow {
+      display: inline-block;
+      background: rgba(255,255,255,0.12);
+      color: #C9D9FF;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 6px 18px;
+      border-radius: 999px;
+      margin-bottom: 28px;
+    }
+    .slide-hero h1 {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 52px;
+      font-weight: 700;
+      line-height: 1.05;
+      color: #fff;
+      margin-bottom: 22px;
+      letter-spacing: -0.02em;
+    }
+    .slide-hero .hero-subtitle {
+      font-size: 22px;
+      color: rgba(255,255,255,0.82);
+      margin-bottom: 18px;
+      line-height: 1.45;
+    }
+    .slide-hero .hero-source {
+      font-size: 16px;
+      color: rgba(255,255,255,0.55);
+      margin-bottom: 8px;
+    }
+    .slide-hero .hero-credit {
+      font-size: 16px;
+      color: rgba(255,255,255,0.55);
+      margin-bottom: 44px;
+    }
+    .btn-download {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #C98A2B;
+      color: #fff;
+      font-family: "Atkinson Hyperlegible", sans-serif;
+      font-weight: 700;
+      font-size: 19px;
+      padding: 16px 34px;
+      border-radius: 999px;
+      text-decoration: none;
+      transition: background 0.15s ease, transform 0.12s ease;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.28);
+    }
+    .btn-download:hover { background: #a87022; color: #fff; transform: translateY(-2px); }
+
+    /* ========== Stat cards ========== */
+    .stat-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .stat-card {
+      border-radius: 20px;
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .slide-cream .stat-card {
+      background: #fff;
+      border: 1.5px solid var(--line);
+      box-shadow: 0 4px 18px rgba(31, 27, 22, 0.07);
+    }
+    .slide-navy .stat-card {
+      background: rgba(255,255,255,0.08);
+      border: 1.5px solid rgba(255,255,255,0.14);
+    }
+    .stat-number {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 64px;
+      font-weight: 700;
+      line-height: 1;
+      color: #C98A2B;
+    }
+    .stat-label {
+      font-size: 18px;
+      line-height: 1.45;
+      color: inherit;
+      opacity: 0.88;
+    }
+    .slide-cream .stat-label { color: var(--ink-soft); opacity: 1; }
+
+    /* ========== Two-column layout ========== */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    .col-card {
+      border-radius: 20px;
+      padding: 32px 28px;
+    }
+    .slide-cream .col-card.light { background: #fff; border: 1.5px solid var(--line); box-shadow: 0 4px 18px rgba(31,27,22,0.07); }
+    .slide-cream .col-card.dark { background: var(--navy); color: #fff; }
+    .slide-cream .col-card.dark h3 { color: #fff; }
+    .slide-navy .col-card.light { background: rgba(255,255,255,0.92); color: var(--ink); }
+    .slide-navy .col-card.light h3 { color: var(--navy); }
+    .slide-navy .col-card.dark { background: rgba(255,255,255,0.08); border: 1.5px solid rgba(255,255,255,0.14); }
+    .col-card h3 { font-size: 22px; margin-bottom: 16px; }
+    .col-card ul { padding-left: 20px; margin: 0; }
+    .col-card li { margin-bottom: 10px; font-size: 18px; line-height: 1.5; }
+    .col-card.light li { color: var(--ink-soft); }
+    .col-card.dark li { color: rgba(255,255,255,0.88); }
+
+    /* ========== Timeline ========== */
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      position: relative;
+      padding-left: 40px;
+    }
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 14px;
+      top: 24px;
+      bottom: 24px;
+      width: 3px;
+      background: var(--line);
+      border-radius: 3px;
+    }
+    .timeline-item {
+      position: relative;
+      padding: 0 0 28px 28px;
+    }
+    .timeline-item:last-child { padding-bottom: 0; }
+    .timeline-dot {
+      position: absolute;
+      left: -26px;
+      top: 6px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--navy);
+      border: 3px solid var(--cream-2);
+      box-shadow: 0 0 0 2px var(--line);
+    }
+    .timeline-era {
+      font-family: "Fraunces", Georgia, serif;
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--gold);
+      margin-bottom: 4px;
+    }
+    .timeline-title {
+      font-family: "Fraunces", Georgia, serif;
+      font-weight: 700;
+      font-size: 22px;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+    .timeline-desc {
+      font-size: 18px;
+      color: var(--ink-soft);
+      margin: 0;
+    }
+
+    /* ========== Judgment cards (3-card row) ========== */
+    .judgment-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .judgment-card {
+      background: #fff;
+      border: 1.5px solid var(--line);
+      border-radius: 20px;
+      padding: 32px 26px;
+      box-shadow: 0 4px 18px rgba(31,27,22,0.07);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .judgment-card .jc-icon {
+      font-size: 36px;
+      line-height: 1;
+    }
+    .judgment-card h3 { font-size: 22px; margin: 0; color: var(--navy); }
+    .judgment-card p { margin: 0; font-size: 17px; color: var(--ink-soft); line-height: 1.5; }
+    .judgment-card .jc-example {
+      font-size: 15px;
+      color: var(--gold);
+      font-style: italic;
+      border-left: 3px solid var(--line);
+      padding-left: 12px;
+      margin-top: 4px;
+    }
+
+    /* ========== Human attributes grid (2x5) ========== */
+    .human-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .human-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      background: rgba(255,255,255,0.08);
+      border: 1.5px solid rgba(255,255,255,0.13);
+      border-radius: 16px;
+      padding: 20px 20px;
+    }
+    .human-icon {
+      font-size: 28px;
+      line-height: 1;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .human-text strong {
+      display: block;
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 3px;
+    }
+    .human-text span {
+      font-size: 16px;
+      color: rgba(255,255,255,0.72);
+      line-height: 1.4;
+    }
+
+    /* ========== Thinking skill list ========== */
+    .thinking-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .thinking-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 18px;
+      background: #fff;
+      border: 1.5px solid var(--line);
+      border-radius: 16px;
+      padding: 24px 26px;
+      box-shadow: 0 4px 14px rgba(31,27,22,0.06);
+    }
+    .thinking-icon { font-size: 30px; line-height: 1; flex-shrink: 0; margin-top: 2px; }
+    .thinking-text strong { display: block; font-family: "Fraunces", Georgia, serif; font-size: 20px; color: var(--navy); margin-bottom: 4px; }
+    .thinking-text span { font-size: 17px; color: var(--ink-soft); }
+
+    /* ========== Steps row ========== */
+    .steps-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+    .step-card {
+      border-radius: 18px;
+      padding: 26px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .step-card.light-step { background: #fff; border: 1.5px solid var(--line); box-shadow: 0 4px 14px rgba(31,27,22,0.06); }
+    .step-card.dark-step { background: var(--navy); color: #fff; }
+    .step-num {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 48px;
+      font-weight: 700;
+      color: #C98A2B;
+      line-height: 1;
+    }
+    .step-card.dark-step .step-num { color: #C9D9FF; }
+    .step-title { font-family: "Fraunces", Georgia, serif; font-size: 22px; font-weight: 700; color: var(--navy); margin: 0; }
+    .step-card.dark-step .step-title { color: #fff; }
+    .step-desc { font-size: 16px; color: var(--ink-soft); line-height: 1.5; margin: 0; }
+    .step-card.dark-step .step-desc { color: rgba(255,255,255,0.8); }
+
+    .example-blockquote {
+      background: #fff;
+      border-left: 5px solid var(--navy);
+      border-radius: 0 16px 16px 0;
+      padding: 24px 28px;
+      margin: 0;
+      box-shadow: 0 4px 14px rgba(31,27,22,0.06);
+    }
+    .example-blockquote p { margin: 0; font-size: 18px; color: var(--ink-soft); font-style: italic; line-height: 1.6; }
+    .example-blockquote .bq-label { font-size: 13px; font-weight: 700; color: var(--gold); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px; display: block; font-style: normal; }
+
+    /* ========== Comparison table ========== */
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 18px;
+    }
+    .compare-table thead th {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 18px;
+      padding: 14px 18px;
+      text-align: left;
+      border-bottom: 2px solid var(--line);
+    }
+    .compare-table thead th:first-child { color: var(--ink-soft); }
+    .compare-table thead th:last-child { color: var(--navy); }
+    .compare-table tbody td {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+      line-height: 1.5;
+    }
+    .compare-table tbody td:first-child { color: var(--ink-soft); background: #faf8f4; }
+    .compare-table tbody td:last-child { color: var(--navy); font-weight: 700; background: #fff; }
+    .compare-table tbody tr:last-child td { border-bottom: none; }
+    .compare-table-wrap {
+      background: #fff;
+      border: 1.5px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 4px 18px rgba(31,27,22,0.07);
+      margin-bottom: 24px;
+    }
+
+    /* ========== Interview idea box ========== */
+    .interview-box {
+      background: #FFF8E8;
+      border: 2px dashed var(--amber);
+      border-radius: 16px;
+      padding: 22px 26px;
+      font-size: 17px;
+      color: var(--ink-soft);
+    }
+    .interview-box strong { color: var(--ink); }
+
+    /* ========== 2x2 leader grid ========== */
+    .leader-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .leader-card {
+      background: rgba(255,255,255,0.09);
+      border: 1.5px solid rgba(255,255,255,0.14);
+      border-radius: 18px;
+      padding: 28px 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .leader-icon { font-size: 32px; line-height: 1; }
+    .leader-card h3 { font-size: 21px; color: #fff; margin: 0; }
+    .leader-card p { font-size: 17px; color: rgba(255,255,255,0.78); margin: 0; line-height: 1.5; }
+
+    /* ========== Risk cards ========== */
+    .risk-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .risk-card {
+      background: #fff;
+      border: 1.5px solid var(--line);
+      border-radius: 18px;
+      padding: 28px 24px;
+      box-shadow: 0 4px 14px rgba(31,27,22,0.06);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .risk-icon { font-size: 32px; line-height: 1; }
+    .risk-card h3 { font-size: 21px; color: var(--navy); margin: 0; }
+    .risk-card p { font-size: 17px; color: var(--ink-soft); margin: 0; line-height: 1.5; }
+
+    /* ========== Sharing gains two-col ========== */
+    .gains-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1.5px solid var(--line);
+      box-shadow: 0 4px 18px rgba(31,27,22,0.07);
+    }
+    .gains-left {
+      background: var(--navy);
+      color: #fff;
+      padding: 36px 32px;
+    }
+    .gains-left h3 { color: #fff; font-size: 22px; margin-bottom: 14px; }
+    .gains-left p { font-size: 17px; color: rgba(255,255,255,0.82); line-height: 1.6; margin: 0 0 14px; }
+    .gains-right {
+      background: #fff;
+      padding: 36px 32px;
+    }
+    .gains-right h3 { color: var(--navy); font-size: 22px; margin-bottom: 14px; }
+    .gains-right ul { padding-left: 20px; margin: 0; }
+    .gains-right li { font-size: 17px; color: var(--ink-soft); margin-bottom: 12px; line-height: 1.5; }
+    .gains-right li strong { color: var(--ink); }
+
+    /* ========== Closing quote slide ========== */
+    .closing-quote-wrap {
+      text-align: center;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .closing-quote {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 36px;
+      font-weight: 700;
+      line-height: 1.25;
+      color: #fff;
+      margin: 0 0 18px;
+    }
+    .closing-quote::before { content: "\201C"; }
+    .closing-quote::after { content: "\201D"; }
+    .closing-attribution {
+      font-size: 17px;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 40px;
+      font-style: italic;
+    }
+    .closing-subhead {
+      font-size: 20px;
+      color: rgba(255,255,255,0.82);
+      line-height: 1.55;
+    }
+
+    /* ========== Sources ========== */
+    .sources-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .sources-list li {
+      background: #fff;
+      border: 1.5px solid var(--line);
+      border-radius: 14px;
+      padding: 18px 22px;
+      font-size: 17px;
+      color: var(--ink-soft);
+      line-height: 1.5;
+      box-shadow: 0 2px 8px rgba(31,27,22,0.05);
+    }
+    .sources-list li strong { color: var(--ink); }
+
+    /* ========== Reversal story ========== */
+    .reversal-box {
+      background: rgba(255,255,255,0.09);
+      border: 1.5px solid rgba(255,255,255,0.15);
+      border-radius: 16px;
+      padding: 26px 28px;
+      margin-top: 28px;
+    }
+    .reversal-box .reversal-label {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #C9D9FF;
+      margin-bottom: 10px;
+      display: block;
+    }
+    .reversal-box p { font-size: 18px; color: rgba(255,255,255,0.85); margin: 0; line-height: 1.6; }
+
+    /* ========== Bottom lesson box ========== */
+    .lesson-box {
+      margin-top: 32px;
+      background: rgba(255,255,255,0.08);
+      border: 1.5px solid rgba(255,255,255,0.14);
+      border-radius: 14px;
+      padding: 22px 26px;
+      font-size: 19px;
+      color: rgba(255,255,255,0.88);
+      font-style: italic;
+      text-align: center;
+    }
+
+    .bottom-lesson {
+      margin-top: 32px;
+      text-align: center;
+      font-size: 18px;
+      color: rgba(255,255,255,0.75);
+      font-style: italic;
+    }
+
+    /* ========== Sticky download button ========== */
+    .sticky-dl {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      z-index: 100;
+    }
+    .sticky-dl a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #C98A2B;
+      color: #fff;
+      font-family: "Atkinson Hyperlegible", sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      padding: 12px 22px;
+      border-radius: 999px;
+      text-decoration: none;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.30);
+      transition: background 0.15s ease, transform 0.12s ease;
+    }
+    .sticky-dl a:hover { background: #a87022; color: #fff; transform: translateY(-2px); }
+
+    /* ========== Back-to-top ========== */
+    .back-top {
+      display: block;
+      text-align: center;
+      padding: 12px;
+      background: var(--cream-2);
+      border-top: 1px solid var(--line);
+      font-size: 16px;
+      color: var(--ink-soft);
+      text-decoration: none;
+    }
+    .back-top:hover { color: var(--terracotta-dark); }
+
+    /* ========== Footer ========== */
+    footer { background: var(--cream-2); border-top: 1px solid var(--line); padding: 48px 0 36px; }
+    .footer-inner { max-width: 1120px; margin: 0 auto; padding: 0 24px; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; }
+    footer h4 { font-family: "Fraunces", serif; font-size: 20px; margin: 0 0 14px; color: var(--ink); }
+    footer ul { list-style: none; padding: 0; margin: 0; }
+    footer li { margin-bottom: 10px; font-size: 18px; }
+    footer a { color: var(--ink); text-decoration: none; border-bottom: 2px solid transparent; }
+    footer a:hover { border-bottom-color: var(--terracotta); }
+    .copyright { max-width: 1120px; margin: 32px auto 0; padding: 24px 24px 0; border-top: 1px solid var(--line); font-size: 16px; color: var(--ink-soft); text-align: center; }
+
+    /* ========== Responsive ========== */
+    @media (max-width: 900px) {
+      .stat-cards { grid-template-columns: 1fr 1fr; }
+      .two-col { grid-template-columns: 1fr; }
+      .judgment-cards { grid-template-columns: 1fr; }
+      .steps-row { grid-template-columns: 1fr 1fr; }
+      .risk-cards { grid-template-columns: 1fr; }
+      .leader-grid { grid-template-columns: 1fr; }
+      .gains-wrap { grid-template-columns: 1fr; }
+      .gains-left, .gains-right { padding: 28px 24px; }
+      .footer-inner { grid-template-columns: 1fr; }
+      .human-grid { grid-template-columns: 1fr; }
+      .slide h2 { font-size: 32px; }
+    }
+
+    @media (max-width: 640px) {
+      .stat-cards { grid-template-columns: 1fr; }
+      .steps-row { grid-template-columns: 1fr; }
+      .stat-number { font-size: 52px; }
+      .slide { padding: 44px 0; }
+      .slide h2 { font-size: 26px; }
+      .slide-hero h1 { font-size: 32px; }
+      .slide-hero .hero-subtitle { font-size: 18px; }
+      .closing-quote { font-size: 26px; }
+      .sticky-dl { bottom: 16px; right: 16px; }
+      .sticky-dl a { font-size: 14px; padding: 10px 16px; }
+      .slide-badge { top: 12px; right: 14px; }
+      nav.primary ul { display: flex; flex-wrap: wrap; gap: 4px; padding: 4px 0 8px; }
+      nav.primary a { font-size: 15px; padding: 9px 13px; border-radius: 10px; border: 1.5px solid var(--line); }
+      .topbar-inner { flex-direction: column; align-items: flex-start; gap: 8px; padding: 10px 16px; }
+      header.main { padding: 14px 16px 8px; flex-direction: column; align-items: flex-start; gap: 12px; }
+      nav.primary { width: 100%; }
+      nav.primary ul { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+      nav.primary a { font-size: 16px; padding: 10px 12px; text-align: center; }
+    }
+
+    @media (max-width: 400px) {
+      nav.primary ul { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main-content">Skip to main content</a>
+
+  <!-- Top bar -->
+  <div class="topbar" role="region" aria-label="Site utilities">
+    <div class="topbar-inner">
+      <div class="text-size" aria-label="Text size controls">
+        <span>Text size:</span>
+        <button type="button" aria-label="Normal text">A</button>
+        <button type="button" aria-label="Larger text">A+</button>
+        <button type="button" aria-label="Largest text">A++</button>
+      </div>
+      <a href="mailto:info@cincyseniors.org" style="font-weight:700;color:var(--ink);text-decoration:none;">✉ info@cincyseniors.org</a>
+    </div>
+  </div>
+
+  <!-- Main nav -->
+  <header class="main">
+    <a class="brand" href="/">
+      <div class="brand-mark" aria-hidden="true">CS</div>
+      <div>
+        <span class="brand-name">CincySeniors.org</span>
+        <span class="brand-tag">AI for Greater Cincinnati Older Adults</span>
+      </div>
+    </a>
+    <nav class="primary" aria-label="Site navigation">
+      <ul role="menubar">
+        <li><a href="/">Home</a></li>
+        <li class="dropdown">
+          <a href="/learn/" aria-haspopup="true" class="active">Learn</a>
+          <ul class="dropdown-menu" role="menu">
+            <li role="none"><a href="/learn/" role="menuitem">📖 Learn About AI</a></li>
+            <li role="none"><a href="/health/" role="menuitem">❤️ Health</a></li>
+            <li role="none"><a href="/wealth/" role="menuitem">💰 Wealth</a></li>
+            <li role="none"><a href="/self/" role="menuitem">🌿 Self</a></li>
+            <li role="none"><a href="/engAging_Seniors/" role="menuitem">📱 EngAging Seniors</a></li>
+            <li role="none"><a href="/learn/Leverage_50/" role="menuitem">🚀 Leverage AI 50+</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="/cindy/" aria-haspopup="true">Ask CindyAI or Howie</a>
+          <ul class="dropdown-menu" role="menu">
+            <li role="none"><a href="/cindy/" role="menuitem">💬 Chat with CindyAI</a></li>
+            <li role="none"><a href="/cindy/about/" role="menuitem">ℹ️ About Cindy (AI)</a></li>
+            <li role="none"><a href="/ask_howie/" role="menuitem">👤 Ask Howie (Human)</a></li>
+            <li role="none"><a href="/resources/" role="menuitem">📚 Resources</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="/news/" aria-haspopup="true">News/Tips</a>
+          <ul class="dropdown-menu" role="menu">
+            <li role="none"><a href="/news/" role="menuitem">📰 News</a></li>
+            <li role="none"><a href="/helpful-tips/" role="menuitem">💡 Helpful Tips</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="/signups/" aria-haspopup="true">Get Involved</a>
+          <ul class="dropdown-menu" role="menu">
+            <li role="none"><a href="/signups/newsletter.html" role="menuitem">📰 Newsletter</a></li>
+            <li role="none"><a href="/signups/volunteer.html" role="menuitem">🤝 Volunteer</a></li>
+            <li role="none"><a href="/signups/townhall.html" role="menuitem">🏛️ Town Hall Signup</a></li>
+            <li role="none"><a href="/signups/smallgroup.html" role="menuitem">👥 Small Group Signup</a></li>
+            <li role="none"><a href="/feedback/feedback.html" role="menuitem">📝 Share Feedback</a></li>
+          </ul>
+        </li>
+        <li><a href="/team/">Our Team</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Breadcrumb -->
+  <div class="breadcrumb-bar">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span aria-hidden="true">›</span>
+      <a href="/learn/">Learn</a>
+      <span aria-hidden="true">›</span>
+      <span aria-current="page">People Skills AI Can't Replace</span>
+    </nav>
+  </div>
+
+  <main id="main-content">
+
+    <!-- ===== SLIDE 1: Hero / Title ===== -->
+    <section class="slide slide-hero" aria-label="Title slide">
+      <div class="slide-inner">
+        <span class="hero-eyebrow">Presentation · 17 Slides</span>
+        <h1>PEOPLE SKILLS<br>AI CAN'T REPLACE</h1>
+        <p class="hero-subtitle">How work is changing, and the human strengths to encourage and hire</p>
+        <p class="hero-source">Ideas drawn from Noema Magazine</p>
+        <p class="hero-credit">Compiled by Howie Baum and Claude AI</p>
+        <a href="/resources/pdfs/People_Skills_AI_Cant_Replace.pdf" download class="btn-download">
+          📄 Download PDF
+        </a>
+      </div>
+    </section>
+
+    <!-- ===== SLIDE 2: Why This Matters Now ===== -->
+    <section class="slide slide-cream" aria-labelledby="slide2-heading">
+      <span class="slide-badge" aria-hidden="true">Slide 2</span>
+      <div class="slide-inner">
+        <span class="slide-eyebrow">Context</span>
+        <h2 id="slide2-heading">Why This Matters Now</h2>
+        <div class="stat-cards">
+          <div class="stat-card">
+            <div class="stat-number">101,743</div>
+            <div class="stat-label">US job cuts that employers blamed on AI, January to June 2026</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">16%</div>
+            <div class="stat-label">Drop in jobs for workers aged 22 to 25 in AI-exposed fields</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">57%</div>
+            <div class="stat-label">Share of Claude conversations where people thought with AI rather than handing work off</div>
+          </div>
+        </div>
+        <p class="source-note">Sources: Challenger, Gray &amp; Christmas; Stanford Digital Economy Lab; Anthropic Economic Index (cited by Friedland, Noema)</p>
+      </div>
+    </section>
+
+    <!-- ===== SLIDE 3: Keyboard Work Shrinks, Judgment Grows ===== -->
+    <section class="slide slide-cream" aria-labelledby="slide3-heading">
+      <span class="slide-badge" aria-hidden="true">Slide 3</span>
+      <div class="slide-inner">
+        <span class="slide-eyebrow">The Shift</span>
+        <h2 id="slide3-heading">Keyboard Work Shrinks, Judgment Grows</h2>
+        <div class="two-col">
+          <div class="col-card light">
+            <h3 style="color:var(--ink-soft);">⬇ Shrinking</h3>
+            <ul>
+              <li>Drafting routine documents</li>
+              <li>Entering and moving data</li>
+              <li>Writing routine code</li>
+              <li>First-draft reports</li>
+            </ul>
+          </div>
+          <div class="col-card dark">
+            <h3>⬆ Growing</h3>
+            <ul>
+              <li>Judgment when things are messy</li>
+              <li>Sorting signal from noise</li>
+              <li>Persuading and negotiating</li>
+              <li>Building trust with people</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SLIDE 4: History's Lesson ===== -->
+    <section class="slide slide-cream" aria-labelledby="slide4-heading">
+      <span class="slide-badge" aria-hidden="true">Slide 4</span>
+      <div class="slide-inner">
+        <span class="slide-eyebrow">Historical Context</span>
+        <h2 id="slide4-heading">History's Lesson: Tools Reshape Expertise</h2>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-era">Before 1800</div>
+            <div class="timeline-title">Artisans</div>
+            <p class="timeline-desc">Skilled craftsmen made each item by hand</p>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-era">1800s–1950s</div>
+            <div class="timeline-title">Factories</div>
+            <p class="timeline-desc">Machines created new skilled jobs: machinists, electricians, clerks</p>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-era">1960s–2020</div>
+            <div class="timeline-title">Computers</div>
+            <p class="timeline-desc">Routine office jobs faded; pay rose mostly for college-educated experts</p>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-era">Now</div>
+            <div class="timeline-title">AI</div>
+            <p class="timeline-desc">Could help more workers make expert decisions</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SLIDE 5: AI Helps Those Who Know Their Work ===== -->
+    <section class="slide slide-navy" aria-labelledby="slide5-heading">
+      <span class="slide-badge" aria-hidden="true">Slide 5</span>
+      <div class="slide-inner">
+        <span class="slide-eyebrow">Research Evidence</span>
+        <h2 id="slide5-heading">AI Helps Those Who Know Their Work</h2>
+        <div class="stat-cards">
+          <div class="stat-card">
+            <div class="stat-number">40%</div>
+            <div class="stat-label">Less time on writing tasks, and the weakest writers caught up to average</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">3 vs 10</div>
+            <div class="stat-label">Months for new customer service agents to match experienced ones</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" style="font-size:44px;">No gain</div>
+            <div class="stat-label">For radiologists who weren't trained to use the AI tool well</div>
+          </div>
+        </div>
+        <div class="lesson-box">
+          "Like a nail gun, AI helps the trained worker and endangers the beginner."
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SLIDE 6: The Judgment Economy ===== -->
+    <section class="slide slide-cream" aria-labelledby="slide6-heading">
+      <span class="slide-badge" aria-hidden="true">Slide 6</span>
+      <div class="slide-inner">
+        <span class="slide-eyebrow">Rising Skills</span>
+        <h2 id="slide6-heading">The Judgment Economy: 3 Rising Skills</h2>
+        <div class="judgment-cards">
+          <div class="judgment-card">
+            <div class="jc-icon">🤝</div>
+            <h3>Bringing People Together</h3>
+            <p>Persuading, building agreement, leading.</p>
+            <div class="jc-example">Example: A supply chain director who convinces partners to act on the AI's plan</div>
+          </div>
+          <div class="judgment-card">
+            <div class="jc-icon">🔍</div>
+            <h3>Interpreting Information</h3>
+            <p>Turning data into wise choices and risk calls.</p>
+            <div class="jc-example">Example: A fund manager weighing how a crisis changes a 20-year plan</div>
+          </div>
+          <div class="judgment-card">
+            <div class="jc-icon">🧩</div>
+            <h3>Connecting Ideas</h3>
+            <p>Combining insights from many fields.</p>
+            <div class="jc-example">Example: A transit planner blending health, climate and community needs</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SLIDE 7: What People Bring That AI Does Not ===== -->
+    <section class="slide slide-navy" aria-labelledby="slide7-heading">
+      <span class="slide-badge" aria-hidden="true">Slide 7</span>
+      <div class="slide-inner">
+        <span class="slide-eyebrow">Human Strengths</span>
+        <h2 id="slide7-heading">What People Bring That AI Does Not</h2>
+        <div class="human-grid">
+          <div class="human-item">
+            <div class="human-icon">❤️</div>
+            <div class="human-text">
+              <strong>Lived experience</strong>
+              <span>We have felt grief, hunger, fear and joy</span>
+            </div>
+          </div>
+          <div class="human-item">
+            <div class="human-icon">🤲</div>
+            <div class="human-text">
+              <strong>Presence</strong>
+              <span>We can show up and stay with someone</span>
+            </div>
+          </div>
+          <div class="human-item">
+            <div class="human-icon">✅</div>
+            <div class="human-text">
+              <strong>Trust and accountability</strong>
+              <span>We answer for our decisions</span>
+            </div>
+          </div>
+          <div class="human-item">
+            <div class="human-icon">🧭</div>
+            <div class="human-text">
+              <strong>Moral judgment</strong>
+              <span>We weigh right and wrong, not just odds</span>
+            </div>
+          </div>
+          <div class="human-item">
+            <div class="human-icon">👁️</div>
+            <div class="human-text">
+              <strong>Reading the room</strong>
+              <span>We sense the unspoken and the mood</span>
+            </div>
+          </div>
+          <div class="human-item">
+            <div class="human-icon">💡</div>
+            <div class="human-text">
+              <strong>Original creativity</strong>
+              <span>We link unlike ideas in new ways</span>
+            </div>
+          </div>
+          <div class="human-item">
+            <div class="human-icon">⏳</div>
+            <div class="human-text">
+              <strong>Sense of history</strong>
+              <span>We know why things came to be</span>
+            </div>
+          </div>
+          <div class="human-item">
+            <div class="human-icon">💬</div>
+            <div class="human-text">
+              <strong>Persuasion</strong>
+              <span>We negotiate and win people over</span>
+            </div>
+          </div>
+          <div class="human-item">
+            <div class="human-icon">🔧</div>
+            <div class="human-text">
+              <strong>Hands-on know-how</strong>
+              <span>We handle the messy physical world</span>
+            </div>
+          </div>
+          <div class="human-item">
+            <div class="human-icon">🎯</div>
+            <div class="human-text">
+              <strong>Purpose and caring</strong>
+              <span>We care how things turn out</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SLIDE 8: Thinking Skills to Encourage ===== -->
+    <section class="slide slide-cream" aria-labelledby="slide8-heading">
+      <span class="slide-badge" aria-hidden="true">Slide 8</span>
+      <div class="slide-inner">
+        <span class="slide-eyebrow">Workplace Practice</span>
+        <h2 id="slide8-heading">Thinking Skills to Encourage at Work</h2>
+        <div class="thinking-list">
+          <div class="thinking-item">
+            <div class="thinking-icon">❓</div>
+            <div class="thinking-text">
+              <strong>Question the output</strong>
+              <span>Is it accurate? What is missing? Who checked it?</span>
+            </div>
+          </div>
+          <div class="thinking-item">
+            <div class="thinking-icon">🎯</div>
+            <div class="thinking-text">
+              <strong>Ask "so what?"</strong>
+              <span>Which finding actually matters for our goals?</span>
+            </div>
+          </div>
+          <div class="thinking-item">
+            <div class="thinking-icon">🔗</div>
+            <div class="thinking-text">
+              <strong>Connect across fields</strong>
+              <span>What can we learn from another field or from history?</span>
+            </div>
+          </div>
+          <div class="thinking-item">
+            <div class="thinking-icon">📣</div>
+            <div class="thinking-text">
+              <strong>Explain it plainly</strong>
+              <span>Can a busy director grasp it in two minutes?</span>
+            </div>
+          </div>
+          <div class="thinking-item">
+            <div class="thinking-icon">🧠</div>
+            <div class="thinking-text">
+              <strong>Know your own thinking</strong>
+              <span>When should I trust the AI, and when trust myself?</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SLIDE 9: From AI Findings to Clear Answers ===== -->
+    <section class="slide slide-cream" aria-labelledby="slide9-heading">
+      <span class="slide-badge" aria-hidden="true">Slide 9</span>
+      <div class="slide-inner">
+        <span class="slide-eyebrow">Practical Framework</span>
+        <h2 id="slide9-heading">From AI Findings to Clear Answers: 4 Steps</h2>
+        <div class="steps-row">
+          <div class="step-card light-step">
+            <div class="step-num">1</div>
+            <div class="step-title">Check</div>
+            <p class="step-desc">Verify facts and numbers against a trusted source</p>
+          </div>
+          <div class="step-card light-step">
+            <div class="step-num">2</div>
+            <div class="step-title">Choose</div>
+            <p class="step-desc">Pick the 2 or 3 findings that matter most</p>
+          </div>
+          <div class="step-card light-step">
+            <div class="step-num">3</div>
+            <div class="step-title">Translate</div>
+            <p class="step-desc">Say what it means in plain words</p>
+          </div>
+          <div class="step-card dark-step">
+            <div class="step-num">4</div>
+            <div class="step-title">Advise</div>
+            <p class="step-desc">Suggest a next step and name the risks</p>
+          </div>
+        </div>
+        <blockquote class="example-blockquote">
+          <span class="bq-label">Example</span>
+          <p>"The AI says visits rose 18% since spring. I checked our sign-in sheets and it's right. Most growth is seniors on Saturdays. I recommend adding two Saturday volunteers. The risk is a volunteer shortage in December."</p>
+        </blockquote>
+      </div>
+    </section>
+
+    <!-- ===== SLIDE 10: Speed Isn't Good Thinking ===== -->
+    <section class="slide slide-navy" aria-labelledby="slide10-heading">
+      <span class="slide-badge" aria-hidden="true">Slide 10</span>
+      <div class="slide-inner">
+        <span class="slide-eyebrow">The Research</span>
+        <h2 id="slide10-heading">Costly Mistake: Speed Isn't Good Thinking</h2>
+        <div class="two-col">
+          <div class="col-card light">
+            <h3>AI simply added on</h3>
+            <ul>
+              <li>Doctors with AI: no more accurate</li>
+              <li>Drug sales: about 20% below no AI at all</li>
+              <li>Consultants: worse on judgment tasks</li>
+            </ul>
+          </div>
+          <div class="col-card dark">
+            <h3>People and AI as a team</h3>
+            <ul>
+              <li>Doctors: accuracy rose from 75% to 82–85%</li>
+              <li>Drug sales: up 16%, with 40% more client meetings</li>
+              <li>Consultants: 40% better on tasks AI handles well</li>
+            </ul>
+          </div>
+        </div>
+        <div class="bottom-lesson">"Same AI. The difference was how the work was set up."</div>
+      </div>
+    </section>
+
+    <!-- ===== SLIDE 11: Keep People in the Driver's Seat ===== -->
+    <section class="slide slide-cream" aria-labelledby="slide11-heading">
+      <span class="slide-badge" aria-hidden="true">Slide 11</span>
+      <div class="slide-inner">
+        <span class="slide-eyebrow">Design Principle</span>
+        <h2 id="slide11-heading">Keep People in the Driver's Seat</h2>
+        <div class="two-col">
+          <div class="col-card light">
+            <h3 style="color:var(--navy);">Person leads, AI assists</h3>
+            <p style="color:var(--ink-soft);font-size:18px;">Judgment stays sharp and keeps growing</p>
+          </div>
+          <div class="col-card dark">
+            <h3>AI leads, person follows</h3>
+            <p style="color:rgba(255,255,255,0.82);font-size:18px;">People "fall asleep at the wheel" and skills fade</p>
+          </div>
+        </div>
+        <div class="reversal-box" style="background:#FFF6E6;border:2px solid #C98A2B;border-radius:16px;padding:26px 28px;margin-top:28px;">
+          <span style="font-size:13px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;display:block;">A Real Reversal</span>
+          <p style="font-size:18px;color:var(--ink-soft);margin:0;line-height:1.6;">In 2024, Swedish company Klarna replaced hundreds of customer service staff with AI chatbots. By 2025, service had slipped and it rehired people.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SLIDE 12: Hiring for the AI Era ===== -->
+    <section class="slide slide-cream" aria-labelledby="slide12-heading">
+      <span class="slide-badge" aria-hidden="true">Slide 12</span>
+      <div class="slide-inner">
+        <span class="slide-eyebrow">Hiring &amp; Management</span>
+        <h2 id="slide12-heading">Hiring for the AI Era: What to Look For</h2>
+        <div class="compare-table-wrap">
+          <table class="compare-table">
+            <thead>
+              <tr>
+                <th>Old focus</th>
+                <th>Add this focus</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Speed at typing and data entry</td>
+                <td>Good decisions under uncertainty</td>
+              </tr>
+              <tr>
+                <td>One narrow technical skill</td>
+                <td>Curiosity across many fields</td>
+              </tr>
+              <tr>
+                <td>Degree or job title</td>
+                <td>Track record of real decisions</td>
+              </tr>
+              <tr>
+                <td>Working alone fast</td>
+                <td>Teamwork, trust and persuasion</td>
+              </tr>
+              <tr>
+                <td>Knowing the answers</td>
+                <td>Asking good questions and checking AI</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="interview-box">
+          <strong>Interview idea:</strong> Hand over an AI summary. Ask what they would check and say.
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SLIDE 13: How Leaders Encourage These Strengths ===== -->
+    <section class="slide slide-navy" aria-labelledby="slide13-heading">
+      <span class="slide-badge" aria-hidden="true">Slide 13</span>
+      <div class="slide-inner">
+        <span class="slide-eyebrow">Leadership Actions</span>
+        <h2 id="slide13-heading">How Leaders Encourage These Strengths</h2>
+        <div class="leader-grid">
+          <div class="leader-card">
+            <div class="leader-icon">📋</div>
+            <h3>Protect learning</h3>
+            <p>Keep entry-level work that teaches judgment; pair new staff with mentors</p>
+          </div>
+          <div class="leader-card">
+            <div class="leader-icon">🏆</div>
+            <h3>Reward good decisions</h3>
+            <p>Praise sound calls and lessons learned, not just volume</p>
+          </div>
+          <div class="leader-card">
+            <div class="leader-icon">👥</div>
+            <h3>Design teamwork with AI</h3>
+            <p>Have people and AI assess separately, then compare</p>
+          </div>
+          <div class="leader-card">
+            <div class="leader-icon">🎓</div>
+            <h3>Train, then trust</h3>
+            <p>Teach staff when to rely on AI and when to override it</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SLIDE 14: Honest Risks to Watch ===== -->
+    <section class="slide slide-cream" aria-labelledby="slide14-heading">
+      <span class="slide-badge" aria-hidden="true">Slide 14</span>
+      <div class="slide-inner">
+        <span class="slide-eyebrow">Honest Concerns</span>
+        <h2 id="slide14-heading">Honest Risks to Watch</h2>
+        <div class="risk-cards">
+          <div class="risk-card">
+            <div class="risk-icon">⬇️</div>
+            <h3>Lower-paid replacement jobs</h3>
+            <p>Good jobs could be refilled with poorly paid ones</p>
+          </div>
+          <div class="risk-card">
+            <div class="risk-icon">1️⃣</div>
+            <h3>A missing bottom rung</h3>
+            <p>Fewer entry-level jobs means fewer ways to gain experience</p>
+          </div>
+          <div class="risk-card">
+            <div class="risk-icon">⚖️</div>
+            <h3>Gains for a few</h3>
+            <p>Profits could concentrate with whoever owns the AI</p>
+          </div>
+          <div class="risk-card">
+            <div class="risk-icon">🏛️</div>
+            <h3>Unequal access</h3>
+            <p>Broad education and training aren't available to everyone</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SLIDE 15: Sharing the Gains Early ===== -->
+    <section class="slide slide-cream" aria-labelledby="slide15-heading">
+      <span class="slide-badge" aria-hidden="true">Slide 15</span>
+      <div class="slide-inner">
+        <span class="slide-eyebrow">Policy &amp; Action</span>
+        <h2 id="slide15-heading">Sharing the Gains Early</h2>
+        <div class="gains-wrap">
+          <div class="gains-left">
+            <h3>The big idea</h3>
+            <p>Give people skills and a stake early, not just checks after layoffs</p>
+            <p><strong style="color:#C9D9FF;">Model:</strong> the 1944 GI Bill paid for school, homes and business loans</p>
+            <p>It helped build America's largest middle class</p>
+          </div>
+          <div class="gains-right">
+            <h3>Help available now</h3>
+            <ul>
+              <li>Free retraining for laid-off workers through <strong>WIOA</strong></li>
+              <li>In Ohio: local <strong>OhioMeansJobs</strong> centers</li>
+              <li><strong>RAISE US:</strong> $500M+ effort testing wage insurance and retraining</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SLIDE 16: What Remains Human ===== -->
+    <section class="slide slide-navy" aria-labelledby="slide16-heading">
+      <span class="slide-badge" aria-hidden="true">Slide 16</span>
+      <div class="slide-inner">
+        <div class="closing-quote-wrap">
+          <p class="closing-quote" id="slide16-heading">AI can interpret my grief. It cannot grieve.</p>
+          <p class="closing-attribution">— Houda Nait El Barj</p>
+          <p class="closing-subhead">Invest in judgment, presence and trust.<br>They are what make AI worth using.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SLIDE 17: Sources ===== -->
+    <section class="slide slide-cream" aria-labelledby="slide17-heading">
+      <span class="slide-badge" aria-hidden="true">Slide 17</span>
+      <div class="slide-inner">
+        <span class="slide-eyebrow">References</span>
+        <h2 id="slide17-heading">Sources</h2>
+        <ul class="sources-list">
+          <li>Nils Gilman, <strong>"How to Future-Proof Your Career in the Age of AI,"</strong> Noema, April 9, 2026</li>
+          <li>David Autor, <strong>"AI Could Actually Help Rebuild the Middle Class,"</strong> Noema, February 12, 2024</li>
+          <li>Barton Friedland, <strong>"The Devastating Mistake Employers Are Making When It Comes to AI,"</strong> Noema, March 26, 2026</li>
+          <li>Saffron Huang and Sam Manning, <strong>"Here's How to Share AI's Future Wealth,"</strong> Noema, April 22, 2025</li>
+          <li>Houda Nait El Barj, <strong>"How AI Will Change Us,"</strong> Noema, June 25, 2026</li>
+          <li>Shannon Vallor, <strong>"The Danger of Superhuman AI Is Not What You Think,"</strong> Noema, May 23, 2024</li>
+          <li>Challenger, Gray &amp; Christmas job cuts data (2026); RAISE US coverage, Axios, June 25, 2026</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Back to top -->
+    <a href="#main-content" class="back-top">↑ Back to top</a>
+
+  </main>
+
+  <!-- Sticky download button -->
+  <div class="sticky-dl" aria-label="Quick download">
+    <a href="/resources/pdfs/People_Skills_AI_Cant_Replace.pdf" download>📄 Download PDF</a>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <h4>About CincySeniors.org</h4>
+        <p style="margin:0;color:var(--ink-soft);font-size:18px;">A local, community-run guide to using AI safely for older adults across Greater Cincinnati. Free. No ads. No sales.</p>
+      </div>
+      <div>
+        <h4>Get Involved</h4>
+        <ul>
+          <li><a href="/signups/newsletter.html">Newsletter</a></li>
+          <li><a href="/signups/volunteer.html">Volunteer</a></li>
+          <li><a href="/signups/townhall.html">Town Hall Signup</a></li>
+          <li><a href="/signups/smallgroup.html">Small Group Signup</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Reach us</h4>
+        <ul>
+          <li><a href="mailto:info@cincyseniors.org">info@cincyseniors.org</a></li>
+          <li><a href="/privacy.html">Privacy</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="copyright">© 2026 CincySeniors.org — Made in Cincinnati with care.</p>
+  </footer>
+
+  <script>
+    // Text size controls
+    (function () {
+      var html = document.documentElement;
+      var btns = document.querySelectorAll('.text-size button');
+      var classes = ['', 'text-large', 'text-xl'];
+      var labels = ['Normal', 'Large', 'Largest'];
+      function applySize(idx) {
+        html.classList.remove('text-large', 'text-xl');
+        if (classes[idx]) html.classList.add(classes[idx]);
+        btns.forEach(function (btn, i) {
+          btn.classList.toggle('active', i === idx);
+          btn.setAttribute('aria-pressed', i === idx ? 'true' : 'false');
+        });
+        try { localStorage.setItem('csTextSize', idx); } catch (e) {}
+      }
+      btns.forEach(function (btn, i) {
+        btn.setAttribute('aria-pressed', 'false');
+        btn.title = labels[i] + ' text';
+        btn.addEventListener('click', function () { applySize(i); });
+      });
+      var saved = 0;
+      try { saved = parseInt(localStorage.getItem('csTextSize') || '0', 10); } catch (e) {}
+      applySize(isNaN(saved) ? 0 : Math.min(saved, 2));
+    })();
+
+    // Nav dropdowns (click/tap to open, click outside to close)
+    (function () {
+      document.addEventListener('click', function (e) {
+        if (!e.target.closest('.dropdown')) {
+          document.querySelectorAll('.dropdown.js-open').forEach(function (d) {
+            d.classList.remove('js-open');
+          });
+        }
+      });
+      document.querySelectorAll('nav .dropdown > a').forEach(function (link) {
+        link.addEventListener('click', function (e) {
+          var dropdown = this.parentElement;
+          var isOpen = dropdown.classList.contains('js-open');
+          document.querySelectorAll('.dropdown.js-open').forEach(function (d) {
+            if (d !== dropdown) d.classList.remove('js-open');
+          });
+          if (!isOpen) {
+            e.preventDefault();
+            dropdown.classList.add('js-open');
+          } else {
+            dropdown.classList.remove('js-open');
+          }
+        });
+      });
+      document.querySelectorAll('nav .dropdown-menu a').forEach(function (a) {
+        a.addEventListener('click', function () {
+          document.querySelectorAll('.dropdown.js-open').forEach(function (d) {
+            d.classList.remove('js-open');
+          });
+        });
+      });
+    })();
+
+    // Hide sticky download button when hero download button is visible
+    (function () {
+      var sticky = document.querySelector('.sticky-dl');
+      var hero = document.querySelector('.btn-download');
+      if (!sticky || !hero) return;
+      function check() {
+        var rect = hero.getBoundingClientRect();
+        var inView = rect.top >= 0 && rect.bottom <= window.innerHeight;
+        sticky.style.opacity = inView ? '0' : '1';
+        sticky.style.pointerEvents = inView ? 'none' : 'auto';
+      }
+      window.addEventListener('scroll', check, { passive: true });
+      check();
+    })();
+  </script>
+
+</body>
+</html>
