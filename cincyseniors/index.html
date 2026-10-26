@@ -341,6 +341,59 @@
       margin: 0;
     }
 
+    /* ---------- Featured resource bar ---------- */
+    .featured-resource-bar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: var(--cream-2);
+      border: 1.5px solid var(--line);
+      border-left: 5px solid var(--terracotta);
+      border-radius: 12px;
+      padding: 16px 20px;
+    }
+    .featured-resource-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--terracotta);
+      white-space: nowrap;
+    }
+    .featured-resource-text {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .featured-resource-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--ink);
+      text-decoration: none;
+    }
+    .featured-resource-title:hover { color: var(--terracotta); }
+    .featured-resource-credit {
+      font-size: 13px;
+      color: var(--ink-soft);
+    }
+    .featured-resource-btn {
+      background: var(--terracotta);
+      color: var(--cream);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 8px 18px;
+      border-radius: 8px;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+    .featured-resource-btn:hover { background: var(--terracotta-dark); color: var(--cream); }
+    @media (max-width: 600px) {
+      .featured-resource-bar { flex-wrap: wrap; }
+      .featured-resource-btn { width: 100%; text-align: center; }
+    }
+
     /* ---------- Start Here cards ---------- */
     .cards-3 {
       display: grid;
@@ -914,6 +967,20 @@
             <source src="/cindy/video/who_can_help.mp4" type="video/mp4" />
             <p>Your browser does not support video playback. <a href="/cindy/video/who_can_help.mp4">Download the video</a> to watch it.</p>
           </video>
+        </div>
+      </section>
+
+      <!-- Featured resource -->
+      <section id="featured-resource" aria-label="Featured resource">
+        <div class="featured-resource-bar">
+          <span class="featured-resource-label">Featured</span>
+          <div class="featured-resource-text">
+            <a href="/resources/pdfs/People_Skills_AI_Cant_Replace.pdf" class="featured-resource-title" target="_blank" rel="noopener" download="People_Skills_AI_Cant_Replace.pdf">
+              📄 People Skills AI Can't Replace
+            </a>
+            <span class="featured-resource-credit">Compiled by Howie Baum and Claude AI</span>
+          </div>
+          <a href="/resources/pdfs/People_Skills_AI_Cant_Replace.pdf" class="featured-resource-btn" target="_blank" rel="noopener" download="People_Skills_AI_Cant_Replace.pdf">Download PDF</a>
         </div>
       </section>
 
