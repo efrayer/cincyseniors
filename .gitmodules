@@ -1,0 +1,3 @@
+[submodule "erics-second-brain"]
+	path = erics-second-brain
+	url = git@github.com:efrayer/erics-second-brain.git
