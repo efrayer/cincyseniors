@@ -221,7 +221,7 @@
     /* ── Topic grid ── */
     .topics-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 20px;
       margin-bottom: 64px;
     }
@@ -333,7 +333,7 @@
     html.text-xl .topic-card ul li { font-size: 19px; }
 
     /* ── Responsive ── */
-    @media (max-width: 900px) {
+    @media (max-width: 1000px) {
       .topics-grid { grid-template-columns: repeat(2, 1fr); }
     }
     @media (max-width: 640px) {
@@ -469,189 +469,82 @@
 
     <div class="topic-card">
       <span class="topic-icon">🤖</span>
-      <h3>AI Fundamentals &amp; Understanding</h3>
+      <h3>AI Fundamentals &amp; Tools</h3>
       <ul>
-        <li>AI &amp; ChatGPT basics</li>
-        <li>AI Glossary: 52 terms explained</li>
-        <li>How AI works &amp; where it's going</li>
-        <li>Biometrics &amp; facial recognition</li>
-        <li>Quantum vs. standard computers</li>
+        <li>AI &amp; ChatGPT basics — how it works &amp; where it's going</li>
+        <li>AI tools for daily living: letters, meal planning, travel &amp; more</li>
       </ul>
-      <a href="#ask-howie" class="ask-topic" data-topic="AI Fundamentals">Ask Howie about this →</a>
-    </div>
-
-    <div class="topic-card">
-      <span class="topic-icon">📱</span>
-      <h3>AI Tools &amp; Devices for Daily Living</h3>
-      <ul>
-        <li>AI companion &amp; conversation devices</li>
-        <li>Drafting letters, emails &amp; messages</li>
-        <li>Meal planning &amp; recipe ideas</li>
-        <li>Trip &amp; travel planning with AI</li>
-        <li>Smart-home &amp; predictive health AI</li>
-        <li>Cautions specific to AI tools</li>
-      </ul>
-      <a href="#ask-howie" class="ask-topic" data-topic="AI Tools for Daily Living">Ask Howie about this →</a>
+      <a href="#ask-howie" class="ask-topic" data-topic="AI Fundamentals &amp; Tools">Ask Howie about this →</a>
     </div>
 
     <div class="topic-card">
       <span class="topic-icon">♿</span>
-      <h3>Assistive Technology &amp; Adaptive Devices</h3>
+      <h3>Assistive &amp; Adaptive Devices</h3>
       <ul>
-        <li>Assistive tech for bathing, eating &amp; communication</li>
-        <li>Custom adaptive devices for daily tasks</li>
-        <li>Wearables &amp; energy harvesting</li>
-        <li>New materials for bionics &amp; prostheses</li>
-        <li>Rehabilitation technology fundamentals</li>
+        <li>Assistive tech for bathing, eating, communication &amp; daily tasks</li>
+        <li>Mobility devices: sit-to-stand chairs, standing wheelchairs &amp; more</li>
       </ul>
-      <a href="#ask-howie" class="ask-topic" data-topic="Assistive Technology">Ask Howie about this →</a>
+      <a href="#ask-howie" class="ask-topic" data-topic="Assistive &amp; Adaptive Devices">Ask Howie about this →</a>
     </div>
 
     <div class="topic-card">
       <span class="topic-icon">🧠</span>
-      <h3>Cognitive Support &amp; Memory Aids</h3>
+      <h3>Cognitive &amp; Memory Support</h3>
       <ul>
-        <li>Early-detection &amp; cognitive assessment tools</li>
-        <li>Brain-training apps &amp; programs</li>
-        <li>Electronic reminder &amp; medication alarm systems</li>
-        <li>GPS locators &amp; wandering alerts</li>
-        <li>Therapeutic virtual reality for engagement</li>
+        <li>Brain-training apps &amp; early-detection assessment tools</li>
+        <li>Electronic reminders, medication alarms &amp; GPS locators</li>
       </ul>
-      <a href="#ask-howie" class="ask-topic" data-topic="Cognitive Support">Ask Howie about this →</a>
-    </div>
-
-    <div class="topic-card">
-      <span class="topic-icon">💬</span>
-      <h3>Communication &amp; Social Connection</h3>
-      <ul>
-        <li>Conversational AI companions &amp; social robots</li>
-        <li>Video calling &amp; virtual visits</li>
-        <li>Speech-generating devices for aphasia</li>
-        <li>Social media &amp; messaging apps</li>
-        <li>Online communities &amp; interest groups</li>
-      </ul>
-      <a href="#ask-howie" class="ask-topic" data-topic="Communication &amp; Social Connection">Ask Howie about this →</a>
+      <a href="#ask-howie" class="ask-topic" data-topic="Cognitive &amp; Memory Support">Ask Howie about this →</a>
     </div>
 
     <div class="topic-card">
       <span class="topic-icon">❤️</span>
-      <h3>Health Monitoring &amp; Medical Technology</h3>
+      <h3>Health &amp; Medical Technology</h3>
       <ul>
-        <li>Health monitoring &amp; medication devices</li>
-        <li>New mobile apps &amp; wearables for healthcare</li>
-        <li>Medical uses of 3D &amp; 4D printing</li>
-        <li>Affordable genetic testing</li>
-        <li>Lab-on-a-chip &amp; point-of-care testing</li>
+        <li>Health monitoring devices, wearables &amp; medication management</li>
+        <li>Mobile health apps, genetic testing &amp; point-of-care tools</li>
       </ul>
-      <a href="#ask-howie" class="ask-topic" data-topic="Health Monitoring">Ask Howie about this →</a>
-    </div>
-
-    <div class="topic-card">
-      <span class="topic-icon">🏠</span>
-      <h3>Home Modifications &amp; Accessibility</h3>
-      <ul>
-        <li>Home modifications for kitchens &amp; bathrooms</li>
-        <li>Connected-home &amp; remote monitoring systems</li>
-        <li>Accessibility in community &amp; public spaces</li>
-        <li>Rural rehabilitation &amp; farming adaptations</li>
-      </ul>
-      <a href="#ask-howie" class="ask-topic" data-topic="Home Modifications">Ask Howie about this →</a>
+      <a href="#ask-howie" class="ask-topic" data-topic="Health &amp; Medical Technology">Ask Howie about this →</a>
     </div>
 
     <div class="topic-card">
       <span class="topic-icon">🛡️</span>
-      <h3>Safety &amp; Emergency Response</h3>
+      <h3>Safety &amp; Online Protection</h3>
       <ul>
-        <li>Protecting yourself from malware &amp; scams</li>
-        <li>Safety &amp; emergency response devices</li>
-        <li>Online safety awareness</li>
+        <li>Protecting yourself from scams, malware &amp; online fraud</li>
+        <li>Emergency response devices &amp; personal safety technology</li>
       </ul>
-      <a href="#ask-howie" class="ask-topic" data-topic="Safety &amp; Emergency Response">Ask Howie about this →</a>
+      <a href="#ask-howie" class="ask-topic" data-topic="Safety &amp; Online Protection">Ask Howie about this →</a>
+    </div>
+
+    <div class="topic-card">
+      <span class="topic-icon">💬</span>
+      <h3>Communication &amp; Connection</h3>
+      <ul>
+        <li>Video calling, AI companions &amp; social robots</li>
+        <li>Social media, messaging apps &amp; online communities</li>
+      </ul>
+      <a href="#ask-howie" class="ask-topic" data-topic="Communication &amp; Connection">Ask Howie about this →</a>
+    </div>
+
+    <div class="topic-card">
+      <span class="topic-icon">🏠</span>
+      <h3>Home &amp; Community Access</h3>
+      <ul>
+        <li>Home modifications for kitchens, bathrooms &amp; connected-home systems</li>
+        <li>Accessibility in public spaces &amp; staying independent in Cincinnati</li>
+      </ul>
+      <a href="#ask-howie" class="ask-topic" data-topic="Home &amp; Community Access">Ask Howie about this →</a>
     </div>
 
     <div class="topic-card">
       <span class="topic-icon">👁️</span>
-      <h3>Sensory Support: Vision &amp; Hearing</h3>
+      <h3>Sensory Support</h3>
       <ul>
-        <li>Common causes of hearing problems</li>
-        <li>Hearing impairment types &amp; causes</li>
-        <li>Cataracts, macular degeneration &amp; glaucoma</li>
-        <li>Vision &amp; hearing impairment overview</li>
+        <li>Vision: cataracts, macular degeneration &amp; glaucoma resources</li>
+        <li>Hearing: impairment types, causes &amp; assistive hearing technology</li>
       </ul>
-      <a href="#ask-howie" class="ask-topic" data-topic="Vision &amp; Hearing">Ask Howie about this →</a>
-    </div>
-
-    <div class="topic-card">
-      <span class="topic-icon">🦽</span>
-      <h3>Mobility &amp; Physical Assistance</h3>
-      <ul>
-        <li>Mobility &amp; physical assistance devices</li>
-        <li>Sit-to-stand chairs &amp; height-adjustable tables</li>
-        <li>Standing wheelchairs</li>
-        <li>Anthropometry &amp; ergonomics</li>
-      </ul>
-      <a href="#ask-howie" class="ask-topic" data-topic="Mobility &amp; Physical Assistance">Ask Howie about this →</a>
-    </div>
-
-    <div class="topic-card">
-      <span class="topic-icon">📰</span>
-      <h3>News &amp; Learning Resources for AI</h3>
-      <ul>
-        <li>Daily AI &amp; technology news feeds</li>
-        <li>The SeniorTechie blog (TheSeniorTechie.com)</li>
-        <li>WMKV-FM "Computer Talk" (Tuesdays 1–2 PM)</li>
-        <li>Wired, The Guardian, There Is an AI for That</li>
-      </ul>
-      <a href="#ask-howie" class="ask-topic" data-topic="News &amp; Learning Resources">Ask Howie about this →</a>
-    </div>
-
-    <div class="topic-card">
-      <span class="topic-icon">🗂️</span>
-      <h3>Local &amp; National Resource Organizations</h3>
-      <ul>
-        <li>Area Agency on Aging &amp; aging services</li>
-        <li>Libraries &amp; lifelong learning programs</li>
-        <li>Volunteer &amp; social service organizations</li>
-        <li>Caregiver &amp; disability resources</li>
-      </ul>
-      <a href="#ask-howie" class="ask-topic" data-topic="Local &amp; National Resources">Ask Howie about this →</a>
-    </div>
-
-    <div class="topic-card">
-      <span class="topic-icon">🌐</span>
-      <h3>Universal &amp; Inclusive Design</h3>
-      <ul>
-        <li>ADA &amp; reasonable accommodation</li>
-        <li>Generational design (6 living generations)</li>
-        <li>Virtual &amp; augmented reality (VR &amp; AR)</li>
-        <li>Inclusive language for people with disabilities</li>
-        <li>Staying independent in Greater Cincinnati</li>
-      </ul>
-      <a href="#ask-howie" class="ask-topic" data-topic="Universal &amp; Inclusive Design">Ask Howie about this →</a>
-    </div>
-
-    <div class="topic-card">
-      <span class="topic-icon">🎤</span>
-      <h3>Presentation &amp; Learning Resources</h3>
-      <ul>
-        <li>AI as a presentation partner</li>
-        <li>Accessibility compliance (Section 508/WCAG/ADA)</li>
-        <li>QR codes: how to use them</li>
-        <li>Finding &amp; using images in presentations</li>
-        <li>Making slides readable from the back of the room</li>
-      </ul>
-      <a href="#ask-howie" class="ask-topic" data-topic="Presentation Resources">Ask Howie about this →</a>
-    </div>
-
-    <div class="topic-card">
-      <span class="topic-icon">🏳️‍🌈</span>
-      <h3>Inclusive Language &amp; Advocacy</h3>
-      <ul>
-        <li>LGBTQ resources &amp; inclusive language</li>
-        <li>Proper use of disability-inclusive language</li>
-        <li>LGBTQ dos and don'ts</li>
-      </ul>
-      <a href="#ask-howie" class="ask-topic" data-topic="Inclusive Language &amp; Advocacy">Ask Howie about this →</a>
+      <a href="#ask-howie" class="ask-topic" data-topic="Sensory Support">Ask Howie about this →</a>
     </div>
 
   </div>
@@ -676,21 +569,14 @@
         <label for="howie-topic">Topic Area (optional)</label>
         <select id="howie-topic" name="topic">
           <option value="">— Choose a topic, or just ask below —</option>
-          <option>AI Fundamentals &amp; Understanding</option>
-          <option>AI Tools for Daily Living</option>
-          <option>Assistive Technology &amp; Adaptive Devices</option>
-          <option>Cognitive Support &amp; Memory Aids</option>
-          <option>Communication &amp; Social Connection</option>
-          <option>Health Monitoring &amp; Medical Technology</option>
-          <option>Home Modifications &amp; Accessibility</option>
-          <option>Safety &amp; Emergency Response</option>
-          <option>Sensory Support: Vision &amp; Hearing</option>
-          <option>Mobility &amp; Physical Assistance</option>
-          <option>News &amp; Learning Resources for AI</option>
-          <option>Local &amp; National Resource Organizations</option>
-          <option>Universal &amp; Inclusive Design</option>
-          <option>Presentation &amp; Learning Resources</option>
-          <option>Inclusive Language &amp; Advocacy</option>
+          <option>AI Fundamentals &amp; Tools</option>
+          <option>Assistive &amp; Adaptive Devices</option>
+          <option>Cognitive &amp; Memory Support</option>
+          <option>Health &amp; Medical Technology</option>
+          <option>Safety &amp; Online Protection</option>
+          <option>Communication &amp; Connection</option>
+          <option>Home &amp; Community Access</option>
+          <option>Sensory Support</option>
           <option>Something else</option>
         </select>
       </div>
