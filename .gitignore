@@ -44,8 +44,6 @@ Thumbs.db
 # ── Archive folders ─────────────────────────────────────────────────────────
 cincyseniors/archive/
 
-# ── Internal/demo site (not part of public CincySeniors.org repo) ───────────
-site/
 
 # ── Node.js runtime data ────────────────────────────────────────────────────
 app/node_modules/
