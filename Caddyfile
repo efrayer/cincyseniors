@@ -23,6 +23,11 @@ www.thinkdashboards.com:80 {
     reverse_proxy host.docker.internal:8000
   }
 
+  # CAIC Shared Notes (runs on host, not in Docker)
+  handle_path /caic_notes* {
+    reverse_proxy host.docker.internal:5002
+  }
+
   # Eric's Second Brain
   handle /erics-second-brain* {
     reverse_proxy erics-second-brain:3111
