@@ -325,12 +325,45 @@ async def cindy_chat(request: Request, req: CindyChatRequest):
         )
         return {"reply": fallback, "sources": [], "log_id": log_id}
 
-    # Map Chroma metadata to the { title, url, snippet } shape cindychat.html renders
+    # Determine which docs to cite as sources.
+    # - Strong match: chunk contains 2+ meaningful query keywords (6+ chars)
+    # - Weak match: chunk contains 1 keyword
+    # - Specific lookup (phone/address/org name): only strong/weak matches; empty if none found
+    # - General/broad question: fall back to all retrieved docs
+    # Always deduplicate by title so the same source isn't listed multiple times.
+    query_keywords = set(re.findall(r"[a-z]{6,}", query_lower))
+    def kw_hits(content: str) -> int:
+        return sum(1 for kw in query_keywords if kw in content.lower())
+
+    strong_matches = [d for d in docs if kw_hits(d.page_content) >= 2]
+    weak_matches   = [d for d in docs if kw_hits(d.page_content) == 1]
+
+    is_specific_lookup = bool(re.search(
+        r"number for|phone for|contact for|address for|where is|hours for|"
+        r"how (do i|can i) (reach|call|contact)", query_lower
+    )) or bool(re.search(r"\b[A-Z][a-z]+ [A-Z][a-z]+\b", last_user))
+
+    if strong_matches:
+        source_docs = strong_matches
+    elif weak_matches:
+        source_docs = weak_matches
+    elif not is_specific_lookup:
+        source_docs = docs        # broad general question: show top retrieved docs
+    else:
+        source_docs = []          # specific lookup not found: no misleading sources
+
+    # Map to { title, url, snippet }, deduplicating by title, max 4 unique sources
     sources = []
-    for doc in docs:
+    seen_titles: set = set()
+    for doc in source_docs:
+        if len(sources) >= 4:
+            break
         meta = doc.metadata
         raw_source = meta.get("source", "")
         title = Path(raw_source).stem.replace("_", " ").title() if raw_source else "CincySeniors Resource"
+        if title in seen_titles:
+            continue
+        seen_titles.add(title)
         sources.append({
             "title": title,
             "url": meta.get("url", "#"),
@@ -354,15 +387,24 @@ async def cindy_chat(request: Request, req: CindyChatRequest):
     )
     response = llm.invoke(lm_messages)
 
+    # Strip leaked internal model tokens (e.g. <|channel|>...<|message|>...)
+    reply_text = re.sub(r"<\|[^|]+\|>.*", "", response.content, flags=re.DOTALL).strip()
+    if not reply_text:
+        reply_text = (
+            "I'm sorry, I don't have that information in my knowledge base. "
+            "I'd recommend contacting a local senior resource center or visiting "
+            "CincySeniors.org for more help."
+        )
+
     log_id = log_turn(
         session_id=session_id,
         user_message=last_user,
-        cindy_reply=response.content,
+        cindy_reply=reply_text,
         sources=sources,
         had_context=True,
     )
 
-    return {"reply": response.content, "sources": sources, "log_id": log_id}
+    return {"reply": reply_text, "sources": sources, "log_id": log_id}
 
 
 # ── CincySeniors document management ─────────────────────────────────────────
