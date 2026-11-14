@@ -39,6 +39,64 @@ app.use(express.urlencoded({ extended: false, limit: "32kb" }));
 app.use(express.static(path.join(__dirname, "public")));
 
 // ──────────────────────────────────────────────
+//  Security: admin-key guard + in-memory rate limiting (no external deps)
+// ──────────────────────────────────────────────
+const ADMIN_API_KEY = process.env.ADMIN_API_KEY || "";
+
+// Real client IP behind Cloudflare → cloudflared → Caddy → here.
+function clientIp(req) {
+  return (
+    req.headers["cf-connecting-ip"] ||
+    (req.headers["x-forwarded-for"] || "").split(",")[0].trim() ||
+    req.socket.remoteAddress ||
+    "unknown"
+  );
+}
+
+// Require X-Admin-Key on sensitive data-read endpoints.
+function requireAdminKey(req, res, next) {
+  if (!ADMIN_API_KEY) {
+    return res.status(500).json({ error: "ADMIN_API_KEY is not configured on the server." });
+  }
+  if ((req.headers["x-admin-key"] || "") !== ADMIN_API_KEY) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+  next();
+}
+
+function makeRateLimiter({ windowMs, max, message }) {
+  const hits = new Map();
+  const timer = setInterval(() => {
+    const now = Date.now();
+    for (const [k, e] of hits) if (now > e.reset) hits.delete(k);
+  }, windowMs);
+  if (timer.unref) timer.unref();
+  return (req, res, next) => {
+    const key = clientIp(req);
+    const now = Date.now();
+    let e = hits.get(key);
+    if (!e || now > e.reset) {
+      e = { count: 0, reset: now + windowMs };
+      hits.set(key, e);
+    }
+    e.count++;
+    if (e.count > max) {
+      res.setHeader("Retry-After", Math.ceil((e.reset - now) / 1000));
+      return res.status(429).json({ error: message || "Too many requests — please slow down." });
+    }
+    next();
+  };
+}
+
+// Hot/abusable public endpoints — cap per client IP per minute.
+app.use("/api/v1/chat/completions", makeRateLimiter({ windowMs: 60_000, max: 20, message: "Rate limit exceeded." }));
+app.use("/api/chat", makeRateLimiter({ windowMs: 60_000, max: 30 }));
+app.use("/api/models", makeRateLimiter({ windowMs: 60_000, max: 60 }));
+app.use("/api/search", makeRateLimiter({ windowMs: 60_000, max: 15 }));
+app.use("/api/signup", makeRateLimiter({ windowMs: 60_000, max: 10 }));
+app.use("/api/feedback", makeRateLimiter({ windowMs: 60_000, max: 10 }));
+
+// ──────────────────────────────────────────────
 //  SerpAPI Web Search Helper
 // ──────────────────────────────────────────────
 
@@ -691,13 +749,29 @@ app.post("/api/signup", async (req, res) => {
   const body = req.body || {};
   const formType = (body.form_type || "unknown").toLowerCase().trim();
 
-  // Basic honeypot — if _gotcha is filled a bot submitted this
+  // Honeypot — if _gotcha is filled, a bot submitted this
   if (body._gotcha) {
     return res.redirect("/signups/thankyou.html");
   }
 
+  // Time check — real users take at least 3 seconds to fill out a form
+  const ts = parseInt(body._ts || "0", 10);
+  if (ts && Date.now() - ts < 3000) {
+    console.log(`[signup] Blocked instant submission (${Date.now() - ts}ms) from ${body.email || "unknown"}`);
+    return res.redirect("/signups/thankyou.html");
+  }
+
+  // Block submissions where both optional dropdowns are still at default (bot pattern)
+  const ageBlank = !body.age_range || body.age_range === "— Select —" || body.age_range === "";
+  const countyBlank = !body.county || body.county === "— Select county —" || body.county === "";
+  const nameBlank = !body.first_name && !body.last_name && !body.name;
+  if (ageBlank && countyBlank && nameBlank) {
+    console.log(`[signup] Blocked empty-profile submission from ${body.email || "unknown"}`);
+    return res.redirect("/signups/thankyou.html");
+  }
+
   // Require at least a name or email
-  if (!body.name && !body.email) {
+  if (!body.name && !body.email && !body.first_name) {
     return res.redirect("/signups/?error=missing-fields");
   }
 
@@ -724,7 +798,7 @@ app.post("/api/signup", async (req, res) => {
 //  GET /api/signups?form=newsletter  → filter by form type
 // ──────────────────────────────────────────────
 
-app.get("/api/signups", (req, res) => {
+app.get("/api/signups", requireAdminKey, (req, res) => {
   try {
     let records = fs.existsSync(SIGNUPS_FILE)
       ? JSON.parse(fs.readFileSync(SIGNUPS_FILE, "utf8"))
@@ -770,7 +844,7 @@ app.post("/api/feedback", (req, res) => {
   }
 });
 
-app.get("/api/feedback", (req, res) => {
+app.get("/api/feedback", requireAdminKey, (req, res) => {
   try {
     const records = fs.existsSync(FEEDBACK_FILE)
       ? JSON.parse(fs.readFileSync(FEEDBACK_FILE, "utf8"))

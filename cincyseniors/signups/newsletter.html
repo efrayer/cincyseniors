@@ -636,6 +636,7 @@
           <!-- Hidden field to identify which form -->
           <input type="text" name="_gotcha" style="display:none;" tabindex="-1" autocomplete="off" />
           <input type="hidden" name="form_type" value="newsletter" />
+          <input type="hidden" name="_ts" id="_ts" value="" />
 
           <!-- Required fields -->
           <div class="field-row">
@@ -899,6 +900,10 @@
         });
       });
     })();
+    </script>
+    <script>
+      // Anti-spam: record page load time so server can reject instant submissions
+      document.getElementById('_ts').value = Date.now();
     </script>
 </body>
 </html>
