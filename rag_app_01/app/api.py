@@ -99,7 +99,7 @@ async def index():
 
 
 @app.post("/api/ingest")
-async def ingest(files: list[UploadFile] = File(...)):
+async def ingest(files: list[UploadFile] = File(...), _: None = Depends(require_admin_key)):
     """Upload and ingest one or more PDF files."""
     results = []
     for f in files:
@@ -162,7 +162,7 @@ async def list_documents():
 
 
 @app.delete("/api/documents/{filename}")
-async def remove_document(filename: str):
+async def remove_document(filename: str, _: None = Depends(require_admin_key)):
     """Delete a document from the vector store and manifest."""
     result = delete_document(filename)
     return result

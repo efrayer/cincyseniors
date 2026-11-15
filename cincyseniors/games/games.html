@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Game corner | CincySeniors.org</title>
+<meta name="description" content="Three friendly games about AI for older adults: spot the scam, match the words, and ask a better question.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Young+Serif&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF4F1; --surface:#FFFFFF; --ink:#15302A; --muted:#47605A; --line:#C3D4CD;
+  --felt:#1F5C4D; --felt-deep:#174639; --on-felt:#FFFFFF; --on-felt-soft:#DDEEE8;
+  --lamp:#F7C948; --on-lamp:#2A2204;
+  --flag:#B93A2B; --flag-soft:#FBE7E3; --ok:#1C6B45; --ok-soft:#E0F3E8;
+  --ask:#2B5FA8; --ask-soft:#E1ECF8; --lamp-soft:#FDF3CF;
+  --display:"Young Serif", Georgia, "Times New Roman", serif;
+  --body:"Atkinson Hyperlegible", Verdana, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    color-scheme:dark;
+    --bg:#0E1D19; --surface:#17302A; --ink:#ECF4F1; --muted:#A8C0B8; --line:#335249;
+    --felt:#1A4A3E; --felt-deep:#12362D; --on-felt:#FFFFFF; --on-felt-soft:#CFE4DD;
+    --lamp:#F7C948; --on-lamp:#2A2204;
+    --flag:#FF9C8C; --flag-soft:#48231D; --ok:#8ADDAE; --ok-soft:#173E2C;
+    --ask:#9CC3F5; --ask-soft:#1B3350; --lamp-soft:#40370F;
+  }
+}
+*{box-sizing:border-box}
+html{font-size:118.75%}
+html[data-size="1"]{font-size:135%}
+html[data-size="2"]{font-size:152%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);line-height:1.55}
+h1,h2,h3{font-family:var(--display);font-weight:400;line-height:1.15;margin:0}
+p{margin:0}
+a{color:inherit}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:4px solid var(--lamp);outline-offset:3px}
+.wrap{max-width:54rem;margin:0 auto;padding:0 1.25rem}
+
+/* top strip */
+.strip{background:var(--felt-deep);color:var(--on-felt)}
+.strip .wrap{display:flex;flex-wrap:wrap;gap:.5rem 1.5rem;align-items:center;justify-content:space-between;padding-top:.6rem;padding-bottom:.6rem}
+.strip a{font-weight:700;text-underline-offset:.2em}
+.sizes{display:flex;align-items:center;gap:.4rem;font-size:.9rem}
+.sizes button{min-width:2.9rem;min-height:2.6rem;border-radius:.6rem;border:2px solid var(--on-felt-soft);background:transparent;color:var(--on-felt);font-weight:700}
+.sizes button[aria-pressed="true"]{background:var(--lamp);border-color:var(--lamp);color:var(--on-lamp)}
+
+/* the card table */
+.table{background:radial-gradient(120% 90% at 80% 30%, #2D7662 0, var(--felt) 60%);color:var(--on-felt);padding:2.4rem 0 0}
+@media (prefers-color-scheme: dark){.table{background:radial-gradient(120% 90% at 80% 30%, #235C4D 0, var(--felt) 60%)}}
+.table h1{font-size:clamp(2.2rem,6.5vw,3.6rem);letter-spacing:-.01em}
+.table h1 span{display:block;color:var(--lamp)}
+.lede{max-width:34rem;margin-top:1rem;font-size:1.1rem;color:var(--on-felt-soft)}
+.deck{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem;margin-top:2rem;transform:translateY(1.6rem)}
+.pick{background:var(--surface);color:var(--ink);border:0;border-radius:1rem;padding:1rem .5rem 1.1rem;text-align:center;
+  box-shadow:0 .7rem 1.2rem -.3rem rgba(6,30,24,.55);outline-offset:4px;transition:transform .18s ease}
+.pick svg{width:min(5.2rem,60%);height:auto;display:block;margin:0 auto .6rem}
+.pick b{display:block;font-family:var(--display);font-weight:400;font-size:clamp(1rem,3.4vw,1.35rem);line-height:1.15}
+.pick small{display:none;color:var(--muted);font-size:.85rem;margin-top:.35rem;line-height:1.3}
+.pick[aria-current="true"]{box-shadow:0 0 0 5px var(--lamp),0 .9rem 1.4rem -.3rem rgba(6,30,24,.6)}
+@media (min-width:44rem){
+  .deck{gap:1.4rem}
+  .pick{padding:1.3rem 1rem 1.4rem}
+  .pick small{display:block}
+  .pick:nth-child(1){transform:rotate(-3deg)}
+  .pick:nth-child(3){transform:rotate(3deg)}
+  .pick:hover,.pick[aria-current="true"]{transform:translateY(-.5rem) rotate(0)}
+}
+
+/* game area */
+main.wrap{padding-top:4.2rem;padding-bottom:3rem}
+.game[hidden]{display:none}
+.game h2{font-size:clamp(1.7rem,4.5vw,2.3rem)}
+.how{color:var(--muted);margin-top:.5rem;max-width:38rem}
+.count{margin-top:1.4rem;font-weight:700;color:var(--muted)}
+.panel{background:var(--surface);border:2px solid var(--line);border-radius:1.1rem;padding:1.3rem;margin-top:.8rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:3.4rem;padding:.7rem 1.4rem;border-radius:.9rem;
+  border:3px solid var(--felt);background:var(--felt);color:#fff;font-weight:700;font-size:1.05rem;text-decoration:none}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn.scam{background:var(--flag-soft);color:var(--ink);border-color:var(--flag)}
+.btn.safe{background:var(--ok-soft);color:var(--ink);border-color:var(--ok)}
+.row{display:flex;flex-wrap:wrap;gap:.8rem;margin-top:1.2rem}
+.row .btn{flex:1 1 12rem}
+.note{border-radius:1rem;padding:1.1rem 1.2rem;margin-top:1.2rem;border-left:.5rem solid var(--ok);background:var(--ok-soft)}
+.note.miss{border-color:var(--flag);background:var(--flag-soft)}
+.note.tip{border-color:var(--lamp);background:var(--lamp-soft)}
+.note.blue{border-color:var(--ask);background:var(--ask-soft)}
+.note h3{font-size:1.3rem;margin-bottom:.4rem}
+.note ul{margin:.5rem 0 0;padding-left:1.2rem}
+.note li{margin-top:.35rem}
+.note p + p{margin-top:.5rem}
+
+/* scam or safe */
+.msg-kind{display:flex;align-items:center;gap:.6rem;font-weight:700}
+.msg-kind span{font-size:1.5rem}
+.msg-from{color:var(--muted);margin-top:.2rem;overflow-wrap:anywhere}
+.msg-body{margin-top:.9rem;font-size:1.15rem;line-height:1.6;background:var(--bg);border-radius:1rem 1rem 1rem .2rem;padding:1rem 1.1rem;overflow-wrap:anywhere}
+.msg-body mark{background:none;color:inherit}
+.shown .msg-body mark{background:var(--lamp);color:var(--on-lamp);border-radius:.25rem;padding:0 .15em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+
+/* match the words */
+.board{display:grid;gap:1.2rem;margin-top:1rem}
+.words{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem;align-content:start}
+.meanings{display:grid;gap:.6rem}
+@media (min-width:44rem){.board{grid-template-columns:15rem 1fr}.words{grid-template-columns:1fr}}
+.tile{min-height:3.4rem;text-align:left;padding:.75rem .9rem;border-radius:.8rem;border:3px solid var(--line);background:var(--surface);line-height:1.35}
+.words .tile{font-weight:700;border-color:var(--felt)}
+.tile[aria-pressed="true"]{background:var(--lamp);border-color:var(--lamp);color:var(--on-lamp)}
+.tile.done{background:var(--ok-soft);border-color:var(--ok);cursor:default}
+.tile.done strong{display:block;font-family:var(--display);font-weight:400;font-size:1.1rem}
+.tile.nope{border-color:var(--flag);animation:nudge .35s}
+@keyframes nudge{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+
+/* ask it better */
+.bubble{background:var(--ask-soft);border-radius:1rem 1rem .2rem 1rem;padding:1rem 1.1rem;font-size:1.12rem;margin-top:.5rem}
+.bubble em{font-style:normal;font-weight:700;background:var(--surface);border-radius:.3rem;padding:0 .2em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.bubble em.risky{background:var(--flag-soft);box-shadow:0 0 0 2px var(--flag)}
+.reply{background:var(--bg);border-radius:1rem 1rem 1rem .2rem;padding:1rem 1.1rem;margin-top:.5rem;white-space:pre-line}
+.label{font-weight:700;margin-top:1.2rem}
+.chips{display:grid;gap:.6rem;margin-top:.5rem}
+@media (min-width:36rem){.chips{grid-template-columns:1fr 1fr}}
+.chip{min-height:3.2rem;text-align:left;padding:.7rem .9rem;border-radius:.8rem;border:3px solid var(--line);background:var(--surface);line-height:1.3}
+.chip::before{content:"+ ";font-weight:700}
+.chip[aria-pressed="true"]{border-color:var(--ask);background:var(--ask-soft)}
+.chip[aria-pressed="true"]::before{content:"✓ "}
+.chip.risky[aria-pressed="true"]{border-color:var(--flag);background:var(--flag-soft)}
+.chip.risky[aria-pressed="true"]::before{content:"! "}
+.meter{display:flex;align-items:center;gap:.5rem;margin-top:1.1rem;font-weight:700}
+.meter i{width:2.2rem;height:.8rem;border-radius:1rem;background:var(--line)}
+.meter i.on{background:var(--ok)}
+.said{min-height:3.2rem;margin-top:.8rem;color:var(--muted)}
+
+footer{border-top:2px solid var(--line);padding:1.5rem 0 2.5rem;color:var(--muted)}
+footer a{font-weight:700;color:var(--ink)}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<div class="strip">
+  <div class="wrap">
+    <a href="https://www.cincyseniors.org/">‹ Back to CincySeniors.org</a>
+    <div class="sizes" role="group" aria-label="Text size">
+      <span>Text size</span>
+      <button type="button" data-size="0" aria-label="Regular text">A</button>
+      <button type="button" data-size="1" aria-label="Larger text">A+</button>
+      <button type="button" data-size="2" aria-label="Largest text">A++</button>
+    </div>
+  </div>
+</div>
+
+<header class="table">
+  <div class="wrap">
+    <h1>Play a little. <span>Learn a lot.</span></h1>
+    <p class="lede">Three short games about AI, made by your neighbors. There are no timers and nothing to sign up for. Take your time, and play as often as you like.</p>
+    <nav class="deck" aria-label="Choose a game">
+      <button type="button" class="pick" data-go="scam">
+        <svg viewBox="-62 -114 124 124" aria-hidden="true"><circle cy="-52" r="62" fill="#FBE3DE"/><path d="M0 -98 L36 -84 V-56 C36 -30 20 -12 0 -4 C-20 -12 -36 -30 -36 -56 V-84 Z" fill="#B93A2B"/><rect x="-5" y="-78" width="10" height="34" rx="5" fill="#fff"/><circle cy="-30" r="6.5" fill="#fff"/></svg>
+        <b>Scam or safe?</b><small>Read a message and decide if you’d trust it.</small>
+      </button>
+      <button type="button" class="pick" data-go="match">
+        <svg viewBox="-62 -114 124 124" aria-hidden="true"><circle cy="-52" r="62" fill="#FDF1C7"/><rect x="-46" y="-90" width="44" height="58" rx="8" fill="#1F5C4D" transform="rotate(-8 -24 -61)"/><rect x="4" y="-72" width="44" height="58" rx="8" fill="#1F5C4D" transform="rotate(8 26 -43)"/><path d="M-34 -62 l8 8 l14 -16" fill="none" stroke="#F7C948" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" transform="rotate(-8 -24 -61)"/><path d="M16 -44 l8 8 l14 -16" fill="none" stroke="#F7C948" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" transform="rotate(8 26 -43)"/></svg>
+        <b>Match the words</b><small>Pair each AI word with its plain meaning.</small>
+      </button>
+      <button type="button" class="pick" data-go="ask">
+        <svg viewBox="-62 -114 124 124" aria-hidden="true"><circle cy="-52" r="62" fill="#DCEBF7"/><path d="M-40 -88 H40 a10 10 0 0 1 10 10 V-36 a10 10 0 0 1 -10 10 H-4 L-24 -6 V-26 H-40 a10 10 0 0 1 -10 -10 V-78 a10 10 0 0 1 10 -10 Z" fill="#2B5FA8"/><rect x="-34" y="-74" width="30" height="8" rx="4" fill="#fff"/><rect x="-34" y="-58" width="50" height="8" rx="4" fill="#fff"/><rect x="-34" y="-42" width="68" height="8" rx="4" fill="#fff"/></svg>
+        <b>Ask it better</b><small>Build a question that gets a useful answer.</small>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="game" id="game-scam" aria-labelledby="h-scam">
+    <h2 id="h-scam">Scam or safe?</h2>
+    <p class="how">Scammers now use AI to sound more convincing. Read each message, then choose. You’ll see the clues after every answer.</p>
+    <div id="scam-stage"></div>
+  </section>
+
+  <section class="game" id="game-match" aria-labelledby="h-match" hidden>
+    <h2 id="h-match">Match the words</h2>
+    <p class="how">Choose a word, then choose the meaning that goes with it. A wrong guess costs nothing, so go ahead and try.</p>
+    <div id="match-stage"></div>
+  </section>
+
+  <section class="game" id="game-ask" aria-labelledby="h-ask" hidden>
+    <h2 id="h-ask">Ask it better</h2>
+    <p class="how">An AI helper can only work with what you tell it. Add details to the question, watch out for anything too private, then send it.</p>
+    <div id="ask-stage"></div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Have a real question about AI or a message you’re not sure about? <a href="https://www.cincyseniors.org/cindy/">Chat with Cindy AI</a> or <a href="https://www.cincyseniors.org/ask_howie/">ask Howie, a real person</a>. The messages and AI answers in these games are examples written for practice.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+"use strict";
+var $ = function(s, r){ return (r || document).querySelector(s); };
+var esc = function(s){ return String(s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); };
+var shuffle = function(a){ a = a.slice(); for (var i = a.length - 1; i > 0; i--){ var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; };
+function focusOn(el){ if (el){ el.setAttribute("tabindex", "-1"); el.focus({preventScroll:true}); el.scrollIntoView({block:"nearest", behavior:"auto"}); } }
+
+/* ---------- text size ---------- */
+var sizeButtons = document.querySelectorAll(".sizes button");
+function setSize(n){
+  if (n === "0") document.documentElement.removeAttribute("data-size");
+  else document.documentElement.setAttribute("data-size", n);
+  sizeButtons.forEach(function(b){ b.setAttribute("aria-pressed", String(b.dataset.size === n)); });
+  try { localStorage.setItem("cs-games-size", n); } catch (e) {}
+}
+var saved = "0";
+try { saved = localStorage.getItem("cs-games-size") || "0"; } catch (e) {}
+setSize(/^[012]$/.test(saved) ? saved : "0");
+sizeButtons.forEach(function(b){ b.addEventListener("click", function(){ setSize(b.dataset.size); }); });
+
+/* ---------- choosing a game (also works as games.html#match etc.) ---------- */
+var names = ["scam", "match", "ask"];
+function show(name, moveFocus){
+  if (names.indexOf(name) < 0) name = "scam";
+  names.forEach(function(n){ $("#game-" + n).hidden = n !== name; });
+  document.querySelectorAll(".pick").forEach(function(b){ b.setAttribute("aria-current", String(b.dataset.go === name)); });
+  if (moveFocus) focusOn($("#h-" + name));
+}
+document.addEventListener("click", function(e){
+  var b = e.target.closest("[data-go]");
+  if (!b) return;
+  e.preventDefault();
+  if (location.hash === "#" + b.dataset.go) show(b.dataset.go, true);
+  else location.hash = b.dataset.go;
+});
+window.addEventListener("hashchange", function(){ show(location.hash.slice(1), true); });
+show(location.hash.slice(1), false);
+
+/* =====================================================
+   1. SCAM OR SAFE?
+   In "body", a piece wrapped in [ ] is a clue that gets
+   highlighted after the player answers.
+   ===================================================== */
+var MESSAGES = [
+  { icon:"💬", kind:"Text message", from:"From: 513-555-0188", scam:true,
+    body:["MEDICARE ALERT: Your card has been ", ["suspended"], ". ", ["Verify your number within 24 hours"], " to keep your benefits: ", ["medicare-verify-help.co/renew"]],
+    clues:["Medicare does not text you to say your card is suspended.", "A 24-hour deadline is there to rush you.", "The web address is not a real government site, which would end in .gov."],
+    todo:"Delete it. If you’re worried, call the number on the back of your Medicare card." },
+  { icon:"📞", kind:"Phone call", from:"Caller ID: Unknown", scam:true,
+    body:["“Grandma? It’s me. I’ve been in an accident and ", ["I need $2,000 in gift cards right away"], ". ", ["Please don’t tell Mom."], "”"],
+    clues:["AI can copy a voice from a few seconds of video, so sounding right proves nothing.", "No real emergency is paid for with gift cards.", "Asking you to keep it secret keeps you from checking."],
+    todo:"Hang up and call your grandchild back on the number you already have." },
+  { icon:"💬", kind:"Text message", from:"From: Dr. Patel’s office", scam:false,
+    body:["Reminder: you have an appointment Thursday at 10:30 AM. Reply C to confirm, or call the office at the number on your appointment card."],
+    clues:["You were expecting it.", "It doesn’t ask for money, passwords or account numbers.", "It sends you to a number you already have, not a new one."],
+    todo:"Fine to confirm. Any time you’re unsure, call the office yourself." },
+  { icon:"✉️", kind:"Email", from:"From: Refund Department <refunds@fast-refund-center.info>", scam:true,
+    body:["Good news! ", ["You are owed a refund of $349.99"], ". To receive your payment today, ", ["confirm your bank account number"], " using the secure link below."],
+    clues:["A surprise refund you never asked about is bait.", "Nobody needs your bank account number by email to send a refund.", "The sender’s address doesn’t belong to any company you know."],
+    todo:"Don’t click. If you think a company owes you money, sign in to its website the way you normally do." },
+  { icon:"🖥️", kind:"Pop-up on your screen", from:"Appeared while you were reading the news", scam:true,
+    body:[["WARNING! Your computer is infected with 5 viruses."], " Do not turn off your computer. ", ["Call Tech Support now: 1-800-555-0142"]],
+    clues:["Real security programs don’t ask you to phone anyone.", "The loud warning is meant to scare you into calling.", "The person who answers will ask for payment or control of your computer."],
+    todo:"Close the browser, or restart the computer. Never call the number." },
+  { icon:"✉️", kind:"Email", from:"From: Your public library", scam:false,
+    body:["The book you requested is ready. Pick it up at the Anderson branch by November 21. No action is needed until then."],
+    clues:["You asked for the book, so the message makes sense.", "It asks for nothing: no payment, no password, no link to click.", "There’s no rush or threat."],
+    todo:"Enjoy the book." },
+  { icon:"💬", kind:"Text message", from:"From: 440-555-0136", scam:true,
+    body:["Your package could not be delivered. ", ["Pay the $1.99 redelivery fee"], " here to avoid return to sender: ", ["parcel-redeliver-now.info/pay"]],
+    clues:["Delivery companies don’t charge a fee by text.", "The fee is small on purpose. What they want is your card number.", "The link goes to a site you’ve never heard of."],
+    todo:"Delete it. If you’re expecting a package, check with the store you ordered from." },
+  { icon:"💬", kind:"Text message", from:"From: Your pharmacy", scam:false,
+    body:["Your prescription is ready for pickup at the pharmacy on Beechmont Avenue. We’re open 9 AM to 7 PM."],
+    clues:["It matches something you’re already doing.", "It doesn’t ask you to click, pay or share anything.", "You can check it by walking in or calling the pharmacy’s usual number."],
+    todo:"Nothing to worry about here." }
+];
+
+var scam = {};
+function scamStart(){ scam = { list: shuffle(MESSAGES), i: 0, right: 0 }; scamDraw(false); }
+function scamDraw(answered, pickedScam){
+  var m = scam.list[scam.i], stage = $("#scam-stage");
+  var body = m.body.map(function(p){ return Array.isArray(p) ? "<mark>" + esc(p[0]) + "</mark>" : esc(p); }).join("");
+  var html = '<p class="count">Message ' + (scam.i + 1) + " of " + scam.list.length + "</p>" +
+    '<div class="panel' + (answered ? " shown" : "") + '">' +
+      '<p class="msg-kind"><span aria-hidden="true">' + m.icon + "</span>" + esc(m.kind) + "</p>" +
+      '<p class="msg-from">' + esc(m.from) + "</p>" +
+      '<p class="msg-body">' + body + "</p>" +
+    "</div>";
+  if (!answered){
+    html += '<div class="row"><button type="button" class="btn scam" data-answer="scam">🚩 It’s a scam</button>' +
+            '<button type="button" class="btn safe" data-answer="safe">👍 It looks safe</button></div>';
+  } else {
+    var correct = pickedScam === m.scam;
+    var truth = m.scam ? "this is a scam" : "this one is safe";
+    html += '<div class="note' + (correct ? "" : " miss") + '" id="scam-note">' +
+      "<h3>" + (correct ? "That’s right, " + truth + "." : "Not this time. " + truth.charAt(0).toUpperCase() + truth.slice(1) + ".") + "</h3>" +
+      "<p>" + (m.scam ? "The clues, highlighted above:" : "Why it holds up:") + "</p>" +
+      "<ul>" + m.clues.map(function(c){ return "<li>" + esc(c) + "</li>"; }).join("") + "</ul>" +
+      '<p style="margin-top:.7rem"><strong>What to do:</strong> ' + esc(m.todo) + "</p></div>" +
+      '<div class="row"><button type="button" class="btn" data-answer="next">' +
+      (scam.i + 1 < scam.list.length ? "Next message" : "See how you did") + "</button></div>";
+  }
+  stage.innerHTML = html;
+  if (answered) focusOn($("#scam-note"));
+}
+function scamEnd(){
+  var n = scam.right, t = scam.list.length;
+  var line = n === t ? "A perfect round. Scammers would have a hard time with you."
+    : n >= t - 2 ? "Sharp eyes. The ones that slipped by are the ones worth a second look."
+    : "Good practice. These messages are built to fool people, and every round makes them easier to spot.";
+  $("#scam-stage").innerHTML =
+    '<div class="note tip" id="scam-note" style="margin-top:1.4rem"><h3>You got ' + n + " of " + t + ".</h3><p>" + line + "</p>" +
+    "<p><strong>Three habits that beat almost every scam:</strong></p><ul>" +
+    "<li>Slow down. A message that rushes you is a message to doubt.</li>" +
+    "<li>Never pay with gift cards, and never share a code, password or account number with someone who contacted you.</li>" +
+    "<li>Check for yourself. Hang up and call a number you already know.</li></ul></div>" +
+    '<div class="row"><button type="button" class="btn" data-answer="again">Play again</button>' +
+    '<a class="btn ghost" href="#match" data-go="match">Try Match the words</a></div>';
+  focusOn($("#scam-note"));
+}
+$("#scam-stage").addEventListener("click", function(e){
+  var b = e.target.closest("[data-answer]"); if (!b) return;
+  var a = b.dataset.answer;
+  if (a === "scam" || a === "safe"){
+    var picked = a === "scam";
+    if (picked === scam.list[scam.i].scam) scam.right++;
+    scamDraw(true, picked);
+  } else if (a === "next"){
+    scam.i++;
+    if (scam.i < scam.list.length){ scamDraw(false); focusOn($("#scam-stage .count")); } else scamEnd();
+  } else if (a === "again"){ scamStart(); focusOn($("#scam-stage .count")); }
+});
+scamStart();
+
+/* =====================================================
+   2. MATCH THE WORDS
+   Six words are drawn from this list each round.
+   ===================================================== */
+var WORDS = [
+  { w:"Artificial intelligence", d:"Computer programs that do things that usually take human thinking, like understanding language.", x:"It’s what suggests the next word as you type a text." },
+  { w:"Chatbot", d:"A program you talk with by typing or speaking, and it answers back.", x:"Cindy AI on this site is a chatbot." },
+  { w:"Prompt", d:"The question or instruction you give to an AI.", x:"“Plan a Sunday supper for six” is a prompt." },
+  { w:"Hallucination", d:"When an AI says something false but sounds completely sure.", x:"It’s why you double-check dates, doses and phone numbers." },
+  { w:"Deepfake", d:"A fake video, photo or voice made by AI to seem like a real person.", x:"Scammers use them to imitate a relative on the phone." },
+  { w:"Training data", d:"The huge pile of writing and pictures an AI learned from.", x:"It’s also why an AI may not know about last week’s news." },
+  { w:"Voice assistant", d:"A helper you speak to out loud, in a phone or a smart speaker.", x:"“What’s the weather tomorrow?” is a classic thing to ask one." },
+  { w:"Phishing", d:"A fake message that tries to trick you into giving up a password or money.", x:"The “your account is suspended” email is a common one." },
+  { w:"Two-step verification", d:"A second check when you sign in, like a code sent to your phone.", x:"Never read that code to someone who calls you." },
+  { w:"Algorithm", d:"A set of step-by-step instructions a computer follows.", x:"One decides which videos or posts you see next." },
+  { w:"Generative AI", d:"AI that makes something new when asked: writing, pictures or music.", x:"Ask it for a birthday poem and it writes one on the spot." },
+  { w:"Language model", d:"The engine inside a chatbot. It works by predicting which words come next.", x:"It’s very good with words, and it isn’t a person." }
+];
+var match = {};
+function matchStart(){
+  var six = shuffle(WORDS).slice(0, 6);
+  match = { words: six, defs: shuffle(six), selW: null, selD: null, done: {}, tries: 0, left: 6 };
+  var html = '<div class="board"><div class="words" role="group" aria-label="Words">' +
+    match.words.map(function(o){ return '<button type="button" class="tile" data-w="' + esc(o.w) + '" aria-pressed="false">' + esc(o.w) + "</button>"; }).join("") +
+    '</div><div class="meanings" role="group" aria-label="Meanings">' +
+    match.defs.map(function(o){ return '<button type="button" class="tile" data-d="' + esc(o.w) + '" aria-pressed="false">' + esc(o.d) + "</button>"; }).join("") +
+    '</div></div><div id="match-said" aria-live="polite"></div>';
+  $("#match-stage").innerHTML = html;
+}
+function matchSay(html){ $("#match-said").innerHTML = html; }
+function matchRefresh(){
+  document.querySelectorAll("#match-stage .tile:not(.done)").forEach(function(t){
+    var on = (t.dataset.w && t.dataset.w === match.selW) || (t.dataset.d && t.dataset.d === match.selD);
+    t.setAttribute("aria-pressed", String(!!on));
+  });
+}
+$("#match-stage").addEventListener("click", function(e){
+  if (e.target.closest("[data-again]")){ matchStart(); focusOn($("#h-match")); return; }
+  var t = e.target.closest(".tile"); if (!t || t.classList.contains("done")) return;
+  if (t.dataset.w) match.selW = match.selW === t.dataset.w ? null : t.dataset.w;
+  else match.selD = match.selD === t.dataset.d ? null : t.dataset.d;
+  matchRefresh();
+  if (!match.selW || !match.selD) return;
+  match.tries++;
+  var wEl = $('#match-stage [data-w="' + CSS.escape(match.selW) + '"]'), dEl = $('#match-stage [data-d="' + CSS.escape(match.selD) + '"]');
+  if (match.selW === match.selD){
+    var o = match.words.filter(function(x){ return x.w === match.selW; })[0];
+    [wEl, dEl].forEach(function(el){ el.classList.add("done"); el.disabled = true; el.setAttribute("aria-pressed", "false"); });
+    wEl.textContent = "✓ " + o.w;
+    dEl.innerHTML = "<strong>" + esc(o.w) + "</strong>" + esc(o.d);
+    match.left--; match.selW = match.selD = null;
+    if (match.left){
+      matchSay('<div class="note"><h3>A match: ' + esc(o.w) + ".</h3><p>" + esc(o.x) + "</p></div>");
+    } else {
+      matchSay('<div class="note tip"><h3>All six matched in ' + match.tries + (match.tries === 1 ? " try." : " tries.") + "</h3><p>" + esc(o.x) +
+        " You now have a little glossary above to read back through.</p></div>" +
+        '<div class="row"><button type="button" class="btn" data-again>Play again with new words</button>' +
+        '<a class="btn ghost" href="#ask" data-go="ask">Try Ask it better</a></div>');
+      focusOn($("#match-said"));
+    }
+  } else {
+    [wEl, dEl].forEach(function(el){ el.classList.add("nope"); setTimeout(function(){ el.classList.remove("nope"); }, 600); });
+    match.selW = match.selD = null;
+    matchSay('<div class="note miss"><p><strong>Not a pair.</strong> Pick a word and have another go.</p></div>');
+  }
+  matchRefresh();
+});
+matchStart();
+
+/* =====================================================
+   3. ASK IT BETTER
+   Each add-on is "good", "filler" or "private".
+   ===================================================== */
+var SCENES = [
+  { title:"Supper tonight", start:"Give me a dinner recipe.",
+    chips:[
+      { t:"For two people", add:"It’s for two people.", k:"good", say:"Good. Now it won’t hand you a recipe that feeds eight." },
+      { t:"Make it a really good one", add:"Make it a really good one.", k:"filler", say:"Harmless, but the AI can’t tell what “good” means to you. Details work better." },
+      { t:"Use the chicken and rice I have", add:"Use the chicken and rice I already have.", k:"good", say:"Yes. Telling it what’s in your kitchen saves a trip to the store." },
+      { t:"Keep it low in salt", add:"Keep it low in salt.", k:"good", say:"Helpful. It can only respect your needs if it knows them." },
+      { t:"Answer as fast as you can", add:"Answer as fast as you can.", k:"filler", say:"It answers in seconds either way, so this adds nothing." },
+      { t:"Give me simple numbered steps", add:"Give me simple numbered steps.", k:"good", say:"Good. You can ask for the answer in whatever shape is easiest to follow." }
+    ],
+    replies:[
+      ["Here’s a classic: spaghetti with meat sauce. Brown 1 pound of ground beef, stir in a jar of sauce, and serve over a box of pasta. Serves 6.", "A fine recipe for somebody. It’s a guess, because the AI had almost nothing to go on."],
+      ["Here’s a chicken and rice skillet that fits what you’ve told me. Brown the chicken, add rice and broth, cover, and simmer about 20 minutes.", "Closer. Each detail you added steered the answer toward your kitchen."],
+      ["Low-salt chicken and rice skillet for two\n1. Rub 2 chicken thighs with pepper, garlic and lemon. No salt needed.\n2. Brown them 4 minutes on each side.\n3. Add ½ cup rice and 1 cup no-salt broth.\n4. Cover and simmer 20 minutes.", "That’s a recipe written for you: right size, your ingredients, your needs, easy to follow."]
+    ] },
+  { title:"Getting ready for the doctor", start:"Help me get ready for my doctor’s appointment.",
+    chips:[
+      { t:"It’s a check-up about knee pain", add:"It’s a check-up about my knee pain.", k:"good", say:"Good. A general description of the visit is all it needs." },
+      { t:"My Medicare number is…", add:"My Medicare number is 1AB2-CD3-EF45.", k:"private", say:"Take this one back out. A chatbot never needs your Medicare, Social Security or bank numbers." },
+      { t:"Give me five questions to ask", add:"Give me five questions to ask.", k:"good", say:"Yes. Saying how many keeps the answer short enough to use." },
+      { t:"I want options besides surgery", add:"I’d like to know about options besides surgery.", k:"good", say:"Helpful. Now the questions will cover what you care about." },
+      { t:"Thanks in advance!", add:"Thanks in advance!", k:"filler", say:"Kind, and it does no harm. It just doesn’t change the answer." },
+      { t:"Make it a short list I can print", add:"Make it a short list I can print.", k:"good", say:"Good. Ask for the format that suits you." }
+    ],
+    replies:[
+      ["Before any appointment, bring a list of your medications, arrive a little early, and write down your questions ahead of time.", "True, and you knew it already. The AI needs more to go on."],
+      ["For your knee visit, a few questions to bring: What is causing the pain? What can I do at home? When should I come back?", "Better. A couple more details would make it a list you’d carry in with you."],
+      ["Five questions for your knee appointment\n1. What is most likely causing my knee pain?\n2. What are my options besides surgery?\n3. Would physical therapy or exercise help?\n4. Which activities should I avoid, and which are good for me?\n5. What signs mean I should call you sooner?", "A list worth printing. Your doctor has the answers; the AI helped you get ready to ask."]
+    ] },
+  { title:"A birthday note", start:"Write a birthday note.",
+    chips:[
+      { t:"For my granddaughter, turning 10", add:"It’s for my granddaughter, who is turning 10.", k:"good", say:"Good. Who it’s for changes everything about the note." },
+      { t:"She loves soccer and drawing", add:"She loves soccer and drawing.", k:"good", say:"Yes. Small details are what make it sound like you wrote it." },
+      { t:"Her full name, school and address are…", add:"Her full name is Lily Marie Brandt, she goes to Maple Grove School, and she lives at 42 Orchard Lane.", k:"private", say:"Take this one back out. Protect other people’s details too, and children’s most of all." },
+      { t:"Make it perfect", add:"Make it perfect.", k:"filler", say:"It doesn’t know what perfect means to you. Describe it instead." },
+      { t:"Three or four sentences", add:"Keep it to three or four sentences.", k:"good", say:"Good. It fits in a card now." },
+      { t:"Warm and a little funny", add:"Make it warm and a little funny.", k:"good", say:"Helpful. You can ask for any tone you like." }
+    ],
+    replies:[
+      ["Happy birthday! Wishing you a wonderful day filled with joy and happiness. Best wishes on your special day.", "It could be for anyone, because the AI had so little to go on."],
+      ["Happy 10th birthday! I hope your day is full of fun and all your favorite things. I’m so proud of you. With all my love.", "Warmer. A detail or two more and it will sound like it came from you."],
+      ["Happy 10th birthday to my favorite soccer star and artist! Double digits are a very big deal. I hope you score a goal, draw a masterpiece and eat too much cake, in that order. I love you to the moon.", "That one belongs in the card. Change any words you like; it’s your note."]
+    ] }
+];
+var ask = { s: 0 };
+function askStart(s){ ask = { s: s, on: {}, sent: false, last: "" }; askDraw(); }
+function askDraw(){
+  var sc = SCENES[ask.s], good = 0, risky = false;
+  var extra = sc.chips.map(function(c, i){
+    if (!ask.on[i]) return "";
+    if (c.k === "good") good++;
+    if (c.k === "private") risky = true;
+    return " <em" + (c.k === "private" ? ' class="risky"' : "") + ">" + esc(c.add) + "</em>";
+  }).join("");
+  var pips = ""; for (var i = 0; i < 4; i++) pips += '<i class="' + (i < good ? "on" : "") + '"></i>';
+  var html = '<p class="count">Question ' + (ask.s + 1) + " of " + SCENES.length + ": " + esc(sc.title) + "</p>" +
+    '<div class="panel"><p class="label" style="margin-top:0">Your question so far</p>' +
+    '<p class="bubble">' + esc(sc.start) + extra + "</p>";
+  if (!ask.sent){
+    html += '<p class="label">Tap to add or remove a detail</p><div class="chips">' +
+      sc.chips.map(function(c, i){ return '<button type="button" class="chip' + (c.k === "private" ? " risky" : "") + '" data-chip="' + i + '" aria-pressed="' + !!ask.on[i] + '">' + esc(c.t) + "</button>"; }).join("") +
+      '</div><p class="meter" aria-label="Helpful details: ' + good + ' of 4"><span>Helpful details</span>' + pips + "</p>" +
+      '<p class="said" aria-live="polite">' + (ask.last || "Each helpful detail fills a bar. Not every choice here is a good one.") + "</p></div>" +
+      '<div class="row"><button type="button" class="btn" data-send>Send it to the AI</button></div>';
+  } else {
+    var tier = good >= 4 ? 2 : good >= 2 ? 1 : 0, r = sc.replies[tier];
+    html += '<p class="label">Example answer</p><p class="reply">' + esc(r[0]) + "</p></div>" +
+      '<div class="note ' + (tier === 2 ? "" : "tip") + '" id="ask-note"><h3>' + good + " of 4 helpful details</h3><p>" + esc(r[1]) + "</p></div>" +
+      (risky ? '<div class="note miss"><h3>One thing to leave out next time</h3><p>You shared private information the AI didn’t need. Keep Medicare, Social Security, bank and password details, and other people’s personal details, out of any chat.</p></div>' : "") +
+      '<div class="row">' + (tier < 2 || risky ? '<button type="button" class="btn ghost" data-retry>Improve my question</button>' : "") +
+      (ask.s + 1 < SCENES.length ? '<button type="button" class="btn" data-next>Next question</button>' : '<button type="button" class="btn" data-finish>Finish</button>') + "</div>";
+  }
+  $("#ask-stage").innerHTML = html;
+}
+$("#ask-stage").addEventListener("click", function(e){
+  var c = e.target.closest("[data-chip]");
+  if (c){
+    var i = +c.dataset.chip, chip = SCENES[ask.s].chips[i];
+    ask.on[i] = !ask.on[i];
+    ask.last = ask.on[i] ? esc(chip.say) : "Removed.";
+    askDraw();
+    var again = $('#ask-stage [data-chip="' + i + '"]'); if (again) again.focus({preventScroll:true});
+    return;
+  }
+  if (e.target.closest("[data-send]")){ ask.sent = true; askDraw(); focusOn($("#ask-note")); }
+  else if (e.target.closest("[data-retry]")){ ask.sent = false; ask.last = ""; askDraw(); focusOn($("#ask-stage .count")); }
+  else if (e.target.closest("[data-next]")){ askStart(ask.s + 1); focusOn($("#ask-stage .count")); }
+  else if (e.target.closest("[data-restart]")){ askStart(0); focusOn($("#ask-stage .count")); }
+  else if (e.target.closest("[data-finish]")){
+    $("#ask-stage").innerHTML = '<div class="note blue" id="ask-note" style="margin-top:1.4rem"><h3>A recipe for a good question</h3>' +
+      "<ul><li><strong>Who or what it’s for.</strong> Two people, a ten-year-old, a knee appointment.</li>" +
+      "<li><strong>What matters to you.</strong> Low salt, no surgery, a little funny.</li>" +
+      "<li><strong>How you want the answer.</strong> Numbered steps, five questions, three sentences.</li>" +
+      "<li><strong>Nothing private.</strong> No account numbers, passwords or addresses.</li></ul>" +
+      "<p>And double-check anything important. AI can sound sure and still be wrong.</p></div>" +
+      '<div class="row"><button type="button" class="btn" data-restart>Play again</button>' +
+      '<a class="btn ghost" href="https://www.cincyseniors.org/cindy/">Try a real question with Cindy AI</a></div>';
+    focusOn($("#ask-note"));
+  }
+});
+askStart(0);
+})();
+</script>
+</body>
+</html>
