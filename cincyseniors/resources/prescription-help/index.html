@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Help Paying for Prescription Medicines — Resources from Howie | CincySeniors.org</title>
+  <meta name="description" content="A complete guide to foundations, drug company programs, discount cards, and government help for paying for prescription medicines — compiled by Howie Baum and AI for older adults in Greater Cincinnati." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:          #FBF7F1;
+      --panel:       #FFFBF3;
+      --cream-2:     #F3ECDD;
+      --ink:         #231914;
+      --ink-2:       #4A3E36;
+      --border:      #D8C9AE;
+      --line:        #D8C9AE;
+      --sand:        #E7D9C0;
+      --howie:       #7A5C1E;
+      --howie-dark:  #5C4314;
+      --howie-light: rgba(122,92,30,.09);
+      --howie-btn:   #C98A2B;
+      --howie-btn-dk:#A06E1A;
+      --red:         #A8322A;
+      --red-dk:      #8A281F;
+      --green:       #2E5C2E;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: "Source Sans 3", -apple-system, system-ui, sans-serif;
+      font-size: 19px;
+      line-height: 1.7;
+      color: var(--ink);
+      background: var(--bg);
+    }
+
+    a { color: var(--howie); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+    a:hover { color: var(--howie-dark); }
+
+    h1, h2, h3, h4 {
+      font-family: "Fraunces", Georgia, serif;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+    }
+
+    /* ── Skip link ── */
+    .skip-link { position: absolute; left: -9999px; top: 0; background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 0 0 10px 0; z-index: 999; font-size: 16px; }
+    .skip-link:focus { left: 0; }
+
+    /* ── Top bar ── */
+    .topbar { background: var(--cream-2); border-bottom: 1px solid var(--border); font-size: 16px; }
+    .topbar-inner { max-width: 1040px; margin: 0 auto; padding: 8px 24px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .text-size { display: inline-flex; gap: 6px; align-items: center; color: var(--ink-2); }
+    .text-size button { background: transparent; border: 1.5px solid var(--border); border-radius: 999px; padding: 3px 10px; font-family: inherit; cursor: pointer; color: var(--ink); font-size: 15px; }
+    .text-size button:hover { border-color: var(--howie-btn); }
+    .text-size button.active { background: var(--howie-btn); color: #fff; border-color: var(--howie-btn-dk); }
+
+    /* ── Nav ── */
+    .page-wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
+    .site-header { display: flex; justify-content: space-between; align-items: center; padding: 18px 0 12px; gap: 20px; flex-wrap: wrap; }
+    .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--ink); }
+    .brand-mark { width: 46px; height: 46px; border-radius: 50%; background: var(--howie-btn); color: #fff; display: grid; place-items: center; font-family: "Fraunces", serif; font-weight: 700; font-size: 22px; flex-shrink: 0; }
+    .brand-name { font-family: "Fraunces", serif; font-weight: 700; font-size: 22px; line-height: 1.1; }
+    .brand-tag { display: block; font-size: 13px; color: var(--ink-2); }
+
+    .nav-toggle { display: none; background: transparent; border: 1.5px solid var(--border); border-radius: 8px; padding: 8px 14px; font-size: 20px; cursor: pointer; color: var(--ink); font-family: inherit; }
+    .nav-toggle:focus { outline: 3px solid var(--howie-btn); outline-offset: 2px; }
+
+    .primary-nav ul { list-style: none; display: flex; gap: 4px; flex-wrap: wrap; }
+    .primary-nav a { display: block; padding: 8px 14px; border-radius: 999px; text-decoration: none; color: var(--ink); font-weight: 600; font-size: 16px; }
+    .primary-nav a:hover { background: var(--cream-2); }
+    .primary-nav a:focus { outline: 3px solid var(--howie-btn); outline-offset: 2px; }
+    .primary-nav .dropdown { position: relative; }
+    .primary-nav .dropdown > a::after { content: " ▾"; font-size: 0.75em; }
+    .primary-nav .dropdown-menu { display: none; position: absolute; top: calc(100% + 4px); right: 0; background: var(--panel); border: 1.5px solid var(--border); border-radius: 14px; padding: 8px; min-width: 220px; box-shadow: 0 8px 24px rgba(31,27,22,0.12); z-index: 200; flex-direction: column; gap: 2px; }
+    .primary-nav .dropdown:hover .dropdown-menu,
+    .primary-nav .dropdown:focus-within .dropdown-menu,
+    .primary-nav .dropdown.js-open .dropdown-menu { display: flex; }
+    .primary-nav .dropdown-menu a { border-radius: 8px; font-size: 15px; padding: 9px 13px; }
+
+    /* ── Breadcrumb ── */
+    .breadcrumb { font-size: 15px; color: var(--ink-2); padding: 14px 0 0; }
+    .breadcrumb a { color: var(--howie); text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb span { margin: 0 6px; color: var(--border); }
+
+    /* ── Page hero ── */
+    .page-hero { padding: 40px 0 36px; border-bottom: 1px solid var(--border); margin-bottom: 48px; }
+    .eyebrow { display: inline-block; font-size: 13px; font-weight: 700; color: var(--howie); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 12px; }
+    .page-hero h1 { font-size: 48px; line-height: 1.08; margin-bottom: 14px; }
+    .page-hero .subtitle { font-size: 20px; color: var(--ink-2); max-width: 56ch; line-height: 1.6; }
+
+    /* ── Download banner ── */
+    .download-banner {
+      display: flex; align-items: center; gap: 18px;
+      background: #FFF6E0; border: 2px solid var(--howie-btn);
+      border-radius: 16px; padding: 20px 24px; margin-bottom: 52px;
+      flex-wrap: wrap;
+    }
+    .download-banner .dl-icon { font-size: 36px; flex-shrink: 0; line-height: 1; }
+    .download-banner .dl-text { flex: 1; min-width: 180px; }
+    .download-banner .dl-text strong { display: block; font-size: 17px; color: var(--ink); margin-bottom: 2px; }
+    .download-banner .dl-text span { font-size: 15px; color: var(--ink-2); }
+    .btn-download {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--howie-btn); color: #fff;
+      font-family: inherit; font-weight: 700; font-size: 17px;
+      padding: 13px 26px; border-radius: 999px; text-decoration: none;
+      white-space: nowrap; flex-shrink: 0;
+      transition: background 0.15s;
+    }
+    .btn-download:hover { background: var(--howie-btn-dk); color: #fff; }
+
+    /* ── Content layout ── */
+    .content-cols { display: grid; grid-template-columns: 1fr 300px; gap: 48px; align-items: start; margin-bottom: 64px; }
+
+    /* ── Sections ── */
+    .guide-section { margin-bottom: 44px; }
+    .guide-section h2 { font-size: 28px; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid var(--sand); }
+    .guide-section p { margin-bottom: 14px; color: var(--ink-2); font-size: 17px; }
+
+    /* ── Caution block ── */
+    .caution-block {
+      background: #FFF6E0; border-left: 5px solid var(--howie-btn);
+      border-radius: 0 14px 14px 0; padding: 24px 28px; margin-bottom: 28px;
+    }
+    .caution-block h3 { font-size: 20px; color: var(--howie-dark); margin-bottom: 10px; }
+    .caution-block p { font-size: 17px; color: var(--ink-2); margin: 0; }
+
+    /* ── Resource list ── */
+    .resource-list { list-style: none; padding: 0; }
+    .resource-list li {
+      padding: 16px 0;
+      border-bottom: 1px solid var(--sand);
+    }
+    .resource-list li:last-child { border-bottom: none; }
+    .resource-list .res-letter {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 30px; height: 30px; border-radius: 50%;
+      background: var(--howie-light); color: var(--howie);
+      font-weight: 700; font-size: 15px; flex-shrink: 0;
+      margin-right: 10px; vertical-align: middle;
+    }
+    .resource-list .res-name { font-weight: 700; color: var(--ink); font-size: 18px; }
+    .resource-list .res-meta { font-size: 15px; color: var(--ink-2); margin-top: 4px; display: flex; flex-wrap: wrap; gap: 10px 24px; }
+    .resource-list .res-meta a { color: var(--howie); }
+    .resource-list .res-desc { font-size: 17px; color: var(--ink-2); margin-top: 6px; }
+
+    /* ── Howie quote ── */
+    .howie-quote {
+      background: var(--cream-2); border-radius: 16px; padding: 26px 28px;
+      display: flex; gap: 16px; align-items: flex-start; margin-bottom: 28px;
+    }
+    .howie-avatar { width: 52px; height: 52px; border-radius: 50%; background: var(--howie-btn); color: #fff; display: grid; place-items: center; font-family: "Fraunces", serif; font-weight: 700; font-size: 22px; flex-shrink: 0; }
+    .howie-quote-body { flex: 1; }
+    .howie-quote-body p { font-size: 18px; font-style: italic; color: var(--ink); line-height: 1.65; margin-bottom: 8px; }
+    .howie-quote-body cite { font-size: 14px; font-style: normal; font-weight: 700; color: var(--howie); letter-spacing: 0.06em; text-transform: uppercase; }
+
+    /* ── Sidebar ── */
+    .sidebar { display: flex; flex-direction: column; gap: 24px; position: sticky; top: 24px; }
+    .sidebar-card { background: #fff; border: 1.5px solid var(--border); border-radius: 16px; padding: 22px; }
+    .sidebar-card h3 { font-size: 18px; margin-bottom: 12px; color: var(--ink); }
+    .sidebar-card ul { list-style: none; padding: 0; }
+    .sidebar-card li { padding: 6px 0; border-bottom: 1px solid var(--sand); font-size: 15px; }
+    .sidebar-card li:last-child { border-bottom: none; }
+    .sidebar-card a { font-size: 15px; text-decoration: none; color: var(--howie); display: block; padding: 6px 0; border-bottom: 1px solid var(--sand); }
+    .sidebar-card a:last-child { border-bottom: none; }
+    .sidebar-card a:hover { text-decoration: underline; }
+
+    .sidebar-ask { background: #FFF6E0; border: 2px solid var(--howie-btn); border-radius: 16px; padding: 22px; text-align: center; }
+    .sidebar-ask p { font-size: 16px; color: var(--ink-2); margin-bottom: 14px; line-height: 1.5; }
+    .btn-ask { display: inline-block; background: var(--howie-btn); color: #fff; font-family: inherit; font-weight: 700; font-size: 16px; padding: 11px 22px; border-radius: 999px; text-decoration: none; transition: background 0.15s; }
+    .btn-ask:hover { background: var(--howie-btn-dk); color: #fff; }
+
+    /* ── Footer ── */
+    footer { background: var(--cream-2); border-top: 1px solid var(--border); margin-top: 64px; }
+    .page-footer { padding: 28px 0; text-align: center; font-size: 16px; color: var(--ink-2); }
+    .page-footer a { color: var(--howie); text-decoration: none; }
+    .page-footer a:hover { text-decoration: underline; }
+
+    /* ── About footer heading ── */
+    .about-footer { padding: 32px 0 0; text-align: center; }
+    .about-footer h3 { font-size: 17px; font-family: "Fraunces", serif; color: var(--ink-2); font-weight: 600; margin-bottom: 10px; }
+
+    /* ── Text size ── */
+    html.text-large body { font-size: 22px; }
+    html.text-large .page-hero h1 { font-size: 54px; }
+    html.text-xl body { font-size: 25px; }
+    html.text-xl .page-hero h1 { font-size: 60px; }
+
+    /* ── Responsive ── */
+    @media (max-width: 860px) {
+      .content-cols { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+    }
+    @media (max-width: 600px) {
+      .page-hero h1 { font-size: 34px; }
+      .page-wrap { padding: 0 16px; }
+      .download-banner { flex-direction: column; gap: 14px; }
+      .btn-download { width: 100%; justify-content: center; }
+      .topbar-inner { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+</head>
+<body>
+
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
+<!-- Top bar -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="text-size" aria-label="Text size controls">
+      <span>Text size:</span>
+      <button type="button" aria-label="Normal text">A</button>
+      <button type="button" aria-label="Larger text">A+</button>
+      <button type="button" aria-label="Largest text">A++</button>
+    </div>
+    <a href="mailto:info@cincyseniors.org" style="font-weight:700;color:var(--ink);text-decoration:none;">✉ info@cincyseniors.org</a>
+  </div>
+</div>
+
+<!-- Header / nav -->
+<div class="page-wrap">
+  <header class="site-header">
+    <a class="brand" href="/">
+      <span class="brand-mark" aria-hidden="true">C</span>
+      <span>
+        <span class="brand-name">CincySeniors.org</span>
+        <span class="brand-tag">A Cincy AI Catalyst (CAIC) guide to using AI</span>
+      </span>
+    </a>
+    <button class="nav-toggle" aria-expanded="false" aria-label="Open navigation">&#9776;</button>
+    <nav class="primary-nav" aria-label="Primary">
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li class="dropdown">
+          <a href="/learn/" aria-haspopup="true">Learn</a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="/learn/" role="menuitem">📖 Learn About AI</a></li>
+            <li><a href="/health/" role="menuitem">❤️ Health</a></li>
+            <li><a href="/wealth/" role="menuitem">💰 Wealth</a></li>
+            <li><a href="/self/" role="menuitem">✍️ Self</a></li>
+            <li><a href="/ai-quiz.html" role="menuitem">🧠 AI Quiz</a></li>
+            <li><a href="/engAging_Seniors/" role="menuitem">📱 EngAging Seniors</a></li>
+            <li><a href="/learn/Leverage_50/" role="menuitem">🚀 Leverage AI 50+</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="/cindy/" aria-haspopup="true">Ask CindyAI or Howie</a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="/cindy/" role="menuitem">💬 Chat with CindyAI</a></li>
+            <li><a href="/cindy/about/" role="menuitem">ℹ️ About Cindy (AI)</a></li>
+            <li><a href="/ask_howie/" role="menuitem">👤 Ask Howie (Human)</a></li>
+            <li><a href="/resources/" role="menuitem">📚 Resources</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="/news/" aria-haspopup="true">News/Tips</a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="/news/" role="menuitem">📰 News</a></li>
+            <li><a href="/helpful-tips/" role="menuitem">💡 Helpful Tips</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="/signups/" aria-haspopup="true">Get Involved</a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="/signups/newsletter.html" role="menuitem">📰 Newsletter</a></li>
+            <li><a href="/signups/volunteer.html" role="menuitem">🤝 Volunteer</a></li>
+            <li><a href="/signups/townhall.html" role="menuitem">🏛️ Town Hall Signup</a></li>
+            <li><a href="/signups/smallgroup.html" role="menuitem">👥 Small Group Signup</a></li>
+          </ul>
+        </li>
+        <li><a href="/team/">Our Team</a></li>
+      </ul>
+    </nav>
+  </header>
+</div>
+
+<main id="main-content">
+<div class="page-wrap">
+
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="/">Home</a><span aria-hidden="true">›</span>
+    <a href="/resources/">Resources</a><span aria-hidden="true">›</span>
+    Help Paying for Prescription Medicines
+  </nav>
+
+  <!-- Hero -->
+  <div class="page-hero">
+    <span class="eyebrow">Resources from Howie</span>
+    <h1>Help Paying for Prescription Medicines</h1>
+    <p class="subtitle">An A-to-Z guide to foundations, drug company programs, discount cards, and government help — compiled by Howie Baum and AI, November 2026.</p>
+  </div>
+
+  <!-- Download banner -->
+  <div class="download-banner">
+    <span class="dl-icon" aria-hidden="true">💊</span>
+    <div class="dl-text">
+      <strong>Large-Print Take-Home Reference Guide</strong>
+      <span>Download &amp; save this guide — print it out and share it with anyone who needs help paying for medicines.</span>
+    </div>
+    <a class="btn-download" href="/resources/pdfs/RESOURCES TO HELP PAYING FOR PRESCRIPTION MEDICINES.pdf" download>
+      ⬇ Download &amp; Save the PDF
+    </a>
+  </div>
+
+  <!-- Two-column content + sidebar -->
+  <div class="content-cols">
+
+    <!-- Main content -->
+    <div>
+
+      <!-- Howie welcome quote -->
+      <div class="howie-quote">
+        <div class="howie-avatar" aria-hidden="true">H</div>
+        <div class="howie-quote-body">
+          <p>"Applying to any of these programs is always free. If someone offers to apply for you for a monthly fee — you do not need them. All the programs themselves warn they are not connected with anyone who charges a fee."</p>
+          <cite>— Howie</cite>
+        </div>
+      </div>
+
+      <!-- Where to start -->
+      <div class="guide-section">
+        <h2>⭐ Where to Start</h2>
+        <div class="caution-block">
+          <h3>Four steps to find the right help quickly</h3>
+          <ol style="padding-left:22px;font-size:18px;line-height:2;">
+            <li><strong>Find out who makes your medicine.</strong> The company that makes it often has a free-medicine program (see Part 3 below). Your pharmacist can tell you the maker.</li>
+            <li><strong>If you have Medicare, check Part 4 first.</strong> Your drug costs are capped each year, and Extra Help can lower them much further.</li>
+            <li><strong>If you have insurance but can't afford the copay,</strong> try the charitable foundations in Part 1, and sign up for FundFinder alerts for funds that are closed.</li>
+            <li><strong>For generic drugs,</strong> compare cash prices with the discount cards and low-cost pharmacies in Part 2.</li>
+          </ol>
+        </div>
+        <p><em>Programs, income limits and open disease funds change often. Check the website or call before applying. Parts and programs are listed in alphabetical order.</em></p>
+      </div>
+
+      <!-- Part 1: Charitable Foundations -->
+      <div class="guide-section" id="part1">
+        <h2>1. Charitable Foundations That Help Pay Copays</h2>
+        <p>Independent nonprofits that pay copays, coinsurance and sometimes premiums for people who have insurance — including Medicare — but cannot afford their share. Help is organized into "disease funds" that open and close as money comes in, so check back if a fund is closed. Most have income limits.</p>
+        <ul class="resource-list">
+          <li>
+            <div><span class="res-letter">a</span><span class="res-name">Accessia Health</span> <span style="font-size:14px;color:var(--ink-2);">(formerly Patient Services, Inc.)</span></div>
+            <div class="res-meta"><span>📞 800-366-7741</span><a href="https://accessiahealth.org" target="_blank" rel="noopener">accessiahealth.org</a></div>
+            <div class="res-desc">Copay and premium help for people with certain chronic and rare conditions.</div>
+          </li>
+          <li>
+            <div><span class="res-letter">b</span><span class="res-name">Blood Cancer United Co-Pay Assistance Program</span> <span style="font-size:14px;color:var(--ink-2);">(formerly the Leukemia and Lymphoma Society)</span></div>
+            <div class="res-meta"><span>📞 877-557-2672</span><a href="https://bloodcancerunited.org" target="_blank" rel="noopener">bloodcancerunited.org</a></div>
+            <div class="res-desc">Help with drug copays, labs and scans for people with a blood cancer.</div>
+          </li>
+          <li>
+            <div><span class="res-letter">c</span><span class="res-name">Brain Tumor Drug Copayment Assistance Program</span> <span style="font-size:14px;color:var(--ink-2);">(Musella Foundation)</span></div>
+            <div class="res-meta"><span>📞 855-426-2672</span><a href="https://braintumorcopays.org" target="_blank" rel="noopener">braintumorcopays.org</a></div>
+            <div class="res-desc">Copay help for brain tumor medicines.</div>
+          </li>
+          <li>
+            <div><span class="res-letter">d</span><span class="res-name">CancerCare Co-Payment Assistance Foundation</span></div>
+            <div class="res-meta"><span>📞 866-552-6729 (866-55-COPAY)</span><a href="https://cancercare.org/copayfoundation" target="_blank" rel="noopener">cancercare.org/copayfoundation</a></div>
+            <div class="res-desc">Copay help for cancer medicines.</div>
+          </li>
+          <li>
+            <div><span class="res-letter">e</span><span class="res-name">Good Days</span> <span style="font-size:14px;color:var(--ink-2);">(formerly Chronic Disease Fund)</span></div>
+            <div class="res-meta"><span>📞 877-968-7233</span><a href="https://mygooddays.org" target="_blank" rel="noopener">mygooddays.org</a></div>
+            <div class="res-desc">Copay help, plus some travel help, for chronic diseases and cancers. Income limit about 500% of the poverty level.</div>
+          </li>
+          <li>
+            <div><span class="res-letter">f</span><span class="res-name">HealthWell Foundation</span></div>
+            <div class="res-meta"><span>📞 800-675-8416</span><a href="https://healthwellfoundation.org" target="_blank" rel="noopener">healthwellfoundation.org</a></div>
+            <div class="res-desc">One of the largest foundations; pays copays, coinsurance, deductibles and premiums for many chronic and life-altering illnesses.</div>
+          </li>
+          <li>
+            <div><span class="res-letter">g</span><span class="res-name">National Organization for Rare Disorders (NORD)</span></div>
+            <div class="res-meta"><span>📞 800-999-6673</span><a href="https://rarediseases.org" target="_blank" rel="noopener">rarediseases.org</a></div>
+            <div class="res-desc">Assistance programs for people with rare diseases; phone numbers vary by program.</div>
+          </li>
+          <li>
+            <div><span class="res-letter">h</span><span class="res-name">Patient Advocate Foundation TotalAssist</span> <span style="font-size:14px;color:var(--ink-2);">(now includes the former PAN Foundation)</span></div>
+            <div class="res-meta"><span>📞 866-512-3861</span><a href="https://totalassist.org" target="_blank" rel="noopener">totalassist.org</a></div>
+            <div class="res-desc">The PAN Foundation merged into Patient Advocate Foundation in 2026, now one program called TotalAssist with more than 140 disease funds. Free case managers also available: 800-532-5274.</div>
+          </li>
+          <li>
+            <div><span class="res-letter">i</span><span class="res-name">The Assistance Fund (TAF)</span></div>
+            <div class="res-meta"><span>📞 855-845-3663</span><a href="https://tafcares.org" target="_blank" rel="noopener">tafcares.org</a></div>
+            <div class="res-desc">Copay, coinsurance and deductible help for many life-threatening, chronic and rare diseases.</div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Part 2: Discount Cards -->
+      <div class="guide-section" id="part2">
+        <h2>2. Discount Cards and Low-Cost Pharmacies</h2>
+        <p>These are not insurance. They can save a lot on generic drugs or for people without drug coverage. People with Medicare can use them, but what they pay this way usually does not count toward the Medicare Part D yearly limit — so compare prices first.</p>
+        <ul class="resource-list">
+          <li>
+            <div><span class="res-letter">a</span><span class="res-name">GoodRx</span></div>
+            <div class="res-meta"><span>📱 Online and app</span><a href="https://goodrx.com" target="_blank" rel="noopener">goodrx.com</a></div>
+            <div class="res-desc">Free coupons that show the lowest cash price at nearby pharmacies.</div>
+          </li>
+          <li>
+            <div><span class="res-letter">b</span><span class="res-name">Mark Cuban Cost Plus Drug Company</span></div>
+            <div class="res-meta"><span>📱 Online only</span><a href="https://costplusdrugs.com" target="_blank" rel="noopener">costplusdrugs.com</a></div>
+            <div class="res-desc">Mail-order pharmacy that sells many generic drugs at cost plus a small markup.</div>
+          </li>
+          <li>
+            <div><span class="res-letter">c</span><span class="res-name">Rx Outreach</span></div>
+            <div class="res-meta"><span>📱 Online</span><a href="https://rxoutreach.org" target="_blank" rel="noopener">rxoutreach.org</a></div>
+            <div class="res-desc">Nonprofit mail-order pharmacy with more than 950 low-cost medicine strengths. Open to people with or without insurance; no membership fee.</div>
+          </li>
+          <li>
+            <div><span class="res-letter">d</span><span class="res-name">SingleCare</span></div>
+            <div class="res-meta"><span>📱 Online and app</span><a href="https://singlecare.com" target="_blank" rel="noopener">singlecare.com</a></div>
+            <div class="res-desc">Free pharmacy discount card and price comparison.</div>
+          </li>
+          <li>
+            <div><span class="res-letter">e</span><span class="res-name">WellRx (ScriptSave)</span></div>
+            <div class="res-meta"><span>📞 800-407-8156</span><a href="https://wellrx.com" target="_blank" rel="noopener">wellrx.com</a></div>
+            <div class="res-desc">Free pharmacy discount card and price comparison.</div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Part 3: Drug Company Programs -->
+      <div class="guide-section" id="part3">
+        <h2>3. Drug Company Free-Medicine Programs</h2>
+        <p>Most large drug companies give their own brand-name medicines free to people who meet income limits, usually for 12 months at a time with yearly renewal. Many also accept people with Medicare Part D who still cannot afford their drugs. Start with the company that makes your medicine; your doctor's office usually has to sign the application.</p>
+        <ul class="resource-list">
+          <li>
+            <div><span class="res-letter">a</span><span class="res-name">AbbVie: myAbbVie Assist</span></div>
+            <div class="res-meta"><span>📞 800-222-6885</span><a href="https://abbvie.com/patients" target="_blank" rel="noopener">abbvie.com/patients</a></div>
+            <div class="res-desc">Free AbbVie medicines such as Humira, Rinvoq and Skyrizi for people who qualify.</div>
+          </li>
+          <li>
+            <div><span class="res-letter">b</span><span class="res-name">Amgen Safety Net Foundation</span></div>
+            <div class="res-meta"><span>📞 888-762-6436</span><a href="https://amgensafetynetfoundation.com" target="_blank" rel="noopener">amgensafetynetfoundation.com</a></div>
+            <div class="res-desc">Free Amgen medicines such as Enbrel and Repatha for people who qualify.</div>
+          </li>
+          <li>
+            <div><span class="res-letter">c</span><span class="res-name">AstraZeneca: AZ&amp;Me Prescription Savings Program</span></div>
+            <div class="res-meta"><span>📞 800-292-6363</span><a href="https://azandmeapp.com" target="_blank" rel="noopener">azandmeapp.com</a></div>
+            <div class="res-desc">Free AstraZeneca medicines such as Farxiga, Symbicort and Brilinta, including programs for people with Medicare Part D.</div>
+          </li>
+          <li>
+            <div><span class="res-letter">d</span><span class="res-name">Boehringer Ingelheim Cares Foundation (BI Cares)</span></div>
+            <div class="res-meta"><span>📞 800-556-8317</span><a href="https://boehringer-ingelheim.com/us" target="_blank" rel="noopener">boehringer-ingelheim.com/us</a></div>
+            <div class="res-desc">Free Boehringer medicines such as Jardiance, Tradjenta, Spiriva and Ofev for uninsured and underinsured people who meet income limits.</div>
+          </li>
+          <li>
+            <div><span class="res-letter">e</span><span class="res-name">Bristol Myers Squibb Patient Assistance Foundation</span></div>
+            <div class="res-meta"><span>📞 800-736-0003</span><a href="https://bmspaf.org" target="_blank" rel="noopener">bmspaf.org</a></div>
+            <div class="res-desc">Free BMS medicines such as Eliquis and Orencia for people who qualify.</div>
+          </li>
+          <li>
+            <div><span class="res-letter">f</span><span class="res-name">Eli Lilly: Lilly Cares Foundation</span></div>
+            <div class="res-meta"><span>📞 800-545-6962</span><a href="https://lillycares.com" target="_blank" rel="noopener">lillycares.com</a></div>
+            <div class="res-desc">Free Lilly medicines, including insulin and Trulicity, for up to 12 months at a time.</div>
+          </li>
+          <li>
+            <div><span class="res-letter">g</span><span class="res-name">Genentech Patient Foundation</span></div>
+            <div class="res-meta"><span>📞 See website</span><a href="https://gene.com" target="_blank" rel="noopener">gene.com</a></div>
+            <div class="res-desc">Free Genentech medicines for people without insurance or whose insurance denied coverage.</div>
+          </li>
+          <li>
+            <div><span class="res-letter">h</span><span class="res-name">GSK Patient Assistance Program</span></div>
+            <div class="res-meta"><span>📞 866-728-4368</span><a href="https://gskforyou.com" target="_blank" rel="noopener">gskforyou.com</a></div>
+            <div class="res-desc">Free GSK medicines such as Trelegy, Breo and Advair for people who qualify.</div>
+          </li>
+          <li>
+            <div><span class="res-letter">i</span><span class="res-name">Johnson &amp; Johnson Patient Assistance Foundation</span></div>
+            <div class="res-meta"><span>📞 800-652-6227</span><a href="https://jjpaf.org" target="_blank" rel="noopener">jjpaf.org</a></div>
+            <div class="res-desc">Free J&amp;J medicines such as Xarelto and Stelara for uninsured people who qualify.</div>
+          </li>
+          <li>
+            <div><span class="res-letter">j</span><span class="res-name">Merck Helps (Merck Patient Assistance Program)</span></div>
+            <div class="res-meta"><span>📞 800-727-5400</span><a href="https://merckhelps.com" target="_blank" rel="noopener">merckhelps.com</a></div>
+            <div class="res-desc">Free Merck medicines such as Januvia and Janumet; accepts some people with Medicare.</div>
+          </li>
+          <li>
+            <div><span class="res-letter">k</span><span class="res-name">Novartis Patient Assistance Foundation</span></div>
+            <div class="res-meta"><span>📞 800-277-2254</span><a href="https://pap.novartis.com" target="_blank" rel="noopener">pap.novartis.com</a></div>
+            <div class="res-desc">Free Novartis medicines such as Entresto for people who qualify.</div>
+          </li>
+          <li>
+            <div><span class="res-letter">l</span><span class="res-name">Novo Nordisk Patient Assistance Program (NovoCare)</span></div>
+            <div class="res-meta"><span>📞 866-310-7549</span><a href="https://novocare.com" target="_blank" rel="noopener">novocare.com</a></div>
+            <div class="res-desc">Free Novo Nordisk insulins and diabetes medicines for people who qualify.</div>
+          </li>
+          <li>
+            <div><span class="res-letter">m</span><span class="res-name">Pfizer RxPathways</span></div>
+            <div class="res-meta"><span>📞 844-989-7284</span><a href="https://pfizerrxpathways.com" target="_blank" rel="noopener">pfizerrxpathways.com</a></div>
+            <div class="res-desc">Free or low-cost Pfizer medicines; covers hundreds of Pfizer products.</div>
+          </li>
+          <li>
+            <div><span class="res-letter">n</span><span class="res-name">Sanofi Patient Connection</span></div>
+            <div class="res-meta"><span>📞 888-847-4877</span><a href="https://sanofipatientconnection.com" target="_blank" rel="noopener">sanofipatientconnection.com</a></div>
+            <div class="res-desc">Free Sanofi medicines, including Lantus and other insulins, for people who qualify.</div>
+          </li>
+          <li>
+            <div><span class="res-letter">o</span><span class="res-name">Takeda Help at Hand</span></div>
+            <div class="res-meta"><span>📞 800-830-9159</span><a href="https://takeda.com" target="_blank" rel="noopener">takeda.com</a></div>
+            <div class="res-desc">Help for people with no or too little insurance who need Takeda medicines.</div>
+          </li>
+          <li>
+            <div><span class="res-letter">p</span><span class="res-name">Teva Cares Foundation</span></div>
+            <div class="res-meta"><span>📞 See website</span><a href="https://tevausa.com" target="_blank" rel="noopener">tevausa.com</a></div>
+            <div class="res-desc">Certain Teva medicines at no cost for people who meet insurance and income rules.</div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Part 4: Government Programs -->
+      <div class="guide-section" id="part4">
+        <h2>4. Government Programs (Medicare and Medicaid)</h2>
+        <p>For people with Medicare, these are the biggest money-savers — and several happen automatically.</p>
+        <ul class="resource-list">
+          <li>
+            <div><span class="res-letter">a</span><span class="res-name">Extra Help (Medicare Part D Low-Income Subsidy)</span></div>
+            <div class="res-meta"><span>📞 800-772-1213 (Social Security)</span><a href="https://ssa.gov/extrahelp" target="_blank" rel="noopener">ssa.gov/extrahelp</a></div>
+            <div class="res-desc">For people with limited income and savings. Lowers or removes Part D premiums and deductibles, and limits copays in 2026 to about $5.10 for a generic and $12.65 for a brand-name drug.</div>
+          </li>
+          <li>
+            <div><span class="res-letter">b</span><span class="res-name">Medicaid (Ohio, Kentucky and other states)</span></div>
+            <div class="res-meta"><span>📞 Ohio: 844-640-6446</span><a href="https://benefits.ohio.gov" target="_blank" rel="noopener">benefits.ohio.gov</a></div>
+            <div class="res-desc">Full drug coverage for people with low income. Anyone with Medicaid and Medicare gets Extra Help automatically.</div>
+          </li>
+          <li>
+            <div><span class="res-letter">c</span><span class="res-name">Medicare Part D Yearly Limit on Drug Costs</span></div>
+            <div class="res-meta"><span>📞 800-633-4227 (1-800-MEDICARE)</span><a href="https://medicare.gov" target="_blank" rel="noopener">medicare.gov</a></div>
+            <div class="res-desc">In 2026, nobody with a Medicare drug plan pays more than $2,100 a year out of pocket for covered drugs; it rises to $2,400 in 2027. This is automatic — premiums do not count toward it.</div>
+          </li>
+          <li>
+            <div><span class="res-letter">d</span><span class="res-name">Medicare Prescription Payment Plan</span></div>
+            <div class="res-meta"><span>📞 Call your drug plan</span><a href="https://medicare.gov/prescription-payment-plan" target="_blank" rel="noopener">medicare.gov/prescription-payment-plan</a></div>
+            <div class="res-desc">Lets you spread your drug costs into monthly payments instead of paying large amounts at the pharmacy — especially helpful early in the year.</div>
+          </li>
+          <li>
+            <div><span class="res-letter">e</span><span class="res-name">Medicare's List of Drug Company Programs</span></div>
+            <div class="res-meta"><span>📱 Online</span><a href="https://medicare.gov/pharmaceutical-assistance-program" target="_blank" rel="noopener">medicare.gov/pharmaceutical-assistance-program</a></div>
+            <div class="res-desc">Searchable by medicine name; shows which company programs accept people with Medicare.</div>
+          </li>
+          <li>
+            <div><span class="res-letter">f</span><span class="res-name">State Health Insurance Assistance Program (SHIP)</span></div>
+            <div class="res-meta"><span>📞 877-839-2675 &nbsp;·&nbsp; Ohio OSHIIP: 800-686-1578</span><a href="https://shiphelp.org" target="_blank" rel="noopener">shiphelp.org</a></div>
+            <div class="res-desc">Free, unbiased counselors in every state who help compare Medicare drug plans each fall and check eligibility for Extra Help.</div>
+          </li>
+          <li>
+            <div><span class="res-letter">g</span><span class="res-name">State Pharmaceutical Assistance Programs</span></div>
+            <div class="res-meta"><span>📱 Online</span><a href="https://ncsl.org" target="_blank" rel="noopener">ncsl.org</a></div>
+            <div class="res-desc">Some states have their own drug help programs for older adults. The National Conference of State Legislatures keeps a state-by-state list.</div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Part 5: Other Countries -->
+      <div class="guide-section" id="part5">
+        <h2>5. Other Countries</h2>
+        <p>If you have family or dual citizenship in another country, prescription costs may be dramatically lower. Here are three examples:</p>
+        <ul class="resource-list">
+          <li>
+            <div><span class="res-letter">a</span><span class="res-name">Australia: Pharmaceutical Benefits Scheme (PBS)</span></div>
+            <div class="res-meta"><a href="https://health.gov.au" target="_blank" rel="noopener">health.gov.au</a></div>
+            <div class="res-desc">Since January 1, 2026, a PBS prescription costs no more than A$25, or A$7.70 with a concession card. After a yearly "Safety Net" amount, medicines get even cheaper or free.</div>
+          </li>
+          <li>
+            <div><span class="res-letter">b</span><span class="res-name">Canada: Provincial Drug Plans</span></div>
+            <div class="res-meta"><a href="https://canada.ca" target="_blank" rel="noopener">canada.ca</a></div>
+            <div class="res-desc">Each province runs its own drug plan, and most cover adults 65 and older. For example, the Ontario Drug Benefit covers most Ontario residents 65+.</div>
+          </li>
+          <li>
+            <div><span class="res-letter">c</span><span class="res-name">United Kingdom: NHS Prescriptions</span></div>
+            <div class="res-meta"><a href="https://nhs.uk" target="_blank" rel="noopener">nhs.uk</a></div>
+            <div class="res-desc">In England, prescriptions are free for everyone 60 and over. In Scotland, Wales and Northern Ireland, prescriptions are free for everyone.</div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Part 6: Search Tools -->
+      <div class="guide-section" id="part6">
+        <h2>6. Search Tools That Find Programs for You</h2>
+        <p>These free websites search hundreds of programs at once. Type in the medicine name to see every program that might help.</p>
+        <ul class="resource-list">
+          <li>
+            <div><span class="res-letter">a</span><span class="res-name">America's Medicines</span> <span style="font-size:14px;color:var(--ink-2);">(formerly the Medicine Assistance Tool)</span></div>
+            <div class="res-meta"><span>📱 Online</span><a href="https://mat.org" target="_blank" rel="noopener">mat.org</a></div>
+            <div class="res-desc">Run by the drug industry group PhRMA. Searches drug company programs by medicine, insurance, income and location, and also finds free and low-cost clinics.</div>
+          </li>
+          <li>
+            <div><span class="res-letter">b</span><span class="res-name">BenefitsCheckUp</span> <span style="font-size:14px;color:var(--ink-2);">(National Council on Aging)</span></div>
+            <div class="res-meta"><span>📱 Online</span><a href="https://benefitscheckup.org" target="_blank" rel="noopener">benefitscheckup.org</a></div>
+            <div class="res-desc">Answer a few questions to find drug, food, utility and other benefit programs for people 55 and older.</div>
+          </li>
+          <li>
+            <div><span class="res-letter">c</span><span class="res-name">FundFinder</span> <span style="font-size:14px;color:var(--ink-2);">(Patient Advocate Foundation)</span></div>
+            <div class="res-meta"><span>📱 Online</span><a href="https://patientadvocate.org" target="_blank" rel="noopener">patientadvocate.org</a></div>
+            <div class="res-desc">Free alerts by email or text the moment a charitable disease fund for your condition reopens.</div>
+          </li>
+          <li>
+            <div><span class="res-letter">d</span><span class="res-name">NeedyMeds</span></div>
+            <div class="res-meta"><span>📞 800-503-6897</span><a href="https://needymeds.org" target="_blank" rel="noopener">needymeds.org</a></div>
+            <div class="res-desc">Nonprofit with the largest free database of drug company programs, coupons, free clinics and a free drug discount card.</div>
+          </li>
+          <li>
+            <div><span class="res-letter">e</span><span class="res-name">RxAssist</span></div>
+            <div class="res-meta"><span>📱 Online</span><a href="https://rxassist.org" target="_blank" rel="noopener">rxassist.org</a></div>
+            <div class="res-desc">Nonprofit database of drug company programs, with current application forms to print.</div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Final Howie quote -->
+      <div class="howie-quote">
+        <div class="howie-avatar" aria-hidden="true">H</div>
+        <div class="howie-quote-body">
+          <p>"Programs and phone numbers change often — always check the website or call before applying. And remember: applying is always free. Never pay someone to apply for you."</p>
+          <cite>— Howie's Reminder</cite>
+        </div>
+      </div>
+
+      <!-- Second download CTA -->
+      <div class="download-banner" style="margin-top:40px;">
+        <span class="dl-icon" aria-hidden="true">💊</span>
+        <div class="dl-text">
+          <strong>Save this guide for later</strong>
+          <span>Download the PDF to keep handy — or share it with a friend or family member who needs help paying for medicines.</span>
+        </div>
+        <a class="btn-download" href="/resources/pdfs/RESOURCES TO HELP PAYING FOR PRESCRIPTION MEDICINES.pdf" download>
+          ⬇ Download &amp; Save the PDF
+        </a>
+      </div>
+
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" aria-label="Quick reference">
+
+      <div class="sidebar-card">
+        <h3>📋 Jump to a Section</h3>
+        <a href="#part1">1. Charitable Foundations</a>
+        <a href="#part2">2. Discount Cards &amp; Pharmacies</a>
+        <a href="#part3">3. Drug Company Programs</a>
+        <a href="#part4">4. Government Programs</a>
+        <a href="#part5">5. Other Countries</a>
+        <a href="#part6">6. Search Tools</a>
+      </div>
+
+      <div class="sidebar-card">
+        <h3>⭐ Quick Tips</h3>
+        <ul>
+          <li>💊 Ask your pharmacist who makes your medicine</li>
+          <li>🏛️ Medicare? Check Extra Help first</li>
+          <li>🆓 Applying is always free</li>
+          <li>🔁 Funds open &amp; close — check back</li>
+          <li>🔍 Use NeedyMeds or mat.org to search all programs</li>
+          <li>📞 SHIP counselors can help: 877-839-2675</li>
+        </ul>
+      </div>
+
+      <div class="sidebar-card">
+        <h3>📞 Key Phone Numbers</h3>
+        <ul>
+          <li><strong>Medicare:</strong> 800-633-4227</li>
+          <li><strong>Extra Help:</strong> 800-772-1213</li>
+          <li><strong>SHIP / OSHIIP (Ohio):</strong> 800-686-1578</li>
+          <li><strong>NeedyMeds:</strong> 800-503-6897</li>
+          <li><strong>Ohio Medicaid:</strong> 844-640-6446</li>
+        </ul>
+      </div>
+
+      <div class="sidebar-card">
+        <h3>🔗 Search All Programs</h3>
+        <a href="https://needymeds.org" target="_blank" rel="noopener">NeedyMeds.org</a>
+        <a href="https://mat.org" target="_blank" rel="noopener">America's Medicines (mat.org)</a>
+        <a href="https://benefitscheckup.org" target="_blank" rel="noopener">BenefitsCheckUp.org</a>
+        <a href="https://rxassist.org" target="_blank" rel="noopener">RxAssist.org</a>
+        <a href="https://goodrx.com" target="_blank" rel="noopener">GoodRx.com</a>
+      </div>
+
+      <div class="sidebar-ask">
+        <h3>Have a question?</h3>
+        <p>Ask Howie — a real person who answers every question personally.</p>
+        <a class="btn-ask" href="/ask_howie/#ask-howie">✉️ Ask Howie</a>
+      </div>
+
+    </aside>
+
+  </div>
+
+</div>
+</main>
+
+<footer>
+  <div class="page-wrap">
+    <div class="about-footer">
+      <h3><a href="/" style="color:var(--ink-2);text-decoration:none;">About CincySeniors.org</a></h3>
+    </div>
+    <div class="page-footer">
+      <a href="/">CincySeniors.org</a> &nbsp;·&nbsp;
+      <a href="/ask_howie/">Ask Howie</a> &nbsp;·&nbsp;
+      <a href="/cindy/">Ask Cindy AI</a> &nbsp;·&nbsp;
+      <a href="mailto:info@cincyseniors.org">info@cincyseniors.org</a> &nbsp;·&nbsp;
+      <a href="/privacy.html">Privacy Policy</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Text size controls
+  (function () {
+    var html = document.documentElement;
+    var btns = document.querySelectorAll('.text-size button');
+    var classes = ['', 'text-large', 'text-xl'];
+    var labels = ['Normal', 'Large', 'Largest'];
+    function applySize(idx) {
+      html.classList.remove('text-large', 'text-xl');
+      if (classes[idx]) html.classList.add(classes[idx]);
+      btns.forEach(function (btn, i) {
+        btn.classList.toggle('active', i === idx);
+        btn.setAttribute('aria-pressed', i === idx ? 'true' : 'false');
+      });
+      try { localStorage.setItem('csTextSize', idx); } catch (e) {}
+    }
+    btns.forEach(function (btn, i) {
+      btn.setAttribute('aria-pressed', 'false');
+      btn.title = labels[i] + ' text';
+      btn.addEventListener('click', function () { applySize(i); });
+    });
+    var saved = 0;
+    try { saved = parseInt(localStorage.getItem('csTextSize') || '0', 10); } catch (e) {}
+    applySize(isNaN(saved) ? 0 : Math.min(saved, 2));
+  })();
+
+  // Dropdown nav
+  (function () {
+    document.addEventListener('click', function (e) {
+      if (!e.target.closest('.dropdown')) {
+        document.querySelectorAll('.dropdown.js-open').forEach(function (d) { d.classList.remove('js-open'); });
+      }
+    });
+    document.querySelectorAll('.primary-nav .dropdown > a').forEach(function (link) {
+      link.addEventListener('click', function (e) {
+        var dropdown = this.parentElement;
+        var isOpen = dropdown.classList.contains('js-open');
+        document.querySelectorAll('.dropdown.js-open').forEach(function (d) { if (d !== dropdown) d.classList.remove('js-open'); });
+        if (!isOpen) { e.preventDefault(); dropdown.classList.add('js-open'); }
+        else { dropdown.classList.remove('js-open'); }
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>
