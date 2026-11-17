@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+# Admin and private areas
+Disallow: /cindy/admin/
+Disallow: /cindy/rag-admin/
+Disallow: /cindy/chat-log/
+Disallow: /signups/admin/
+Disallow: /archive/
+Disallow: /upload/
+Disallow: /feedback/
+
+Sitemap: https://www.cincyseniors.org/sitemap.xml

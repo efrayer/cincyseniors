@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- Core pages -->
+  <url><loc>https://www.cincyseniors.org/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://www.cincyseniors.org/learn/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.cincyseniors.org/learn/people-skills/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.cincyseniors.org/learn/Leverage_50/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.cincyseniors.org/health/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.cincyseniors.org/wealth/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.cincyseniors.org/self/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.cincyseniors.org/news/</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.cincyseniors.org/helpful-tips/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.cincyseniors.org/helpful-tips/hearing-tech/</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+
+  <!-- Ask Howie -->
+  <url><loc>https://www.cincyseniors.org/ask_howie/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.cincyseniors.org/ask_howie/protecting-yourself-online.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
+  <!-- Resources -->
+  <url><loc>https://www.cincyseniors.org/resources/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.cincyseniors.org/resources/prescription-help/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
+  <!-- CindyAI -->
+  <url><loc>https://www.cincyseniors.org/cindy/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.cincyseniors.org/cindy/about/</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+
+  <!-- Other public pages -->
+  <url><loc>https://www.cincyseniors.org/engAging_Seniors/</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.cincyseniors.org/games/games.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.cincyseniors.org/ai-quiz.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.cincyseniors.org/team/</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://www.cincyseniors.org/rsvp/</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://www.cincyseniors.org/signups/newsletter.html</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://www.cincyseniors.org/signups/volunteer.html</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://www.cincyseniors.org/signups/townhall.html</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://www.cincyseniors.org/signups/smallgroup.html</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://www.cincyseniors.org/privacy.html</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+
+</urlset>
